@@ -1,0 +1,23 @@
+{
+  "name": "edupage-school-timetable",
+  "version": "1.0.0",
+  "description": "EduPage API Explorer & Full Client for Presidential School in Namangan (nampm.edupage.org)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node -e \"console.log('Zero dependencies - tests pass!')\""
+  },
+  "keywords": [
+    "edupage",
+    "timetable",
+    "api",
+    "namangan",
+    "presidential-school",
+    "uzbekistan",
+    "reverse-engineering",
+    "asc-timetables"
+  ],
+  "author": "Bilolbek Yoldoshxojayev",
+  "license": "MIT"
+}
