@@ -188,7 +188,8 @@ function transformTimetableData(rawDbi) {
     const lesson = lessonsMap[card.lessonid];
     if (!lesson) continue;
 
-    const period = card.period;
+    const startPeriod = parseInt(card.period, 10);
+    const duration = parseInt(lesson.durationperiods, 10) || 1;
     const daysMask = card.days || ''; // e.g. "10000" for Monday, "01000" for Tuesday
     const assignedRooms = (card.classroomids || []).map(rid => classroomsMap[rid]).filter(Boolean);
     const assignedTeachers = (lesson.teacherids || []).map(tid => teachersMap[tid]).filter(Boolean);
@@ -198,72 +199,82 @@ function transformTimetableData(rawDbi) {
     // Find active days from bitmask
     for (let dayIdx = 0; dayIdx < daysMask.length; dayIdx++) {
       if (daysMask[dayIdx] === '1') {
-        const item = {
-          cardId: card.id,
-          lessonId: lesson.id,
-          period: period,
-          dayIndex: dayIdx,
-          subject: {
-            id: subject.id,
-            name: subject.name,
-            short: subject.short,
-            color: subject.color || '#3b82f6'
-          },
-          teachers: assignedTeachers.map(t => ({
-            id: t.id,
-            name: t.name || t.short,
-            short: t.short,
-            color: t.color
-          })),
-          classes: assignedClasses.map(c => ({
-            id: c.id,
-            name: c.name,
-            short: c.short,
-            color: c.color
-          })),
-          classrooms: assignedRooms.map(r => ({
-            id: r.id,
-            name: r.name,
-            short: r.short,
-            color: r.color
-          }))
-        };
+        // Expand for lessons that span multiple periods (e.g. 2-period A/B lessons)
+        for (let offset = 0; offset < duration; offset++) {
+          const p = startPeriod + offset;
+          const item = {
+            cardId: card.id,
+            lessonId: lesson.id,
+            period: p,
+            startPeriod: startPeriod,
+            duration: duration,
+            periodPart: offset + 1,
+            isDoublePeriod: duration > 1,
+            isContinuation: offset > 0,
+            periodSpan: duration > 1 ? `${startPeriod}–${startPeriod + duration - 1}` : `${startPeriod}`,
+            dayIndex: dayIdx,
+            subject: {
+              id: subject.id,
+              name: subject.name,
+              short: subject.short,
+              color: subject.color || '#3b82f6'
+            },
+            teachers: assignedTeachers.map(t => ({
+              id: t.id,
+              name: t.name || t.short,
+              short: t.short,
+              color: t.color
+            })),
+            classes: assignedClasses.map(c => ({
+              id: c.id,
+              name: c.name,
+              short: c.short,
+              color: c.color
+            })),
+            classrooms: assignedRooms.map(r => ({
+              id: r.id,
+              name: r.name,
+              short: r.short,
+              color: r.color
+            }))
+          };
 
-        // Populate classGrid
-        for (const c of assignedClasses) {
-          if (!classGrid[c.id]) classGrid[c.id] = {};
-          if (!classGrid[c.id][dayIdx]) classGrid[c.id][dayIdx] = {};
-          if (!classGrid[c.id][dayIdx][period]) classGrid[c.id][dayIdx][period] = [];
-          classGrid[c.id][dayIdx][period].push(item);
-          classLessonsCount[c.id] = (classLessonsCount[c.id] || 0) + 1;
+          // Populate classGrid
+          for (const c of assignedClasses) {
+            if (!classGrid[c.id]) classGrid[c.id] = {};
+            if (!classGrid[c.id][dayIdx]) classGrid[c.id][dayIdx] = {};
+            if (!classGrid[c.id][dayIdx][p]) classGrid[c.id][dayIdx][p] = [];
+            classGrid[c.id][dayIdx][p].push(item);
+            classLessonsCount[c.id] = (classLessonsCount[c.id] || 0) + 1;
+          }
+
+          // Populate teacherGrid
+          for (const t of assignedTeachers) {
+            if (!teacherGrid[t.id]) teacherGrid[t.id] = {};
+            if (!teacherGrid[t.id][dayIdx]) teacherGrid[t.id][dayIdx] = {};
+            if (!teacherGrid[t.id][dayIdx][p]) teacherGrid[t.id][dayIdx][p] = [];
+            teacherGrid[t.id][dayIdx][p].push(item);
+
+            teacherWorkload[t.id] = (teacherWorkload[t.id] || 0) + 1;
+            if (!teacherSubjects[t.id]) teacherSubjects[t.id] = new Set();
+            teacherSubjects[t.id].add(subject.name);
+            if (!teacherClasses[t.id]) teacherClasses[t.id] = new Set();
+            assignedClasses.forEach(c => teacherClasses[t.id].add(c.name));
+          }
+
+          // Populate classroomGrid
+          for (const r of assignedRooms) {
+            if (!classroomGrid[r.id]) classroomGrid[r.id] = {};
+            if (!classroomGrid[r.id][dayIdx]) classroomGrid[r.id][dayIdx] = {};
+            if (!classroomGrid[r.id][dayIdx][p]) classroomGrid[r.id][dayIdx][p] = [];
+            classroomGrid[r.id][dayIdx][p].push(item);
+
+            if (!classroomBookings[r.id]) classroomBookings[r.id] = new Set();
+            classroomBookings[r.id].add(`${dayIdx}_${p}`);
+          }
+
+          subjectTotalLessons[subject.id] = (subjectTotalLessons[subject.id] || 0) + 1;
         }
-
-        // Populate teacherGrid
-        for (const t of assignedTeachers) {
-          if (!teacherGrid[t.id]) teacherGrid[t.id] = {};
-          if (!teacherGrid[t.id][dayIdx]) teacherGrid[t.id][dayIdx] = {};
-          if (!teacherGrid[t.id][dayIdx][period]) teacherGrid[t.id][dayIdx][period] = [];
-          teacherGrid[t.id][dayIdx][period].push(item);
-
-          teacherWorkload[t.id] = (teacherWorkload[t.id] || 0) + 1;
-          if (!teacherSubjects[t.id]) teacherSubjects[t.id] = new Set();
-          teacherSubjects[t.id].add(subject.name);
-          if (!teacherClasses[t.id]) teacherClasses[t.id] = new Set();
-          assignedClasses.forEach(c => teacherClasses[t.id].add(c.name));
-        }
-
-        // Populate classroomGrid
-        for (const r of assignedRooms) {
-          if (!classroomGrid[r.id]) classroomGrid[r.id] = {};
-          if (!classroomGrid[r.id][dayIdx]) classroomGrid[r.id][dayIdx] = {};
-          if (!classroomGrid[r.id][dayIdx][period]) classroomGrid[r.id][dayIdx][period] = [];
-          classroomGrid[r.id][dayIdx][period].push(item);
-
-          if (!classroomBookings[r.id]) classroomBookings[r.id] = new Set();
-          classroomBookings[r.id].add(`${dayIdx}_${period}`);
-        }
-
-        subjectTotalLessons[subject.id] = (subjectTotalLessons[subject.id] || 0) + 1;
       }
     }
   }

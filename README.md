@@ -38,7 +38,7 @@ This repository provides everything developers need to build custom student apps
 
 The included web app provides an 8-tab dashboard connected to the live school APIs:
 
-1. **📅 Interactive Weekly Timetable**: View by **Class** (14 classes), **Teacher** (36 faculty), or **Classroom** (20 rooms) with version switcher across 8 terms.
+1. **📅 Interactive Weekly Timetable**: View by **Class** (14 classes), **Teacher** (36 faculty), or **Classroom** (20 rooms) with version switcher across 8 terms. Features automatic multi-period spanning (`colSpan = 2`) for Grade 10 & 11 elective block lessons (A10, B10, A11, B11) with zero schedule gaps.
 2. **⚡ Live Substitution Viewer**: Daily teacher substitutions with date picker and "By Classes" or "By Teachers" view.
 3. **🏛 Master Directory**: Filterable cards for all 36 teachers, 14 classes, 20 classrooms (with occupancy % metrics), 39 subjects, and 7 bell periods.
 4. **🕒 Dynamic Daily Schedule**: Dated daily overrides via `curentttGetData`.
@@ -521,6 +521,7 @@ Referer: https://nampm.edupage.org/timetable/
 - **`__args`**: Context array. First element is always `null`.
 - **`__gsh`**: Guest security hash (`"00000000"` for anonymous read-only access).
 - **Day Bitmasks**: EduPage stores days as 5-character bitmasks (`10000` = Mon, `01000` = Tue, `00100` = Wed, `00010` = Thu, `00001` = Fri).
+- **Multi-Period Lessons (`durationperiods`)**: Elective block subjects in grades 10 & 11 (**A10**, **B10**, **A11**, **B11**) specify `durationperiods: 2`. The scheduler places the lesson starting at `card.period` and spans it across `durationperiods` consecutive periods, eliminating schedule gaps and ensuring 100% accurate faculty workloads and classroom bookings.
 
 ---
 

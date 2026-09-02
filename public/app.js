@@ -328,18 +328,26 @@ function renderGrid() {
     `;
     tr.appendChild(thDay);
 
-    // Periods 1 through 7
-    for (let period = 1; period <= 7; period++) {
+    // Periods 1 through 7 with multi-period span support
+    let period = 1;
+    while (period <= 7) {
+      const items = gridData[day.id]?.[period] || [];
+      const primaryItem = items[0];
+      const isStartOfMulti = primaryItem && primaryItem.startPeriod === period && primaryItem.duration > 1;
+      const span = isStartOfMulti ? Math.min(primaryItem.duration, 8 - period) : 1;
+
       const td = document.createElement('td');
       td.className = 'p-2 border-r border-slate-200 align-top min-w-[120px] max-w-[180px]';
-      if (period === 7) td.className = 'p-2 align-top min-w-[120px] max-w-[180px]';
-
-      const items = gridData[day.id]?.[period] || [];
+      if (period + span - 1 >= 7) td.className = 'p-2 align-top min-w-[120px] max-w-[180px]';
+      if (span > 1) {
+        td.colSpan = span;
+        td.className += ' bg-amber-50/15';
+      }
 
       // Filter by search query
       const filteredItems = items.filter(item => {
         if (!state.searchQuery) return true;
-        const q = state.searchQuery;
+        const q = state.searchQuery.toLowerCase();
         const sName = (item.subject?.name || '').toLowerCase();
         const tNames = (item.teachers || []).map(t => t.name.toLowerCase()).join(' ');
         const cNames = (item.classes || []).map(c => c.name.toLowerCase()).join(' ');
@@ -370,11 +378,19 @@ function renderGrid() {
             subText = `<span class="font-bold text-blue-700">${cNames}</span> • ${tNames}`;
           }
 
+          let badgeHtml = '';
+          if (item.duration > 1) {
+            badgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200/80 shrink-0 ml-1">2 Periods</span>`;
+          }
+
           card.className = 'lesson-card p-2 rounded-lg text-xs border border-slate-200/80 bg-white cursor-pointer relative overflow-hidden shadow-xs hover:shadow-md transition';
           card.innerHTML = `
             <div class="absolute left-0 top-0 bottom-0 w-1.5" style="background-color: ${bgColor}"></div>
             <div class="pl-1.5">
-              <div class="font-bold text-slate-900 truncate" title="${item.subject.name}">${item.subject.name}</div>
+              <div class="flex items-center justify-between gap-1">
+                <div class="font-bold text-slate-900 truncate" title="${item.subject.name}">${item.subject.name}</div>
+                ${badgeHtml}
+              </div>
               <div class="text-[11px] text-slate-500 mt-0.5 truncate">${subText}</div>
             </div>
           `;
@@ -389,6 +405,7 @@ function renderGrid() {
       }
 
       tr.appendChild(td);
+      period += span;
     }
 
     tbody.appendChild(tr);
@@ -434,14 +451,29 @@ function openLessonModal(item, periodNumber, dayName) {
     7: '14:50 – 15:35'
   };
 
+  const startP = item.startPeriod || periodNumber;
+  const dur = item.duration || 1;
+  const endP = startP + dur - 1;
+  let timeStr = '';
+  if (dur > 1 && periodMap[startP] && periodMap[endP]) {
+    const sTime = periodMap[startP].split('–')[0].trim();
+    const eTime = periodMap[endP].split('–')[1].trim();
+    timeStr = `${dayName}, Periods ${startP}–${endP} (${sTime} – ${eTime}) • Double Period (${dur * 45} mins)`;
+  } else {
+    timeStr = `${dayName}, Period ${periodNumber} (${periodMap[periodNumber] || ''})`;
+  }
+
   if (header) header.style.backgroundColor = item.subject.color || '#2563eb';
-  if (subjectTag) subjectTag.textContent = `Course • ${item.subject.short || 'ID: ' + item.subject.id}`;
+  if (subjectTag) {
+    const doubleTag = dur > 1 ? ` • Double Period (2x 45 min)` : '';
+    subjectTag.textContent = `Course • ${item.subject.short || 'ID: ' + item.subject.id}${doubleTag}`;
+  }
   if (subjectName) subjectName.textContent = item.subject.name;
 
   if (teacherVal) teacherVal.textContent = item.teachers.map(t => t.name || t.short).join(', ') || 'Not Assigned';
   if (classroomVal) classroomVal.textContent = item.classrooms.map(r => r.name).join(', ') || 'General Classroom';
   if (classVal) classVal.textContent = item.classes.map(c => c.name).join(', ') || 'All Groups';
-  if (timeVal) timeVal.textContent = `${dayName}, Period ${periodNumber} (${periodMap[periodNumber] || ''})`;
+  if (timeVal) timeVal.textContent = timeStr;
 
   if (lessonIdVal) lessonIdVal.textContent = item.lessonId || 'N/A';
   if (cardIdVal) cardIdVal.textContent = item.cardId || 'N/A';

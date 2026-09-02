@@ -86,7 +86,8 @@ def transform_dbi(raw_dbi):
         lesson = lessons_map.get(card.get('lessonid'))
         if not lesson:
             continue
-        period = card.get('period')
+        start_period = int(card.get('period', 1))
+        duration = int(lesson.get('durationperiods', 1) or 1)
         days_mask = card.get('days', '')
         rooms = [classrooms_map[r] for r in card.get('classroomids', []) if r in classrooms_map]
         teachers = [teachers_map[t] for t in lesson.get('teacherids', []) if t in teachers_map]
@@ -95,39 +96,47 @@ def transform_dbi(raw_dbi):
 
         for day_idx, bit in enumerate(days_mask):
             if bit == '1':
-                item = {
-                    "cardId": card.get('id'),
-                    "lessonId": lesson.get('id'),
-                    "period": period,
-                    "dayIndex": day_idx,
-                    "subject": {
-                        "id": subj.get('id'),
-                        "name": subj.get('name'),
-                        "short": subj.get('short'),
-                        "color": subj.get('color', '#3b82f6')
-                    },
-                    "teachers": [{"id": t['id'], "name": t.get('name') or t.get('short'), "short": t.get('short'), "color": t.get('color')} for t in teachers],
-                    "classes": [{"id": c['id'], "name": c.get('name'), "short": c.get('short'), "color": c.get('color')} for c in classes],
-                    "classrooms": [{"id": r['id'], "name": r.get('name'), "short": r.get('short'), "color": r.get('color')} for r in rooms]
-                }
-                for c in classes:
-                    cid = c['id']
-                    class_grid.setdefault(cid, {}).setdefault(day_idx, {}).setdefault(period, []).append(item)
-                    class_lessons_count[cid] = class_lessons_count.get(cid, 0) + 1
-                for t in teachers:
-                    tid = t['id']
-                    teacher_grid.setdefault(tid, {}).setdefault(day_idx, {}).setdefault(period, []).append(item)
-                    teacher_workload[tid] = teacher_workload.get(tid, 0) + 1
-                    teacher_subjects.setdefault(tid, set()).add(subj.get('name'))
-                    for cl in classes:
-                        teacher_classes.setdefault(tid, set()).add(cl.get('name'))
-                for r in rooms:
-                    rid = r['id']
-                    classroom_grid.setdefault(rid, {}).setdefault(day_idx, {}).setdefault(period, []).append(item)
-                    classroom_bookings.setdefault(rid, set()).add(f"{day_idx}_{period}")
-                sid = subj.get('id')
-                if sid:
-                    subject_total_lessons[sid] = subject_total_lessons.get(sid, 0) + 1
+                for offset in range(duration):
+                    p = start_period + offset
+                    item = {
+                        "cardId": card.get('id'),
+                        "lessonId": lesson.get('id'),
+                        "period": p,
+                        "startPeriod": start_period,
+                        "duration": duration,
+                        "periodPart": offset + 1,
+                        "isDoublePeriod": duration > 1,
+                        "isContinuation": offset > 0,
+                        "periodSpan": f"{start_period}–{start_period + duration - 1}" if duration > 1 else str(start_period),
+                        "dayIndex": day_idx,
+                        "subject": {
+                            "id": subj.get('id'),
+                            "name": subj.get('name'),
+                            "short": subj.get('short'),
+                            "color": subj.get('color', '#3b82f6')
+                        },
+                        "teachers": [{"id": t['id'], "name": t.get('name') or t.get('short'), "short": t.get('short'), "color": t.get('color')} for t in teachers],
+                        "classes": [{"id": c['id'], "name": c.get('name'), "short": c.get('short'), "color": c.get('color')} for c in classes],
+                        "classrooms": [{"id": r['id'], "name": r.get('name'), "short": r.get('short'), "color": r.get('color')} for r in rooms]
+                    }
+                    for c in classes:
+                        cid = c['id']
+                        class_grid.setdefault(cid, {}).setdefault(day_idx, {}).setdefault(p, []).append(item)
+                        class_lessons_count[cid] = class_lessons_count.get(cid, 0) + 1
+                    for t in teachers:
+                        tid = t['id']
+                        teacher_grid.setdefault(tid, {}).setdefault(day_idx, {}).setdefault(p, []).append(item)
+                        teacher_workload[tid] = teacher_workload.get(tid, 0) + 1
+                        teacher_subjects.setdefault(tid, set()).add(subj.get('name'))
+                        for cl in classes:
+                            teacher_classes.setdefault(tid, set()).add(cl.get('name'))
+                    for r in rooms:
+                        rid = r['id']
+                        classroom_grid.setdefault(rid, {}).setdefault(day_idx, {}).setdefault(p, []).append(item)
+                        classroom_bookings.setdefault(rid, set()).add(f"{day_idx}_{p}")
+                    sid = subj.get('id')
+                    if sid:
+                        subject_total_lessons[sid] = subject_total_lessons.get(sid, 0) + 1
 
     homeroom_map = {}
     for c in tables.get('classes', []):
