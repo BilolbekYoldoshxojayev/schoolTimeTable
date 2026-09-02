@@ -428,13 +428,26 @@ async function handleRequest(req, res) {
         let transformed = getCached(cacheKey);
 
         if (!transformed) {
-          const rpcRes = await edupageRpc('/timetable/server/regulartt.js?__func=regularttGetData', [null, ttNum]);
-          const dbi = rpcRes.r?.dbiAccessorRes;
-          if (!dbi) {
-            throw new Error('No timetable database returned by EduPage for tt_num: ' + ttNum);
+          try {
+            const rpcRes = await edupageRpc('/timetable/server/regulartt.js?__func=regularttGetData', [null, ttNum]);
+            const dbi = rpcRes.r?.dbiAccessorRes;
+            if (dbi) {
+              transformed = transformTimetableData(dbi);
+              setCached(cacheKey, transformed);
+            }
+          } catch (rpcErr) {
+            console.warn(`EduPage RPC failed for ttNum ${ttNum}, falling back to local snapshot:`, rpcErr.message);
+            if (ttNum === '13') {
+              const snapshotPath = path.join(PUBLIC_DIR, 'snapshot-13.json');
+              if (fs.existsSync(snapshotPath)) {
+                transformed = JSON.parse(fs.readFileSync(snapshotPath, 'utf8'));
+                setCached(cacheKey, transformed);
+              }
+            }
+            if (!transformed) {
+              throw new Error(`Failed to retrieve timetable ${ttNum} from EduPage: ${rpcErr.message}`);
+            }
           }
-          transformed = transformTimetableData(dbi);
-          setCached(cacheKey, transformed);
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json' });

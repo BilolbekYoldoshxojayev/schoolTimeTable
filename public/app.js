@@ -161,7 +161,7 @@ async function loadTimetable(ttNum = '13') {
 
     // Fallback to static snapshot if running on file:// or server offline
     if (!data && ttNum === '13') {
-      const fallbackRes = await fetch('snapshot-13.json');
+      const fallbackRes = await fetch('snapshot-13.json?v=2');
       if (fallbackRes.ok) {
         data = await fallbackRes.json();
       }
