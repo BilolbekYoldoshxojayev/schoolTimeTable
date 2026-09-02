@@ -275,6 +275,132 @@ function setupEventListeners() {
   }
 }
 
+// ============================================================================
+// Navigation Tabs
+// ============================================================================
+function switchTab(tabId) {
+  state.currentTab = tabId;
+  StorageManager.set('lastTab', tabId);
+
+  document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(el => {
+    el.classList.remove('active', 'bg-white', 'text-blue-600', 'shadow-2xs');
+    el.classList.add('text-slate-600');
+  });
+
+  const activeContent = document.getElementById(`tab-content-${tabId}`);
+  const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+
+  if (activeContent) activeContent.classList.remove('hidden');
+  if (activeBtn) {
+    activeBtn.classList.add('active', 'bg-white', 'text-blue-600', 'shadow-2xs');
+    activeBtn.classList.remove('text-slate-600');
+  }
+
+  if (tabId === 'directory') {
+    renderDirectory();
+  } else if (tabId === 'substitution' && !state.substitutionData) {
+    loadSubstitution();
+  }
+}
+
+// ============================================================================
+// Data Loading & Management
+// ============================================================================
+async function loadTimetable(ttNum = '13') {
+  showLoadingGrid();
+
+  try {
+    let data = null;
+
+    // Try live server API first
+    try {
+      const res = await fetch(`/api/timetable/${ttNum}`);
+      if (res.ok) {
+        data = await res.json();
+      }
+    } catch (netErr) {
+      console.warn('Live API request failed, checking snapshot fallback...', netErr);
+    }
+
+    // Fallback to static snapshot if running on file:// or server offline
+    if (!data && ttNum === '13') {
+      const fallbackRes = await fetch('snapshot-13.json?v=2');
+      if (fallbackRes.ok) {
+        data = await fallbackRes.json();
+      }
+    }
+
+    if (!data) {
+      throw new Error(`Could not load timetable data for version ${ttNum}`);
+    }
+
+    state.timetableData = data;
+    state.cachedTimetables[ttNum] = data;
+
+    updateKPIs(data.stats);
+    populateEntityDropdown();
+    renderGrid();
+    renderDirectory();
+  } catch (err) {
+    console.error('Error loading timetable:', err);
+    showErrorGrid(`Failed to load timetable: ${err.message}`);
+  }
+}
+
+// Update Top KPI Metrics
+function updateKPIs(stats = {}) {
+  if (!stats) return;
+  const classesEl = document.getElementById('stat-classes');
+  const teachersEl = document.getElementById('stat-teachers');
+  const subjectsEl = document.getElementById('stat-subjects');
+  const roomsEl = document.getElementById('stat-rooms');
+  const lessonsEl = document.getElementById('stat-lessons');
+  const cardsEl = document.getElementById('stat-cards');
+
+  if (classesEl) classesEl.textContent = stats.totalClasses || 14;
+  if (teachersEl) teachersEl.textContent = stats.totalTeachers || 36;
+  if (subjectsEl) subjectsEl.textContent = stats.totalSubjects || 39;
+  if (roomsEl) roomsEl.textContent = stats.totalClassrooms || 20;
+  if (lessonsEl) lessonsEl.textContent = stats.totalLessons || 222;
+  if (cardsEl) cardsEl.textContent = stats.totalCards || 434;
+}
+
+// ============================================================================
+// Timetable Filtering & Rendering (Class, Teacher, Classroom)
+// ============================================================================
+function setFilterMode(mode) {
+  state.filterMode = mode;
+  StorageManager.set('filterMode', mode);
+
+  // Restore last selected entity for this mode if known
+  if (mode === 'class') {
+    state.selectedEntityId = state.lastClassId || null;
+  } else if (mode === 'teacher') {
+    state.selectedEntityId = state.lastTeacherId || null;
+  } else if (mode === 'classroom') {
+    state.selectedEntityId = state.lastRoomId || null;
+  }
+
+  const btnClass = document.getElementById('mode-btn-class');
+  const btnTeacher = document.getElementById('mode-btn-teacher');
+  const btnClassroom = document.getElementById('mode-btn-classroom');
+
+  [btnClass, btnTeacher, btnClassroom].forEach(b => {
+    if (b) {
+      b.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900';
+    }
+  });
+
+  const activeBtn = mode === 'class' ? btnClass : (mode === 'teacher' ? btnTeacher : btnClassroom);
+  if (activeBtn) {
+    activeBtn.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-2xs';
+  }
+
+  populateEntityDropdown();
+  renderGrid();
+}
+
 function populateEntityDropdown() {
   const select = document.getElementById('entity-select');
   if (!select || !state.timetableData) return;
