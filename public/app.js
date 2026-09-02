@@ -3,35 +3,193 @@
  * Presidential School in Namangan
  */
 
-// Global Application State
+// ============================================================================
+// Client Memory & Storage Manager (localStorage)
+// ============================================================================
+const STORAGE_KEY = 'edupage_nampm_prefs_v1';
+
+const StorageManager = {
+  getPrefs() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      console.warn('LocalStorage unavailable:', e);
+      return {};
+    }
+  },
+  savePrefs(newPrefs) {
+    try {
+      const current = this.getPrefs();
+      const updated = { ...current, ...newPrefs };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
+  },
+  get(key, fallback) {
+    const prefs = this.getPrefs();
+    return prefs[key] !== undefined ? prefs[key] : fallback;
+  },
+  set(key, val) {
+    this.savePrefs({ [key]: val });
+  },
+  clear() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {}
+  }
+};
+
+// Global Application State (hydrated from memory)
 const state = {
   timetableData: null,
-  filterMode: 'class', // 'class', 'teacher', or 'classroom'
+  filterMode: StorageManager.get('filterMode', 'class'), // 'class', 'teacher', or 'classroom'
   selectedEntityId: null,
-  activeDayFilter: 'all',
+  lastClassId: StorageManager.get('lastClassId', '-17'),
+  lastTeacherId: StorageManager.get('lastTeacherId', null),
+  lastRoomId: StorageManager.get('lastRoomId', null),
+  activeDayFilter: StorageManager.get('dayFilter', 'all'),
   searchQuery: '',
-  currentVersion: '13',
+  currentVersion: StorageManager.get('timetableVersion', '13'),
+  zoomLevel: StorageManager.get('zoomLevel', 100),
+  densityMode: StorageManager.get('densityMode', 'comfortable'),
+  statsBannerCollapsed: StorageManager.get('statsBannerCollapsed', false),
   dailyData: null,
+  dailyClassId: StorageManager.get('dailyClassId', '-17'),
+  dailyDate: StorageManager.get('dailyDate', '2026-09-02'),
   newsData: null,
   substitutionData: null,
-  substMode: 'classes', // 'classes' or 'teachers'
-  substDate: '2026-09-02',
-  directoryTab: 'teachers',
+  substMode: StorageManager.get('substMode', 'classes'), // 'classes' or 'teachers'
+  substDate: StorageManager.get('substDate', '2026-09-02'),
+  directoryTab: StorageManager.get('directoryTab', 'teachers'),
   directorySearchQuery: '',
+  currentTab: StorageManager.get('lastTab', 'timetable'),
   cachedTimetables: {}
 };
+
+// ============================================================================
+// Zoom, Density & Layout Controls
+// ============================================================================
+function applyZoom(zoom) {
+  const clamped = Math.max(70, Math.min(150, Math.round(zoom)));
+  state.zoomLevel = clamped;
+  document.documentElement.style.setProperty('--zoom-scale', clamped / 100);
+  const label = document.getElementById('zoom-level-label');
+  if (label) label.textContent = `${clamped}%`;
+  StorageManager.set('zoomLevel', clamped);
+}
+
+function adjustZoom(delta) {
+  applyZoom(state.zoomLevel + delta);
+  renderGrid();
+}
+
+function resetZoom() {
+  applyZoom(100);
+  renderGrid();
+}
+
+function applyDensity(mode) {
+  state.densityMode = mode;
+  const icon = document.getElementById('density-icon');
+  const label = document.getElementById('density-label');
+  if (mode === 'compact') {
+    document.body.classList.add('density-compact');
+    if (icon) icon.textContent = '⊞';
+    if (label) label.textContent = 'Compact';
+  } else {
+    document.body.classList.remove('density-compact');
+    if (icon) icon.textContent = '⊟';
+    if (label) label.textContent = 'Normal';
+  }
+  StorageManager.set('densityMode', mode);
+}
+
+function toggleDensity() {
+  const next = state.densityMode === 'compact' ? 'comfortable' : 'compact';
+  applyDensity(next);
+  renderGrid();
+}
+
+function applyStatsBanner(collapsed) {
+  state.statsBannerCollapsed = !!collapsed;
+  const banner = document.getElementById('stats-banner');
+  if (banner) {
+    if (collapsed) {
+      banner.classList.add('hidden');
+    } else {
+      banner.classList.remove('hidden');
+    }
+  }
+  StorageManager.set('statsBannerCollapsed', state.statsBannerCollapsed);
+}
+
+function toggleStatsBanner() {
+  applyStatsBanner(!state.statsBannerCollapsed);
+}
+
+function resetUserPreferences() {
+  if (confirm('Reset all saved timetable choices, zoom level, and view settings to default?')) {
+    StorageManager.clear();
+    window.location.reload();
+  }
+}
 
 // ============================================================================
 // Initialization
 // ============================================================================
 document.addEventListener('DOMContentLoaded', async () => {
   initClock();
+  applyZoom(state.zoomLevel);
+  applyDensity(state.densityMode);
+  applyStatsBanner(state.statsBannerCollapsed);
   setupEventListeners();
-  await loadTimetable('13');
+
+  // Restore saved form inputs
+  const versionSelect = document.getElementById('version-select');
+  if (versionSelect) versionSelect.value = state.currentVersion;
+
+  const substDateInput = document.getElementById('subst-date-input');
+  if (substDateInput) substDateInput.value = state.substDate;
+
+  // Restore Day Filter UI
+  document.querySelectorAll('.day-filter-btn').forEach(btn => {
+    if (btn.getAttribute('data-day') === state.activeDayFilter) {
+      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-semibold bg-blue-600 text-white';
+    } else {
+      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700';
+    }
+  });
+
+  // Restore Mode Filter Button UI
+  const btnClass = document.getElementById('mode-btn-class');
+  const btnTeacher = document.getElementById('mode-btn-teacher');
+  const btnClassroom = document.getElementById('mode-btn-classroom');
+  [btnClass, btnTeacher, btnClassroom].forEach(b => {
+    if (b) b.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900';
+  });
+  const activeModeBtn = state.filterMode === 'class' ? btnClass : (state.filterMode === 'teacher' ? btnTeacher : btnClassroom);
+  if (activeModeBtn) {
+    activeModeBtn.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-2xs';
+  }
+
+  // Restore Substitution UI Mode
+  updateSubstModeUI();
+
+  // Restore Directory Subtab UI
+  updateDirectorySubtabUI();
+
+  // Load Timetable Data
+  await loadTimetable(state.currentVersion);
+
   loadNewsFeed();
   loadDailyScheduleClasses();
   loadSubstitution();
   renderDirectory();
+
+  // Switch to saved tab
+  switchTab(state.currentTab);
 });
 
 // Live Tashkent Clock (UTC+5)
@@ -78,6 +236,7 @@ function setupEventListeners() {
   if (entitySelect) {
     entitySelect.addEventListener('change', (e) => {
       state.selectedEntityId = e.target.value;
+      saveCurrentEntityId(e.target.value);
       renderGrid();
     });
   }
@@ -86,6 +245,7 @@ function setupEventListeners() {
   if (versionSelect) {
     versionSelect.addEventListener('change', async (e) => {
       state.currentVersion = e.target.value;
+      StorageManager.set('timetableVersion', e.target.value);
       await loadTimetable(state.currentVersion);
     });
   }
@@ -94,6 +254,7 @@ function setupEventListeners() {
   if (substDateInput) {
     substDateInput.addEventListener('change', (e) => {
       state.substDate = e.target.value;
+      StorageManager.set('substDate', e.target.value);
       loadSubstitution();
     });
   }
@@ -112,120 +273,6 @@ function setupEventListeners() {
     endpointInput.addEventListener('input', updateCurl);
     payloadInput.addEventListener('input', updateCurl);
   }
-}
-
-// ============================================================================
-// Navigation Tabs
-// ============================================================================
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
-  document.querySelectorAll('.tab-btn').forEach(el => {
-    el.classList.remove('active', 'bg-white', 'text-blue-600', 'shadow-sm');
-    el.classList.add('text-slate-600');
-  });
-
-  const activeContent = document.getElementById(`tab-content-${tabId}`);
-  const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-
-  if (activeContent) activeContent.classList.remove('hidden');
-  if (activeBtn) {
-    activeBtn.classList.add('active', 'bg-white', 'text-blue-600', 'shadow-sm');
-    activeBtn.classList.remove('text-slate-600');
-  }
-
-  if (tabId === 'directory') {
-    renderDirectory();
-  } else if (tabId === 'substitution' && !state.substitutionData) {
-    loadSubstitution();
-  }
-}
-
-// ============================================================================
-// Data Loading & Management
-// ============================================================================
-async function loadTimetable(ttNum = '13') {
-  showLoadingGrid();
-
-  try {
-    let data = null;
-
-    // Try live server API first
-    try {
-      const res = await fetch(`/api/timetable/${ttNum}`);
-      if (res.ok) {
-        data = await res.json();
-      }
-    } catch (netErr) {
-      console.warn('Live API request failed, checking snapshot fallback...', netErr);
-    }
-
-    // Fallback to static snapshot if running on file:// or server offline
-    if (!data && ttNum === '13') {
-      const fallbackRes = await fetch('snapshot-13.json?v=2');
-      if (fallbackRes.ok) {
-        data = await fallbackRes.json();
-      }
-    }
-
-    if (!data) {
-      throw new Error(`Could not load timetable data for version ${ttNum}`);
-    }
-
-    state.timetableData = data;
-    state.cachedTimetables[ttNum] = data;
-
-    updateKPIs(data.stats);
-    populateEntityDropdown();
-    renderGrid();
-    renderDirectory();
-  } catch (err) {
-    console.error('Error loading timetable:', err);
-    showErrorGrid(`Failed to load timetable: ${err.message}`);
-  }
-}
-
-// Update Top KPI Metrics
-function updateKPIs(stats = {}) {
-  if (!stats) return;
-  const classesEl = document.getElementById('stat-classes');
-  const teachersEl = document.getElementById('stat-teachers');
-  const subjectsEl = document.getElementById('stat-subjects');
-  const roomsEl = document.getElementById('stat-rooms');
-  const lessonsEl = document.getElementById('stat-lessons');
-  const cardsEl = document.getElementById('stat-cards');
-
-  if (classesEl) classesEl.textContent = stats.totalClasses || 14;
-  if (teachersEl) teachersEl.textContent = stats.totalTeachers || 36;
-  if (subjectsEl) subjectsEl.textContent = stats.totalSubjects || 39;
-  if (roomsEl) roomsEl.textContent = stats.totalClassrooms || 20;
-  if (lessonsEl) lessonsEl.textContent = stats.totalLessons || 222;
-  if (cardsEl) cardsEl.textContent = stats.totalCards || 434;
-}
-
-// ============================================================================
-// Timetable Filtering & Rendering (Class, Teacher, Classroom)
-// ============================================================================
-function setFilterMode(mode) {
-  state.filterMode = mode;
-  state.selectedEntityId = null;
-
-  const btnClass = document.getElementById('mode-btn-class');
-  const btnTeacher = document.getElementById('mode-btn-teacher');
-  const btnClassroom = document.getElementById('mode-btn-classroom');
-
-  [btnClass, btnTeacher, btnClassroom].forEach(b => {
-    if (b) {
-      b.className = 'px-3 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900';
-    }
-  });
-
-  const activeBtn = mode === 'class' ? btnClass : (mode === 'teacher' ? btnTeacher : btnClassroom);
-  if (activeBtn) {
-    activeBtn.className = 'px-3 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-sm';
-  }
-
-  populateEntityDropdown();
-  renderGrid();
 }
 
 function populateEntityDropdown() {
@@ -253,20 +300,42 @@ function populateEntityDropdown() {
   });
 
   if (items.length > 0) {
-    if (!state.selectedEntityId || !items.find(i => i.id === state.selectedEntityId)) {
-      state.selectedEntityId = items[0].id;
+    let targetId = state.selectedEntityId;
+    if (state.filterMode === 'class' && state.lastClassId) targetId = state.lastClassId;
+    if (state.filterMode === 'teacher' && state.lastTeacherId) targetId = state.lastTeacherId;
+    if (state.filterMode === 'classroom' && state.lastRoomId) targetId = state.lastRoomId;
+
+    if (!targetId || !items.find(i => i.id === targetId)) {
+      targetId = items[0].id;
     }
-    select.value = state.selectedEntityId;
+
+    state.selectedEntityId = targetId;
+    select.value = targetId;
+    saveCurrentEntityId(targetId);
+  }
+}
+
+function saveCurrentEntityId(id) {
+  if (state.filterMode === 'class') {
+    state.lastClassId = id;
+    StorageManager.set('lastClassId', id);
+  } else if (state.filterMode === 'teacher') {
+    state.lastTeacherId = id;
+    StorageManager.set('lastTeacherId', id);
+  } else if (state.filterMode === 'classroom') {
+    state.lastRoomId = id;
+    StorageManager.set('lastRoomId', id);
   }
 }
 
 function filterDay(day) {
   state.activeDayFilter = day;
+  StorageManager.set('dayFilter', day);
   document.querySelectorAll('.day-filter-btn').forEach(btn => {
     if (btn.getAttribute('data-day') === day) {
-      btn.className = 'day-filter-btn px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white';
+      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-semibold bg-blue-600 text-white';
     } else {
-      btn.className = 'day-filter-btn px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700';
+      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700';
     }
   });
   renderGrid();
@@ -301,12 +370,12 @@ function renderGrid() {
     currentEntity = (data.teachers || []).find(t => t.id === state.selectedEntityId);
     if (titleEl) titleEl.textContent = `Schedule for ${currentEntity?.name || currentEntity?.short || 'Teacher'}`;
     const hrText = currentEntity?.homeroomClass ? ` • Class Teacher of ${currentEntity.homeroomClass}` : '';
-    if (subtitleEl) subtitleEl.textContent = `Faculty Workload: ${currentEntity?.weeklyLessons || 0} periods/week${hrText}`;
+    if (subtitleEl) subtitleEl.textContent = `Faculty: ${currentEntity?.weeklyLessons || 0} periods/week${hrText}`;
   } else if (state.filterMode === 'classroom') {
     gridData = data.classroomGrid?.[state.selectedEntityId] || {};
     currentEntity = (data.classrooms || []).find(r => r.id === state.selectedEntityId);
     if (titleEl) titleEl.textContent = `Schedule for Room ${currentEntity?.name || ''}`;
-    if (subtitleEl) subtitleEl.textContent = `Room Occupancy: ${currentEntity?.bookedSlots || 0}/35 slots (${currentEntity?.utilizationRate || 0}% utilization)`;
+    if (subtitleEl) subtitleEl.textContent = `Occupancy: ${currentEntity?.bookedSlots || 0}/35 slots (${currentEntity?.utilizationRate || 0}% utilization)`;
   }
 
   tbody.innerHTML = '';
@@ -317,14 +386,14 @@ function renderGrid() {
 
   daysToRender.forEach(day => {
     const tr = document.createElement('tr');
-    tr.className = 'hover:bg-slate-50/50 transition border-b border-slate-200';
+    tr.className = 'timetable-day-row hover:bg-slate-50/50 transition border-b border-slate-200/80';
 
     // Day label cell
     const thDay = document.createElement('th');
-    thDay.className = 'p-3 font-semibold text-slate-800 bg-slate-50 border-r border-slate-200 text-center w-32';
+    thDay.className = 'p-1 font-semibold text-slate-800 bg-slate-50/80 border-r border-slate-200 text-center w-24 select-none';
     thDay.innerHTML = `
-      <div class="text-sm font-bold">${day.name}</div>
-      <div class="text-[11px] text-slate-400 font-normal uppercase tracking-wider">${day.short}</div>
+      <div class="text-xs font-bold leading-tight">${day.name}</div>
+      <div class="text-[10px] text-slate-400 font-normal uppercase tracking-wider">${day.short}</div>
     `;
     tr.appendChild(thDay);
 
@@ -337,11 +406,11 @@ function renderGrid() {
       const span = isStartOfMulti ? Math.min(primaryItem.duration, 8 - period) : 1;
 
       const td = document.createElement('td');
-      td.className = 'p-2 border-r border-slate-200 align-top min-w-[120px] max-w-[180px]';
-      if (period + span - 1 >= 7) td.className = 'p-2 align-top min-w-[120px] max-w-[180px]';
+      td.className = 'timetable-cell border-r border-slate-200 align-top p-1';
+      if (period + span - 1 >= 7) td.className = 'timetable-cell align-top p-1';
       if (span > 1) {
         td.colSpan = span;
-        td.className += ' bg-amber-50/15';
+        td.className += ' bg-amber-50/20';
       }
 
       // Filter by search query
@@ -357,7 +426,7 @@ function renderGrid() {
 
       if (filteredItems.length > 0) {
         const stack = document.createElement('div');
-        stack.className = 'space-y-1.5';
+        stack.className = 'h-full flex flex-col justify-center space-y-1';
 
         filteredItems.forEach(item => {
           const card = document.createElement('div');
@@ -380,18 +449,18 @@ function renderGrid() {
 
           let badgeHtml = '';
           if (item.duration > 1) {
-            badgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200/80 shrink-0 ml-1">2 Periods</span>`;
+            badgeHtml = `<span class="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shrink-0 ml-0.5">2P</span>`;
           }
 
-          card.className = 'lesson-card p-2 rounded-lg text-xs border border-slate-200/80 bg-white cursor-pointer relative overflow-hidden shadow-xs hover:shadow-md transition';
+          card.className = 'lesson-card rounded-md border border-slate-200/90 bg-white cursor-pointer relative overflow-hidden h-full flex flex-col justify-center select-none shadow-2xs hover:shadow-xs transition';
           card.innerHTML = `
-            <div class="absolute left-0 top-0 bottom-0 w-1.5" style="background-color: ${bgColor}"></div>
-            <div class="pl-1.5">
-              <div class="flex items-center justify-between gap-1">
-                <div class="font-bold text-slate-900 truncate" title="${item.subject.name}">${item.subject.name}</div>
+            <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: ${bgColor}"></div>
+            <div class="pl-1.5 min-w-0">
+              <div class="flex items-center justify-between gap-0.5">
+                <div class="font-bold text-slate-900 truncate lesson-card-title" title="${item.subject.name}">${item.subject.name}</div>
                 ${badgeHtml}
               </div>
-              <div class="text-[11px] text-slate-500 mt-0.5 truncate">${subText}</div>
+              <div class="text-slate-500 truncate lesson-card-sub mt-0.5">${subText}</div>
             </div>
           `;
 
@@ -401,7 +470,7 @@ function renderGrid() {
 
         td.appendChild(stack);
       } else {
-        td.innerHTML = `<div class="h-10 flex items-center justify-center text-slate-200 text-xs font-mono select-none">—</div>`;
+        td.innerHTML = `<div class="h-full min-h-[32px] flex items-center justify-center text-slate-200 text-xs font-mono select-none">—</div>`;
       }
 
       tr.appendChild(td);
@@ -576,18 +645,23 @@ async function loadSubstitution() {
 
 function setSubstMode(mode) {
   state.substMode = mode;
+  StorageManager.set('substMode', mode);
+  updateSubstModeUI();
+  loadSubstitution();
+}
+
+function updateSubstModeUI() {
+  const mode = state.substMode || 'classes';
   const btnClasses = document.getElementById('subst-mode-classes');
   const btnTeachers = document.getElementById('subst-mode-teachers');
 
   if (mode === 'classes') {
-    if (btnClasses) btnClasses.className = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-xs';
-    if (btnTeachers) btnTeachers.className = 'px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900';
+    if (btnClasses) btnClasses.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs';
+    if (btnTeachers) btnTeachers.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900';
   } else {
-    if (btnClasses) btnClasses.className = 'px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900';
-    if (btnTeachers) btnTeachers.className = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-xs';
+    if (btnClasses) btnClasses.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900';
+    if (btnTeachers) btnTeachers.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs';
   }
-
-  loadSubstitution();
 }
 
 function setSubstDateToday() {
@@ -595,6 +669,7 @@ function setSubstDateToday() {
   const today = '2026-09-02';
   if (dateInput) dateInput.value = today;
   state.substDate = today;
+  StorageManager.set('substDate', today);
   loadSubstitution();
 }
 
@@ -606,6 +681,7 @@ function setSubstDateRelative(deltaDays) {
   const nextDateStr = cur.toISOString().slice(0, 10);
   dateInput.value = nextDateStr;
   state.substDate = nextDateStr;
+  StorageManager.set('substDate', nextDateStr);
   loadSubstitution();
 }
 
@@ -614,18 +690,23 @@ function setSubstDateRelative(deltaDays) {
 // ============================================================================
 function switchDirectoryTab(subTab) {
   state.directoryTab = subTab;
+  StorageManager.set('directoryTab', subTab);
+  updateDirectorySubtabUI();
+  renderDirectory();
+}
+
+function updateDirectorySubtabUI() {
+  const subTab = state.directoryTab || 'teachers';
   document.querySelectorAll('.dirtab-btn').forEach(btn => {
-    btn.classList.remove('active', 'bg-white', 'text-blue-600', 'font-semibold', 'shadow-xs');
+    btn.classList.remove('active', 'bg-white', 'text-blue-600', 'font-semibold', 'shadow-2xs');
     btn.classList.add('text-slate-600');
   });
 
   const activeBtn = document.getElementById(`dirtab-${subTab}`);
   if (activeBtn) {
-    activeBtn.classList.add('active', 'bg-white', 'text-blue-600', 'font-semibold', 'shadow-xs');
+    activeBtn.classList.add('active', 'bg-white', 'text-blue-600', 'font-semibold', 'shadow-2xs');
     activeBtn.classList.remove('text-slate-600');
   }
-
-  renderDirectory();
 }
 
 function renderDirectory() {
@@ -810,6 +891,7 @@ function viewEntitySchedule(mode, id) {
   switchTab('timetable');
   setFilterMode(mode);
   state.selectedEntityId = id;
+  saveCurrentEntityId(id);
   const select = document.getElementById('entity-select');
   if (select) select.value = id;
   renderGrid();
@@ -846,6 +928,28 @@ function loadDailyScheduleClasses() {
     opt.textContent = c.name;
     select.appendChild(opt);
   });
+
+  const savedClass = state.dailyClassId || '-17';
+  if (defaultClasses.find(c => c.id === savedClass)) {
+    select.value = savedClass;
+  }
+
+  const dateInput = document.getElementById('daily-date-input');
+  if (dateInput && state.dailyDate) {
+    dateInput.value = state.dailyDate;
+  }
+
+  select.addEventListener('change', (e) => {
+    state.dailyClassId = e.target.value;
+    StorageManager.set('dailyClassId', e.target.value);
+  });
+
+  if (dateInput) {
+    dateInput.addEventListener('change', (e) => {
+      state.dailyDate = e.target.value;
+      StorageManager.set('dailyDate', e.target.value);
+    });
+  }
 }
 
 async function fetchDailySchedule() {
@@ -857,6 +961,10 @@ async function fetchDailySchedule() {
 
   const classId = classSelect ? classSelect.value : '-17';
   const dateStr = dateInput ? dateInput.value : '2026-09-02';
+  state.dailyClassId = classId;
+  state.dailyDate = dateStr;
+  StorageManager.set('dailyClassId', classId);
+  StorageManager.set('dailyDate', dateStr);
 
   resultsContainer.innerHTML = `<div class="p-6 text-center text-slate-400">Querying live schedule for ${dateStr}...</div>`;
 

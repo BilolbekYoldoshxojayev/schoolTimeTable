@@ -33,162 +33,162 @@
     }
   </script>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen antialiased">
+<body class="bg-slate-100 text-slate-800 flex flex-col h-[100dvh] overflow-hidden antialiased">
 
-  <!-- Top Announcement / Status Bar -->
-  <div class="bg-slate-900 text-slate-300 text-xs py-1.5 px-4 flex flex-wrap justify-between items-center border-b border-slate-800">
-    <div class="flex items-center space-x-3">
-      <span class="inline-flex items-center space-x-1.5 bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded-full border border-slate-700">
+  <!-- Top Status / Announcement Bar (Micro) -->
+  <div class="app-topbar bg-slate-900 text-slate-300 text-[11px] py-1 px-3 sm:px-4 flex flex-wrap justify-between items-center border-b border-slate-800 shrink-0 select-none">
+    <div class="flex items-center space-x-2.5">
+      <span class="inline-flex items-center space-x-1.5 bg-slate-800 text-emerald-400 px-2 py-0.5 rounded-full border border-slate-700">
         <span class="pulse-dot"></span>
         <span class="font-medium">Live EduPage API v9</span>
       </span>
-      <span class="text-slate-400">Target Host: <strong class="text-slate-200">nampm.edupage.org</strong></span>
-      <span class="hidden md:inline text-slate-500">•</span>
-      <span class="hidden md:inline text-slate-400">Location: Namangan, Uzbekistan</span>
-      <span class="hidden md:inline text-slate-500">•</span>
-      <span class="hidden lg:inline text-slate-400">Platform: aSc EduPage 9 (edupage9)</span>
+      <span class="text-slate-400 hidden sm:inline">Host: <strong class="text-slate-200">nampm.edupage.org</strong></span>
+      <span class="text-slate-500 hidden md:inline">•</span>
+      <span class="text-slate-400 hidden md:inline">Namangan, Uzbekistan</span>
+      <span class="text-slate-500 hidden lg:inline">•</span>
+      <span class="text-slate-400 hidden lg:inline">aSc EduPage 9</span>
     </div>
-    <div class="flex items-center space-x-4 mt-1 sm:mt-0">
-      <span id="live-clock" class="font-mono text-slate-400">Tashkent Time: --:--:--</span>
-      <a href="https://nampm.edupage.org" target="_blank" rel="noopener noreferrer" class="text-brand-400 hover:text-brand-300 underline font-medium">Official Portal ↗</a>
+    <div class="flex items-center space-x-3">
+      <span id="live-clock" class="font-mono text-slate-400 text-[11px]">Tashkent Time: --:--:--</span>
+      <a href="https://nampm.edupage.org" target="_blank" rel="noopener noreferrer" class="text-brand-400 hover:text-brand-300 underline font-medium hidden sm:inline">Official Portal ↗</a>
     </div>
   </div>
 
-  <!-- Main Navigation Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
-      <div class="flex items-center space-x-3">
-        <!-- Uzbekistan Presidential School Official Crest Logo -->
-        <div class="w-11 h-11 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
+  <!-- Main Navigation Header with Zoom & Layout Controls -->
+  <header class="app-header bg-white border-b border-slate-200 shrink-0 z-30 shadow-2xs select-none">
+    <div class="w-full px-3 sm:px-4 py-1.5 flex flex-wrap justify-between items-center gap-2">
+      <!-- School Crest & Title -->
+      <div class="flex items-center space-x-2.5 shrink-0">
+        <div class="w-9 h-9 rounded-lg bg-white border border-slate-200 p-0.5 flex items-center justify-center shadow-2xs overflow-hidden shrink-0">
           <img src="logo.png" alt="Presidential School Crest" class="w-full h-full object-contain" onerror="this.src='favicon.ico'">
         </div>
         <div>
-          <h1 class="text-lg font-bold text-slate-900 leading-tight">Presidential School in Namangan</h1>
-          <p class="text-xs text-slate-500 flex items-center gap-1.5">
+          <h1 class="text-sm sm:text-base font-bold text-slate-900 leading-tight">Presidential School in Namangan</h1>
+          <p class="text-[11px] text-slate-500 flex items-center gap-1.5">
             <span>Namangan Prezident Maktabi</span>
             <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
             <span id="active-semester-badge" class="text-blue-600 font-semibold">2026-2027 AY</span>
-            <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-            <span class="text-slate-500 hidden sm:inline">Islom Karimov Street</span>
           </p>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200" aria-label="Tabs">
-        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn active px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
-          <span>📅</span> Timetable
+      <nav class="flex flex-wrap gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-medium" aria-label="Tabs">
+        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn active px-2.5 py-1 rounded-md text-xs font-medium transition flex items-center gap-1">
+          <span>📅</span> <span class="hidden sm:inline">Timetable</span>
         </button>
-        <button onclick="switchTab('substitution')" id="tab-btn-substitution" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-          <span>⚡</span> Substitution
+        <button onclick="switchTab('substitution')" id="tab-btn-substitution" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+          <span>⚡</span> <span class="hidden sm:inline">Substitution</span>
         </button>
-        <button onclick="switchTab('directory')" id="tab-btn-directory" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-          <span>🏛</span> Directory
+        <button onclick="switchTab('directory')" id="tab-btn-directory" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+          <span>🏛</span> <span class="hidden sm:inline">Directory</span>
         </button>
-        <button onclick="switchTab('daily')" id="tab-btn-daily" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-          <span>🕒</span> Daily
+        <button onclick="switchTab('daily')" id="tab-btn-daily" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+          <span>🕒</span> <span class="hidden sm:inline">Daily</span>
         </button>
-        <button onclick="switchTab('news')" id="tab-btn-news" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-          <span>📰</span> News
+        <button onclick="switchTab('news')" id="tab-btn-news" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+          <span>📰</span> <span class="hidden md:inline">News</span>
         </button>
-        <button onclick="switchTab('login')" id="tab-btn-login" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-          <span>🔐</span> Portal Login
+        <button onclick="switchTab('login')" id="tab-btn-login" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+          <span>🔐</span> <span class="hidden md:inline">Login</span>
         </button>
-        <button onclick="switchTab('api')" id="tab-btn-api" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-          <span>🧪</span> API Console
+        <button onclick="switchTab('api')" id="tab-btn-api" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+          <span>🧪</span> <span class="hidden lg:inline">API</span>
         </button>
-        <button onclick="switchTab('docs')" id="tab-btn-docs" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-          <span>📖</span> Architecture
+        <button onclick="switchTab('docs')" id="tab-btn-docs" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+          <span>📖</span> <span class="hidden lg:inline">Docs</span>
         </button>
       </nav>
+
+      <!-- Zoom & Viewport Toolbar -->
+      <div class="flex items-center space-x-1.5 shrink-0 no-print">
+        <!-- Interactive Zoom Controller -->
+        <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200" title="Timetable & UI Zoom Level">
+          <button id="zoom-out-btn" onclick="adjustZoom(-10)" class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold text-slate-600 hover:bg-white hover:text-slate-900 transition" aria-label="Zoom Out">−</button>
+          <span id="zoom-level-label" class="text-[11px] font-mono font-semibold px-1 text-slate-700 min-w-[38px] text-center">100%</span>
+          <button id="zoom-in-btn" onclick="adjustZoom(10)" class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold text-slate-600 hover:bg-white hover:text-slate-900 transition" aria-label="Zoom In">+</button>
+          <button id="zoom-reset-btn" onclick="resetZoom()" class="px-1.5 h-6 flex items-center justify-center rounded text-[10px] font-semibold text-slate-500 hover:bg-white hover:text-blue-600 transition" title="Auto-Fit / Reset Zoom">Fit</button>
+        </div>
+
+        <!-- Density Switcher -->
+        <button id="density-toggle-btn" onclick="toggleDensity()" class="px-2 h-7 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1 transition" title="Toggle Compact / Normal View">
+          <span id="density-icon">⊟</span>
+          <span id="density-label" class="hidden sm:inline text-[11px]">Normal</span>
+        </button>
+
+        <!-- Stats Banner Toggle -->
+        <button id="stats-toggle-btn" onclick="toggleStatsBanner()" class="px-2 h-7 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1 transition" title="Toggle Stats Strip">
+          <span>📊</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Main Content Container -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-    <!-- KPI Metric Summary Bar -->
-    <div id="stats-banner" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      <div onclick="switchTab('directory'); switchDirectoryTab('classes');" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-blue-300 transition">
-        <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">🏫</div>
-        <div>
-          <div id="stat-classes" class="text-xl font-bold text-slate-900 leading-none">14</div>
-          <div class="text-xs text-slate-500 font-medium mt-1">Classes (5–11)</div>
-        </div>
-      </div>
-      <div onclick="switchTab('directory'); switchDirectoryTab('teachers');" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-emerald-300 transition">
-        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">👨‍🏫</div>
-        <div>
-          <div id="stat-teachers" class="text-xl font-bold text-slate-900 leading-none">36</div>
-          <div class="text-xs text-slate-500 font-medium mt-1">Faculty Members</div>
-        </div>
-      </div>
-      <div onclick="switchTab('directory'); switchDirectoryTab('subjects');" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-amber-300 transition">
-        <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">📚</div>
-        <div>
-          <div id="stat-subjects" class="text-xl font-bold text-slate-900 leading-none">39</div>
-          <div class="text-xs text-slate-500 font-medium mt-1">Curriculum Courses</div>
-        </div>
-      </div>
-      <div onclick="switchTab('directory'); switchDirectoryTab('classrooms');" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-purple-300 transition">
-        <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg">🚪</div>
-        <div>
-          <div id="stat-rooms" class="text-xl font-bold text-slate-900 leading-none">20</div>
-          <div class="text-xs text-slate-500 font-medium mt-1">Classrooms & Labs</div>
-        </div>
-      </div>
-      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg">📋</div>
-        <div>
-          <div id="stat-lessons" class="text-xl font-bold text-slate-900 leading-none">222</div>
-          <div class="text-xs text-slate-500 font-medium mt-1">Master Lessons</div>
-        </div>
-      </div>
-      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg">🗓</div>
-        <div>
-          <div id="stat-cards" class="text-xl font-bold text-slate-900 leading-none">434</div>
-          <div class="text-xs text-slate-500 font-medium mt-1">Schedule Blocks</div>
-        </div>
-      </div>
+  <!-- KPI Metric Summary Bar (Compact Chip Strip) -->
+  <div id="stats-banner" class="stats-banner bg-white/95 border-b border-slate-200/90 px-3 sm:px-4 py-1 flex items-center justify-between gap-2 overflow-x-auto shrink-0 text-xs select-none">
+    <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap sm:flex-nowrap">
+      <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider hidden lg:inline mr-1">Overview:</span>
+      <button onclick="switchTab('directory'); switchDirectoryTab('classes');" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition font-medium text-[11px] border border-blue-100 shrink-0">
+        <span>🏫</span> <strong id="stat-classes">14</strong> Classes
+      </button>
+      <button onclick="switchTab('directory'); switchDirectoryTab('teachers');" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition font-medium text-[11px] border border-emerald-100 shrink-0">
+        <span>👨‍🏫</span> <strong id="stat-teachers">36</strong> Faculty
+      </button>
+      <button onclick="switchTab('directory'); switchDirectoryTab('subjects');" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 hover:bg-amber-100 transition font-medium text-[11px] border border-amber-100 shrink-0">
+        <span>📚</span> <strong id="stat-subjects">39</strong> Subjects
+      </button>
+      <button onclick="switchTab('directory'); switchDirectoryTab('classrooms');" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 transition font-medium text-[11px] border border-purple-100 shrink-0">
+        <span>🚪</span> <strong id="stat-rooms">20</strong> Rooms
+      </button>
+      <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-medium text-[11px] border border-indigo-100 shrink-0">
+        <span>📋</span> <strong id="stat-lessons">222</strong> Lessons
+      </span>
+      <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-medium text-[11px] border border-rose-100 shrink-0">
+        <span>🗓</span> <strong id="stat-cards">434</strong> Blocks
+      </span>
     </div>
+    <div class="text-[10px] text-slate-400 hidden xl:flex items-center gap-1 shrink-0 font-mono">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+      <span>Live aSc Sync</span>
+    </div>
+  </div>
+
+  <!-- Main Content Container (Fills exact remaining viewport height) -->
+  <main class="flex-1 min-h-0 w-full px-2 sm:px-3 py-1.5 flex flex-col overflow-hidden">
 
     <!-- ================================================================= -->
-    <!-- TAB 1: TIMETABLE EXPLORER (CLASS, TEACHER, AND CLASSROOM VIEWS)  -->
+    <!-- TAB 1: TIMETABLE EXPLORER (SINGLE-PAGE VIEWPORT FIT)              -->
     <!-- ================================================================= -->
-    <section id="tab-content-timetable" class="tab-pane space-y-4">
-      <!-- Controls Toolbar -->
-      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <!-- Filter Mode Toggles (Class, Teacher, Classroom) -->
-          <div class="flex items-center space-x-2">
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">View By:</span>
-            <div class="inline-flex rounded-lg border border-slate-300 p-0.5 bg-slate-50">
-              <button onclick="setFilterMode('class')" id="mode-btn-class" class="px-3 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-sm">
-                Class
-              </button>
-              <button onclick="setFilterMode('teacher')" id="mode-btn-teacher" class="px-3 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900">
-                Teacher
-              </button>
-              <button onclick="setFilterMode('classroom')" id="mode-btn-classroom" class="px-3 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900">
-                Room
-              </button>
-            </div>
+    <section id="tab-content-timetable" class="tab-pane flex-1 min-h-0 h-full flex flex-col space-y-1.5">
+      <!-- Controls Toolbar (Slim Single-Row Layout) -->
+      <div class="controls-toolbar bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs shrink-0 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Filter Mode Toggles -->
+          <div class="inline-flex rounded-lg border border-slate-300 p-0.5 bg-slate-50">
+            <button onclick="setFilterMode('class')" id="mode-btn-class" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-2xs">
+              Class
+            </button>
+            <button onclick="setFilterMode('teacher')" id="mode-btn-teacher" class="px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900">
+              Teacher
+            </button>
+            <button onclick="setFilterMode('classroom')" id="mode-btn-classroom" class="px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900">
+              Room
+            </button>
           </div>
 
           <!-- Selector Dropdown -->
-          <div class="flex items-center space-x-2 flex-grow max-w-xs">
+          <div class="min-w-[130px] max-w-xs">
             <label for="entity-select" id="entity-select-label" class="sr-only">Select Entity</label>
-            <select id="entity-select" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 font-medium">
+            <select id="entity-select" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 py-1 px-2 font-medium">
               <!-- Dynamically populated -->
             </select>
           </div>
 
           <!-- Timetable Version Picker -->
-          <div class="flex items-center space-x-2">
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Version:</span>
-            <select id="version-select" class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 font-medium">
-              <option value="13">2026-27 semester-1 (Current Active)</option>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase hidden sm:inline">Term:</span>
+            <select id="version-select" class="bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 py-1 px-2 font-medium max-w-[150px] sm:max-w-xs truncate">
+              <option value="13">2026-27 sem-1 (Active)</option>
               <option value="11">2025-26 Term II</option>
               <option value="8">2025-26 29.09.25</option>
               <option value="7">2025-26 AY</option>
@@ -198,84 +198,88 @@
               <option value="2">Term 1 (2024-25)</option>
             </select>
           </div>
+        </div>
+
+        <!-- Quick Search, Day Filter Tabs & Action Buttons -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Day Filter Buttons -->
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] uppercase font-bold text-slate-400 hidden xl:inline">Days:</span>
+            <button onclick="filterDay('all')" class="day-filter-btn px-2 py-0.5 rounded text-xs font-semibold bg-blue-600 text-white" data-day="all">All</button>
+            <button onclick="filterDay('0')" class="day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="0">Mon</button>
+            <button onclick="filterDay('1')" class="day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="1">Tue</button>
+            <button onclick="filterDay('2')" class="day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="2">Wed</button>
+            <button onclick="filterDay('3')" class="day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="3">Thu</button>
+            <button onclick="filterDay('4')" class="day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="4">Fri</button>
+          </div>
 
           <!-- Quick Search -->
-          <div class="relative flex-grow max-w-xs">
-            <input type="text" id="schedule-search" placeholder="Search subject, teacher, room..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
-            <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="relative w-32 sm:w-44">
+            <input type="text" id="schedule-search" placeholder="Search..." class="w-full pl-7 pr-2 py-1 bg-slate-50 border border-slate-300 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex items-center space-x-2 no-print">
-            <button onclick="window.print()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg border border-slate-300 flex items-center gap-1">
-              🖨 Print
+          <div class="flex items-center space-x-1 no-print">
+            <button onclick="window.print()" class="p-1 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg border border-slate-300 flex items-center gap-1" title="Print Timetable">
+              <span>🖨</span> <span class="hidden sm:inline">Print</span>
             </button>
-            <button onclick="exportTimetableJson()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg border border-slate-300 flex items-center gap-1">
-              📥 Export JSON
+            <button onclick="exportTimetableJson()" class="p-1 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg border border-slate-300 flex items-center gap-1" title="Export Timetable JSON">
+              <span>📥</span> <span class="hidden sm:inline">JSON</span>
             </button>
           </div>
-        </div>
-
-        <!-- Day Filter Tabs -->
-        <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
-          <span class="text-xs font-medium text-slate-400 mr-2">Filter Days:</span>
-          <button onclick="filterDay('all')" class="day-filter-btn px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white" data-day="all">All Days</button>
-          <button onclick="filterDay('0')" class="day-filter-btn px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="0">Monday</button>
-          <button onclick="filterDay('1')" class="day-filter-btn px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="1">Tuesday</button>
-          <button onclick="filterDay('2')" class="day-filter-btn px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="2">Wednesday</button>
-          <button onclick="filterDay('3')" class="day-filter-btn px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="3">Thursday</button>
-          <button onclick="filterDay('4')" class="day-filter-btn px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700" data-day="4">Friday</button>
         </div>
       </div>
 
-      <!-- Timetable Grid Container -->
-      <div id="timetable-container" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50">
-          <div>
-            <h2 id="grid-header-title" class="text-base font-bold text-slate-900">Schedule for Class 5-Blue</h2>
-            <p id="grid-header-subtitle" class="text-xs text-slate-500">Class Teacher: Mr. Nozim • 31 lessons/week</p>
+      <!-- Timetable Grid Container (Fills remaining height) -->
+      <div id="timetable-container" class="flex-1 min-h-0 bg-white rounded-xl border border-slate-200 shadow-2xs flex flex-col overflow-hidden">
+        <div class="timetable-header-bar px-3 py-1.5 border-b border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/70 shrink-0">
+          <div class="flex items-center space-x-2">
+            <h2 id="grid-header-title" class="text-xs sm:text-sm font-bold text-slate-900">Schedule for Class 5-Blue</h2>
+            <span class="text-slate-300">•</span>
+            <p id="grid-header-subtitle" class="text-[11px] text-slate-500 truncate max-w-xs sm:max-w-md">Homeroom: Mr. Nozim • 31 lessons/week</p>
           </div>
-          <span class="text-xs text-slate-400 font-mono">Periods: 7 • Times: 08:30 – 15:35</span>
+          <span class="text-[11px] text-slate-400 font-mono hidden md:inline">7 Periods • 08:30 – 15:35</span>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse min-w-[900px]">
-            <thead>
-              <tr class="bg-slate-100/75 border-b border-slate-200 text-xs font-semibold text-slate-600">
-                <th class="p-3 w-32 border-r border-slate-200 text-center">Day / Period</th>
-                <th class="p-3 border-r border-slate-200 text-center">
-                  <div>Period 1</div>
-                  <div class="text-[10px] text-slate-400 font-normal">08:30 - 09:15</div>
+        <div class="flex-1 min-h-0 overflow-x-auto overflow-y-hidden flex flex-col">
+          <table class="timetable-table min-w-[840px] text-left border-collapse">
+            <thead class="bg-slate-100/90 border-b border-slate-200 text-xs font-semibold text-slate-600 shrink-0 select-none">
+              <tr class="h-8">
+                <th class="p-1 w-24 border-r border-slate-200 text-center text-xs">Day / Period</th>
+                <th class="p-1 border-r border-slate-200 text-center w-[13.5%]">
+                  <div class="font-bold text-[11px]">Period 1</div>
+                  <div class="text-[9px] text-slate-400 font-normal">08:30 - 09:15</div>
                 </th>
-                <th class="p-3 border-r border-slate-200 text-center">
-                  <div>Period 2</div>
-                  <div class="text-[10px] text-slate-400 font-normal">09:20 - 10:05</div>
+                <th class="p-1 border-r border-slate-200 text-center w-[13.5%]">
+                  <div class="font-bold text-[11px]">Period 2</div>
+                  <div class="text-[9px] text-slate-400 font-normal">09:20 - 10:05</div>
                 </th>
-                <th class="p-3 border-r border-slate-200 text-center">
-                  <div>Period 3</div>
-                  <div class="text-[10px] text-slate-400 font-normal">10:10 - 10:55</div>
+                <th class="p-1 border-r border-slate-200 text-center w-[13.5%]">
+                  <div class="font-bold text-[11px]">Period 3</div>
+                  <div class="text-[9px] text-slate-400 font-normal">10:10 - 10:55</div>
                 </th>
-                <th class="p-3 border-r border-slate-200 text-center">
-                  <div>Period 4</div>
-                  <div class="text-[10px] text-slate-400 font-normal">11:25 - 12:10</div>
+                <th class="p-1 border-r border-slate-200 text-center w-[13.5%]">
+                  <div class="font-bold text-[11px]">Period 4</div>
+                  <div class="text-[9px] text-slate-400 font-normal">11:25 - 12:10</div>
                 </th>
-                <th class="p-3 border-r border-slate-200 text-center">
-                  <div>Period 5</div>
-                  <div class="text-[10px] text-slate-400 font-normal">12:15 - 13:00</div>
+                <th class="p-1 border-r border-slate-200 text-center w-[13.5%]">
+                  <div class="font-bold text-[11px]">Period 5</div>
+                  <div class="text-[9px] text-slate-400 font-normal">12:15 - 13:00</div>
                 </th>
-                <th class="p-3 border-r border-slate-200 text-center">
-                  <div>Period 6</div>
-                  <div class="text-[10px] text-slate-400 font-normal">14:00 - 14:45</div>
+                <th class="p-1 border-r border-slate-200 text-center w-[13.5%]">
+                  <div class="font-bold text-[11px]">Period 6</div>
+                  <div class="text-[9px] text-slate-400 font-normal">14:00 - 14:45</div>
                 </th>
-                <th class="p-3 text-center">
-                  <div>Period 7</div>
-                  <div class="text-[10px] text-slate-400 font-normal">14:50 - 15:35</div>
+                <th class="p-1 text-center w-[13.5%]">
+                  <div class="font-bold text-[11px]">Period 7</div>
+                  <div class="text-[9px] text-slate-400 font-normal">14:50 - 15:35</div>
                 </th>
               </tr>
             </thead>
-            <tbody id="timetable-grid-body" class="divide-y divide-slate-200 text-sm">
+            <tbody id="timetable-grid-body" class="divide-y divide-slate-200 text-xs">
               <!-- Rendered by JS -->
             </tbody>
           </table>
@@ -284,62 +288,62 @@
     </section>
 
     <!-- ================================================================= -->
-    <!-- TAB 2: LIVE SUBSTITUTION MODULE (/substitution/) [NEW]            -->
+    <!-- TAB 2: LIVE SUBSTITUTION MODULE (/substitution/)                 -->
     <!-- ================================================================= -->
-    <section id="tab-content-substitution" class="tab-pane hidden space-y-4">
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-        <div class="flex flex-wrap justify-between items-start gap-4">
+    <section id="tab-content-substitution" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
+      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2">
+        <div class="flex flex-wrap justify-between items-center gap-3 shrink-0">
           <div>
             <div class="flex items-center space-x-2">
-              <h2 class="text-lg font-bold text-slate-900">Live Substitution & Duty Viewer</h2>
-              <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900">Live Substitution & Duty Viewer</h2>
+              <span class="bg-emerald-100 text-emerald-800 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-emerald-200">
                 Official EduPage Module
               </span>
             </div>
-            <p class="text-xs text-slate-500 mt-1">
-              Real-time daily teacher substitutions and timetable adjustments from <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-blue-600">/substitution/server/viewer.js?__func=getSubstViewerDayDataHtml</code>
+            <p class="text-[11px] text-slate-500 mt-0.5">
+              Real-time daily substitutions from <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-blue-600">/substitution/server/viewer.js?__func=getSubstViewerDayDataHtml</code>
             </p>
           </div>
 
           <!-- Quick Date Jump Buttons -->
-          <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg border border-slate-200">
-            <button onclick="setSubstDateRelative(-1)" class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white rounded shadow-xs">◀ Prev</button>
-            <button onclick="setSubstDateToday()" class="px-2.5 py-1 text-xs font-semibold text-blue-600 bg-white rounded shadow-xs">Today</button>
-            <button onclick="setSubstDateRelative(1)" class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white rounded shadow-xs">Next ▶</button>
+          <div class="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+            <button onclick="setSubstDateRelative(-1)" class="px-2 py-0.5 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white rounded shadow-2xs">◀ Prev</button>
+            <button onclick="setSubstDateToday()" class="px-2 py-0.5 text-xs font-semibold text-blue-600 bg-white rounded shadow-2xs">Today</button>
+            <button onclick="setSubstDateRelative(1)" class="px-2 py-0.5 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white rounded shadow-2xs">Next ▶</button>
           </div>
         </div>
 
         <!-- Controls Toolbar -->
-        <div class="flex flex-wrap items-center justify-between gap-4 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-          <div class="flex flex-wrap items-center gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200 shrink-0">
+          <div class="flex flex-wrap items-center gap-3">
             <!-- Date Input -->
-            <div>
-              <label for="subst-date-input" class="block text-xs font-semibold text-slate-500 uppercase mb-1">Target Date:</label>
-              <input type="date" id="subst-date-input" value="2026-09-02" class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg p-2 font-medium">
+            <div class="flex items-center space-x-1.5">
+              <label for="subst-date-input" class="text-[11px] font-semibold text-slate-500 uppercase">Date:</label>
+              <input type="date" id="subst-date-input" value="2026-09-02" class="bg-white border border-slate-300 text-slate-900 text-xs rounded-lg p-1.5 font-medium">
             </div>
 
-            <!-- View Mode Switch (Classes vs Teachers) -->
-            <div>
-              <span class="block text-xs font-semibold text-slate-500 uppercase mb-1">Grouping Mode:</span>
+            <!-- View Mode Switch -->
+            <div class="flex items-center space-x-1.5">
+              <span class="text-[11px] font-semibold text-slate-500 uppercase">Grouping:</span>
               <div class="inline-flex rounded-lg border border-slate-300 p-0.5 bg-white">
-                <button onclick="setSubstMode('classes')" id="subst-mode-classes" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-xs">
-                  By Classes
+                <button onclick="setSubstMode('classes')" id="subst-mode-classes" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs">
+                  Classes
                 </button>
-                <button onclick="setSubstMode('teachers')" id="subst-mode-teachers" class="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900">
-                  By Teachers
+                <button onclick="setSubstMode('teachers')" id="subst-mode-teachers" class="px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900">
+                  Teachers
                 </button>
               </div>
             </div>
           </div>
 
           <!-- Refresh Button -->
-          <button onclick="loadSubstitution()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition flex items-center gap-1.5 self-end">
+          <button onclick="loadSubstitution()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-2xs transition flex items-center gap-1.5">
             <span>🔄</span> Fetch Live Substitution
           </button>
         </div>
 
-        <!-- Substitution Content Render Container -->
-        <div id="subst-render-container" class="min-h-[220px] p-6 rounded-xl border border-slate-200 bg-white">
+        <!-- Substitution Content Render Container (Scrollable internally) -->
+        <div id="subst-render-container" class="flex-1 min-h-0 scroll-pane p-4 rounded-xl border border-slate-200 bg-white">
           <div class="flex flex-col items-center justify-center text-center p-8 space-y-2">
             <span class="text-3xl">⏳</span>
             <div class="text-sm font-semibold text-slate-700">Loading substitution report...</div>
@@ -349,48 +353,48 @@
     </section>
 
     <!-- ================================================================= -->
-    <!-- TAB 3: SCHOOL DIRECTORY & METRICS [NEW]                           -->
+    <!-- TAB 3: SCHOOL DIRECTORY & METRICS                                 -->
     <!-- ================================================================= -->
-    <section id="tab-content-directory" class="tab-pane hidden space-y-4">
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-        <div class="flex flex-wrap justify-between items-center gap-4">
+    <section id="tab-content-directory" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
+      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2">
+        <div class="flex flex-wrap justify-between items-center gap-3 shrink-0">
           <div>
-            <h2 class="text-lg font-bold text-slate-900">Presidential School Master Directory</h2>
-            <p class="text-xs text-slate-500">
-              Extracted relational database entities from <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-blue-600">regularttGetData</code>
+            <h2 class="text-sm sm:text-base font-bold text-slate-900">Presidential School Master Directory</h2>
+            <p class="text-[11px] text-slate-500">
+              Relational entities from <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-blue-600">regularttGetData</code>
             </p>
           </div>
 
           <!-- Directory Sub-Tabs -->
-          <div class="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-medium">
-            <button onclick="switchDirectoryTab('teachers')" id="dirtab-teachers" class="dirtab-btn active px-3 py-1.5 rounded-lg bg-white text-blue-600 font-semibold shadow-xs">
+          <div class="flex flex-wrap gap-1 bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-medium">
+            <button onclick="switchDirectoryTab('teachers')" id="dirtab-teachers" class="dirtab-btn active px-2.5 py-1 rounded-lg bg-white text-blue-600 font-semibold shadow-2xs">
               👨‍🏫 Faculty (36)
             </button>
-            <button onclick="switchDirectoryTab('classes')" id="dirtab-classes" class="dirtab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
+            <button onclick="switchDirectoryTab('classes')" id="dirtab-classes" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">
               🏫 Classes (14)
             </button>
-            <button onclick="switchDirectoryTab('classrooms')" id="dirtab-classrooms" class="dirtab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
-              🚪 Classrooms (20)
+            <button onclick="switchDirectoryTab('classrooms')" id="dirtab-classrooms" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">
+              🚪 Rooms (20)
             </button>
-            <button onclick="switchDirectoryTab('subjects')" id="dirtab-subjects" class="dirtab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
+            <button onclick="switchDirectoryTab('subjects')" id="dirtab-subjects" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">
               📚 Subjects (39)
             </button>
-            <button onclick="switchDirectoryTab('bells')" id="dirtab-bells" class="dirtab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
-              🔔 Bell Schedule (7)
+            <button onclick="switchDirectoryTab('bells')" id="dirtab-bells" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">
+              🔔 Bells (7)
             </button>
+          </div>
+
+          <!-- Directory Search Bar -->
+          <div class="relative w-44 sm:w-56">
+            <input type="text" id="directory-search-input" placeholder="Search directory..." class="w-full pl-7 pr-2 py-1 bg-slate-50 border border-slate-300 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
           </div>
         </div>
 
-        <!-- Directory Search Bar -->
-        <div class="relative max-w-md">
-          <input type="text" id="directory-search-input" placeholder="Search directory..." class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-300 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500">
-          <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-
-        <!-- Directory Render Container -->
-        <div id="directory-content-container" class="pt-2">
+        <!-- Directory Render Container (Scrollable internally) -->
+        <div id="directory-content-container" class="flex-1 min-h-0 scroll-pane p-2">
           <!-- Dynamically populated -->
         </div>
       </div>
@@ -399,34 +403,35 @@
     <!-- ================================================================= -->
     <!-- TAB 4: DAILY LIVE VIEW (curentttGetData API)                      -->
     <!-- ================================================================= -->
-    <section id="tab-content-daily" class="tab-pane hidden space-y-4">
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900">Live Dynamic Daily Schedule</h2>
-          <p class="text-xs text-slate-500">
-            Powered by the live EduPage RPC: <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-blue-600">curentttGetData</code> on <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">/timetable/server/currenttt.js</code>
+    <section id="tab-content-daily" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
+      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2">
+        <div class="shrink-0">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900">Live Dynamic Daily Schedule</h2>
+          <p class="text-[11px] text-slate-500">
+            Live EduPage RPC: <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-blue-600">curentttGetData</code> on <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-700">/timetable/server/currenttt.js</code>
           </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-4 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+        <div class="flex flex-wrap items-center gap-3 bg-slate-50 p-2.5 rounded-lg border border-slate-200 shrink-0">
           <div>
-            <label for="daily-class-select" class="block text-xs font-semibold text-slate-500 uppercase mb-1">Select Class:</label>
-            <select id="daily-class-select" class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg p-2 font-medium">
+            <label for="daily-class-select" class="block text-[10px] font-semibold text-slate-500 uppercase mb-0.5">Select Class:</label>
+            <select id="daily-class-select" class="bg-white border border-slate-300 text-slate-900 text-xs rounded-lg py-1 px-2 font-medium">
               <!-- Dynamically populated -->
             </select>
           </div>
           <div>
-            <label for="daily-date-input" class="block text-xs font-semibold text-slate-500 uppercase mb-1">Target Date:</label>
-            <input type="date" id="daily-date-input" value="2026-09-02" class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg p-2 font-medium">
+            <label for="daily-date-input" class="block text-[10px] font-semibold text-slate-500 uppercase mb-0.5">Target Date:</label>
+            <input type="date" id="daily-date-input" value="2026-09-02" class="bg-white border border-slate-300 text-slate-900 text-xs rounded-lg py-1 px-2 font-medium">
           </div>
           <div class="self-end">
-            <button onclick="fetchDailySchedule()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition flex items-center gap-1.5">
+            <button onclick="fetchDailySchedule()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-2xs transition flex items-center gap-1.5">
               <span>🔄</span> Query Live API
             </button>
           </div>
         </div>
 
-        <div id="daily-results-container" class="space-y-3 pt-2">
+        <!-- Daily Results Container (Scrollable internally) -->
+        <div id="daily-results-container" class="flex-1 min-h-0 scroll-pane p-2">
           <!-- Daily items rendered here -->
         </div>
       </div>
@@ -435,42 +440,42 @@
     <!-- ================================================================= -->
     <!-- TAB 5: SCHOOL NEWS FEED (/rss/news)                              -->
     <!-- ================================================================= -->
-    <section id="tab-content-news" class="tab-pane hidden space-y-4">
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <img src="rss.png" alt="RSS Icon" class="w-8 h-8 object-contain">
+    <section id="tab-content-news" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
+      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2">
+        <div class="flex items-center justify-between shrink-0">
+          <div class="flex items-center space-x-2.5">
+            <img src="rss.png" alt="RSS Icon" class="w-6 h-6 object-contain">
             <div>
-              <h2 class="text-lg font-bold text-slate-900">Official News & Announcements</h2>
-              <p class="text-xs text-slate-500">Live feed from Presidential School in Namangan via <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-blue-600">/rss/news</code></p>
+              <h2 class="text-sm sm:text-base font-bold text-slate-900">Official News & Announcements</h2>
+              <p class="text-[11px] text-slate-500">Live feed from Presidential School via <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-blue-600">/rss/news</code></p>
             </div>
           </div>
-          <button onclick="loadNewsFeed()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 flex items-center gap-1">
+          <button onclick="loadNewsFeed()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 flex items-center gap-1">
             🔄 Refresh
           </button>
         </div>
 
-        <div id="news-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+        <!-- News Cards Container (Scrollable internally) -->
+        <div id="news-cards-container" class="flex-1 min-h-0 scroll-pane p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           <!-- News cards populated dynamically -->
         </div>
       </div>
     </section>
 
     <!-- ================================================================= -->
-    <!-- TAB 6: PORTAL LOGIN & SSO SIMULATION [NEW]                        -->
+    <!-- TAB 6: PORTAL LOGIN & SSO SIMULATION                             -->
     <!-- ================================================================= -->
-    <section id="tab-content-login" class="tab-pane hidden space-y-6">
-      <div class="max-w-xl mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-md space-y-6">
-        <div class="text-center space-y-2">
-          <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain mx-auto">
-          <h2 class="text-xl font-bold text-slate-900">Sign in to Presidential School in Namangan</h2>
-          <p class="text-xs text-slate-500">Official authentication portal on <code class="font-mono text-blue-600">nampm.edupage.org/login/</code></p>
+    <section id="tab-content-login" class="tab-pane hidden flex-1 min-h-0 h-full scroll-pane p-4 flex flex-col items-center justify-center">
+      <div class="max-w-md w-full bg-white p-6 rounded-2xl border border-slate-200 shadow-md space-y-5 my-auto">
+        <div class="text-center space-y-1.5">
+          <img src="logo.png" alt="Logo" class="w-14 h-14 object-contain mx-auto">
+          <h2 class="text-lg font-bold text-slate-900">Sign in to Presidential School</h2>
+          <p class="text-[11px] text-slate-500">Authentication portal on <code class="font-mono text-blue-600">nampm.edupage.org/login/</code></p>
         </div>
 
-        <!-- EduPage SSO Options directly cloned from webpage HTML -->
-        <div class="space-y-3 pt-2">
-          <a href="https://nampm.edupage.org/login/?cmd=MainLogin&cl=1" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm flex items-center justify-center space-x-2 shadow-sm transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+        <div class="space-y-2.5 pt-1">
+          <a href="https://nampm.edupage.org/login/?cmd=MainLogin&cl=1" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center space-x-2 shadow-2xs transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
             <span>Sign in with EduPage account</span>
           </a>
 
@@ -480,25 +485,24 @@
             </a>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
-            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=googlesignin" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium text-slate-700 flex items-center justify-center space-x-2 transition">
-              <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-              <span>Sign in with Google</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=googlesignin" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium text-slate-700 flex items-center justify-center space-x-2 transition">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+              <span>Google</span>
             </a>
-            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=microsoftsignin" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium text-slate-700 flex items-center justify-center space-x-2 transition">
-              <svg class="w-4 h-4" viewBox="0 0 23 23"><path fill="#f35325" d="M1 1h10v10H1z"/><path fill="#81bc06" d="M12 1h10v10H12z"/><path fill="#05a6f0" d="M1 12h10v10H1z"/><path fill="#ffba08" d="M12 12h10v10H12z"/></svg>
-              <span>Sign in with Microsoft</span>
+            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=microsoftsignin" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium text-slate-700 flex items-center justify-center space-x-2 transition">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 23 23"><path fill="#f35325" d="M1 1h10v10H1z"/><path fill="#81bc06" d="M12 1h10v10H12z"/><path fill="#05a6f0" d="M1 12h10v10H1z"/><path fill="#ffba08" d="M12 12h10v10H12z"/></svg>
+              <span>Microsoft</span>
             </a>
           </div>
         </div>
 
-        <!-- Security & Architecture Information Box -->
-        <div class="bg-blue-50/75 p-4 rounded-xl border border-blue-200/80 text-xs text-blue-900 space-y-2">
+        <div class="bg-blue-50/80 p-3 rounded-xl border border-blue-200/80 text-[11px] text-blue-900 space-y-1">
           <div class="font-bold flex items-center gap-1.5 text-blue-950">
             <span>🛡</span> EduPage Guest Hash Security Model
           </div>
           <p class="leading-relaxed">
-            Unauthenticated guests use hash <code class="font-mono bg-white px-1 py-0.5 rounded text-blue-800 border border-blue-200">"__gsh": "00000000"</code> to query public endpoints (timetables, substitutions, news feed). Once authenticated via EduPage SSO, the server issues an encrypted session ticket granting access to student grades, parent communications, and attendance.
+            Public endpoints operate anonymously with <code class="font-mono bg-white px-1 py-0.5 rounded text-blue-800 border border-blue-200">"__gsh": "00000000"</code>.
           </p>
         </div>
       </div>
@@ -507,88 +511,90 @@
     <!-- ================================================================= -->
     <!-- TAB 7: API PLAYGROUND & CONSOLE                                   -->
     <!-- ================================================================= -->
-    <section id="tab-content-api" class="tab-pane hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <section id="tab-content-api" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col overflow-hidden space-y-2">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1 min-h-0 h-full">
         <!-- Request Builder (Left Column) -->
-        <div class="lg:col-span-5 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-          <div class="flex items-center justify-between">
-            <h2 class="text-base font-bold text-slate-900">EduPage RPC Request Console</h2>
-            <span class="text-xs bg-purple-100 text-purple-700 font-semibold px-2 py-0.5 rounded">POST RPC</span>
+        <div class="lg:col-span-5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col min-h-0 h-full space-y-2.5">
+          <div class="flex items-center justify-between shrink-0">
+            <h2 class="text-xs sm:text-sm font-bold text-slate-900">RPC Request Console</h2>
+            <span class="text-[10px] bg-purple-100 text-purple-700 font-semibold px-2 py-0.5 rounded">POST RPC</span>
           </div>
 
-          <!-- Presets -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">API Presets:</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-              <button onclick="loadPreset('versions')" class="text-left p-2 text-xs rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex flex-col">
-                <span class="font-semibold text-slate-800">1. Timetable Discovery</span>
-                <code class="text-[10px] text-slate-400">getTTViewerData</code>
-              </button>
-              <button onclick="loadPreset('regular')" class="text-left p-2 text-xs rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex flex-col">
-                <span class="font-semibold text-slate-800">2. Full Database</span>
-                <code class="text-[10px] text-slate-400">regularttGetData</code>
-              </button>
-              <button onclick="loadPreset('current')" class="text-left p-2 text-xs rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex flex-col">
-                <span class="font-semibold text-slate-800">3. Daily Dynamic</span>
-                <code class="text-[10px] text-slate-400">curentttGetData</code>
-              </button>
-              <button onclick="loadPreset('substitution')" class="text-left p-2 text-xs rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex flex-col">
-                <span class="font-semibold text-slate-800">4. Live Substitution</span>
-                <code class="text-[10px] text-slate-400">getSubstViewerDayDataHtml</code>
-              </button>
-              <button onclick="loadPreset('news')" class="text-left p-2 text-xs rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex flex-col">
-                <span class="font-semibold text-slate-800">5. School RSS News</span>
-                <code class="text-[10px] text-slate-400">/rss/news</code>
-              </button>
-              <button onclick="loadPreset('info')" class="text-left p-2 text-xs rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex flex-col">
-                <span class="font-semibold text-slate-800">6. School Info API</span>
-                <code class="text-[10px] text-slate-400">/api/info</code>
-              </button>
+          <div class="flex-1 min-h-0 scroll-pane space-y-2 pr-1">
+            <!-- Presets -->
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">API Presets:</label>
+              <div class="grid grid-cols-2 gap-1">
+                <button onclick="loadPreset('versions')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">
+                  <span class="font-semibold text-slate-800 block truncate">1. TT Discovery</span>
+                  <code class="text-[9px] text-slate-400">getTTViewerData</code>
+                </button>
+                <button onclick="loadPreset('regular')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">
+                  <span class="font-semibold text-slate-800 block truncate">2. Full Database</span>
+                  <code class="text-[9px] text-slate-400">regularttGetData</code>
+                </button>
+                <button onclick="loadPreset('current')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">
+                  <span class="font-semibold text-slate-800 block truncate">3. Daily Dynamic</span>
+                  <code class="text-[9px] text-slate-400">curentttGetData</code>
+                </button>
+                <button onclick="loadPreset('substitution')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">
+                  <span class="font-semibold text-slate-800 block truncate">4. Substitution</span>
+                  <code class="text-[9px] text-slate-400">getSubstViewer</code>
+                </button>
+                <button onclick="loadPreset('news')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">
+                  <span class="font-semibold text-slate-800 block truncate">5. RSS News</span>
+                  <code class="text-[9px] text-slate-400">/rss/news</code>
+                </button>
+                <button onclick="loadPreset('info')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">
+                  <span class="font-semibold text-slate-800 block truncate">6. School Info</span>
+                  <code class="text-[9px] text-slate-400">/api/info</code>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Endpoint URL Input -->
-          <div>
-            <label for="api-endpoint" class="block text-xs font-semibold text-slate-500 uppercase mb-1">Target Endpoint Path:</label>
-            <input type="text" id="api-endpoint" value="/timetable/server/ttviewer.js?__func=getTTViewerData" class="w-full font-mono text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
-          </div>
-
-          <!-- Arguments JSON Payload -->
-          <div>
-            <label for="api-payload" class="block text-xs font-semibold text-slate-500 uppercase mb-1">RPC Arguments (__args):</label>
-            <textarea id="api-payload" rows="4" class="w-full font-mono text-xs p-2.5 bg-slate-900 text-slate-100 rounded-lg">[null, 2026]</textarea>
-          </div>
-
-          <!-- Action Button -->
-          <button onclick="executeApiPlayground()" id="api-send-btn" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg shadow-sm transition flex items-center justify-center gap-2">
-            <span>🚀</span> Send Live RPC Request
-          </button>
-
-          <!-- Generated Code Snippets -->
-          <div class="pt-2 border-t border-slate-100 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500 uppercase">Curl Snippet:</span>
-              <button onclick="copySnippet('curl')" class="text-xs text-blue-600 hover:underline">Copy</button>
+            <!-- Endpoint URL Input -->
+            <div>
+              <label for="api-endpoint" class="block text-[10px] font-semibold text-slate-500 uppercase mb-0.5">Target Endpoint:</label>
+              <input type="text" id="api-endpoint" value="/timetable/server/ttviewer.js?__func=getTTViewerData" class="w-full font-mono text-xs p-1.5 bg-slate-50 border border-slate-300 rounded-lg">
             </div>
-            <pre id="snippet-curl" class="json-code p-2.5 rounded-lg text-[11px] overflow-x-auto max-h-24">curl -X POST "https://nampm.edupage.org/timetable/server/ttviewer.js?__func=getTTViewerData" -H "Content-Type: application/json" -d '{"__args":[null,2026],"__gsh":"00000000"}'</pre>
+
+            <!-- Arguments JSON Payload -->
+            <div>
+              <label for="api-payload" class="block text-[10px] font-semibold text-slate-500 uppercase mb-0.5">RPC Arguments (__args):</label>
+              <textarea id="api-payload" rows="3" class="w-full font-mono text-xs p-2 bg-slate-900 text-slate-100 rounded-lg">[null, 2026]</textarea>
+            </div>
+
+            <!-- Action Button -->
+            <button onclick="executeApiPlayground()" id="api-send-btn" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-2xs transition flex items-center justify-center gap-1.5">
+              <span>🚀</span> Send Live RPC Request
+            </button>
+
+            <!-- Generated Code Snippets -->
+            <div class="pt-1.5 border-t border-slate-100 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-semibold text-slate-500 uppercase">Curl Snippet:</span>
+                <button onclick="copySnippet('curl')" class="text-[11px] text-blue-600 hover:underline">Copy</button>
+              </div>
+              <pre id="snippet-curl" class="json-code p-2 rounded-lg text-[10px] overflow-x-auto max-h-20">curl -X POST "https://nampm.edupage.org/timetable/server/ttviewer.js?__func=getTTViewerData" -H "Content-Type: application/json" -d '{"__args":[null,2026],"__gsh":"00000000"}'</pre>
+            </div>
           </div>
         </div>
 
         <!-- Response Viewer (Right Column) -->
-        <div class="lg:col-span-7 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3 flex flex-col">
-          <div class="flex items-center justify-between">
+        <div class="lg:col-span-7 bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col min-h-0 h-full space-y-2">
+          <div class="flex items-center justify-between shrink-0">
             <div class="flex items-center space-x-2">
-              <h2 class="text-base font-bold text-slate-900">Live API Response</h2>
-              <span id="response-status-pill" class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">Ready</span>
-              <span id="response-time-pill" class="text-xs bg-slate-100 text-slate-600 font-mono px-2 py-0.5 rounded">-- ms</span>
+              <h2 class="text-xs sm:text-sm font-bold text-slate-900">Live API Response</h2>
+              <span id="response-status-pill" class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">Ready</span>
+              <span id="response-time-pill" class="text-[10px] bg-slate-100 text-slate-600 font-mono px-2 py-0.5 rounded">-- ms</span>
             </div>
             <button onclick="copyResponseJson()" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
               📋 Copy JSON
             </button>
           </div>
 
-          <div class="relative flex-grow min-h-[420px]">
-            <pre id="api-response-viewer" class="json-code p-4 rounded-xl text-xs overflow-auto absolute inset-0 font-mono">Click "Send Live RPC Request" to query nampm.edupage.org...</pre>
+          <div class="relative flex-1 min-h-0 h-full">
+            <pre id="api-response-viewer" class="json-code p-3 rounded-xl text-xs overflow-auto absolute inset-0 font-mono">Click "Send Live RPC Request" to query nampm.edupage.org...</pre>
           </div>
         </div>
       </div>
@@ -597,24 +603,23 @@
     <!-- ================================================================= -->
     <!-- TAB 8: API ARCHITECTURE & SPECIFICATIONS                          -->
     <!-- ================================================================= -->
-    <section id="tab-content-docs" class="tab-pane hidden space-y-6">
-      <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm space-y-6 text-sm text-slate-700 leading-relaxed">
-        <div>
-          <div class="flex items-center space-x-3 mb-2">
-            <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain">
-            <h2 class="text-xl font-bold text-slate-900">EduPage Architecture & API Specification for nampm.edupage.org</h2>
-          </div>
-          <p class="text-slate-600">
-            Comprehensive reverse-engineering guide of the proprietary RPC protocol and database schema used by <strong>aSc EduPage</strong> for the <strong>Presidential School in Namangan</strong> (<code class="font-mono text-blue-600">nampm.edupage.org</code>).
-          </p>
+    <section id="tab-content-docs" class="tab-pane hidden flex-1 min-h-0 h-full scroll-pane p-4 sm:p-6 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-5 text-sm text-slate-700 leading-relaxed">
+      <div>
+        <div class="flex items-center space-x-2.5 mb-1.5">
+          <img src="logo.png" alt="Logo" class="w-7 h-7 object-contain">
+          <h2 class="text-lg font-bold text-slate-900">EduPage Architecture & API Specification for nampm.edupage.org</h2>
         </div>
+        <p class="text-xs text-slate-600">
+          Proprietary RPC protocol and database schema used by <strong>aSc EduPage</strong> for the <strong>Presidential School in Namangan</strong> (<code class="font-mono text-blue-600">nampm.edupage.org</code>).
+        </p>
+      </div>
 
-        <div class="border-t border-slate-200 pt-4 space-y-3">
-          <h3 class="text-base font-bold text-slate-900">1. RPC Protocol & Payload Structure</h3>
-          <p>
-            EduPage executes actions through HTTP POST requests to service modules where the function name is declared via the <code class="font-mono text-xs bg-slate-100 px-1 py-0.5 rounded">__func</code> query parameter. The JSON request body wraps function arguments into an array:
-          </p>
-          <pre class="json-code p-4 rounded-lg text-xs">
+      <div class="border-t border-slate-200 pt-3 space-y-2 text-xs">
+        <h3 class="text-sm font-bold text-slate-900">1. RPC Protocol & Payload Structure</h3>
+        <p>
+          EduPage executes actions through HTTP POST requests to service modules where the function name is declared via the <code class="font-mono bg-slate-100 px-1 py-0.5 rounded">__func</code> query parameter:
+        </p>
+        <pre class="json-code p-3 rounded-lg text-xs">
 POST https://nampm.edupage.org/{module_path}?__func={functionName}
 Content-Type: application/json; charset=utf-8
 Referer: https://nampm.edupage.org/timetable/
@@ -624,141 +629,41 @@ Referer: https://nampm.edupage.org/timetable/
   "__gsh": "00000000",
   "__client_redirect": null
 }</pre>
-          <p class="text-xs text-slate-500">
-            The first element of <code class="font-mono">__args</code> is always <code class="font-mono">null</code> (context placeholder). <code class="font-mono">__gsh</code> represents the guest security hash (<code class="font-mono">"00000000"</code> for anonymous public read queries). Responses are wrapped in <code class="font-mono">{"r": ...}</code>.
-          </p>
-        </div>
+        <p class="text-[11px] text-slate-500">
+          The first element of <code class="font-mono">__args</code> is always <code class="font-mono">null</code>. <code class="font-mono">__gsh</code> is the guest security hash (<code class="font-mono">"00000000"</code> for anonymous public read queries). Responses are wrapped in <code class="font-mono">{"r": ...}</code>.
+        </p>
+      </div>
 
-        <div class="border-t border-slate-200 pt-4 space-y-4">
-          <h3 class="text-base font-bold text-slate-900">2. Discovered Public Endpoints</h3>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Endpoint 1 -->
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-              <div class="flex items-center space-x-2">
-                <span class="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">POST</span>
-                <code class="font-mono text-xs text-slate-900 font-semibold">getTTViewerData</code>
-              </div>
-              <p class="text-xs text-slate-600">
-                Discovers published timetable terms, academic years, and active default timetable ID (<code class="font-mono">tt_num: "13"</code>).
-              </p>
-              <div class="text-[11px] font-mono text-slate-500">Path: /timetable/server/ttviewer.js</div>
+      <div class="border-t border-slate-200 pt-3 space-y-3 text-xs">
+        <h3 class="text-sm font-bold text-slate-900">2. Discovered Public Endpoints</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 font-semibold">getTTViewerData</code>
             </div>
-
-            <!-- Endpoint 2 -->
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-              <div class="flex items-center space-x-2">
-                <span class="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">POST</span>
-                <code class="font-mono text-xs text-slate-900 font-semibold">regularttGetData</code>
-              </div>
-              <p class="text-xs text-slate-600">
-                Returns the full relational database containing 23 tables: classes, teachers, subjects, classrooms, periods, lessons, cards, groups, divisions.
-              </p>
-              <div class="text-[11px] font-mono text-slate-500">Path: /timetable/server/regulartt.js</div>
-            </div>
-
-            <!-- Endpoint 3 -->
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-              <div class="flex items-center space-x-2">
-                <span class="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">POST</span>
-                <code class="font-mono text-xs text-slate-900 font-semibold">getSubstViewerDayDataHtml</code>
-              </div>
-              <p class="text-xs text-slate-600">
-                Retrieves daily substitution HTML reports, teacher replacement duties, and class room adjustments for any date.
-              </p>
-              <div class="text-[11px] font-mono text-slate-500">Path: /substitution/server/viewer.js</div>
-            </div>
-
-            <!-- Endpoint 4 -->
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-              <div class="flex items-center space-x-2">
-                <span class="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">POST</span>
-                <code class="font-mono text-xs text-slate-900 font-semibold">curentttGetData</code>
-              </div>
-              <p class="text-xs text-slate-600">
-                Retrieves dynamic dated daily cards for any class and date, reflecting temporary schedule overrides.
-              </p>
-              <div class="text-[11px] font-mono text-slate-500">Path: /timetable/server/currenttt.js</div>
-            </div>
-
-            <!-- Endpoint 5 -->
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-              <div class="flex items-center space-x-2">
-                <span class="bg-emerald-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">GET</span>
-                <code class="font-mono text-xs text-slate-900 font-semibold">/rss/news</code>
-              </div>
-              <p class="text-xs text-slate-600">
-                Live RSS 2.0 XML feed of school news, timetable announcements, and administrative posts.
-              </p>
-              <div class="text-[11px] font-mono text-slate-500">Protocol: Standard HTTP GET RSS 2.0</div>
-            </div>
-
-            <!-- Endpoint 6 -->
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-              <div class="flex items-center space-x-2">
-                <span class="bg-purple-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">AUTH</span>
-                <code class="font-mono text-xs text-slate-900 font-semibold">/login/</code>
-              </div>
-              <p class="text-xs text-slate-600">
-                Single Sign-On (SSO) entrypoint supporting EduPage credentials, Google Workspace, and Microsoft 365.
-              </p>
-              <div class="text-[11px] font-mono text-slate-500">OAuth / EduPage Auth Ticket</div>
-            </div>
+            <p class="text-[11px] text-slate-600">Discovers published terms, years, and active timetable ID.</p>
           </div>
-        </div>
-
-        <div class="border-t border-slate-200 pt-4 space-y-3">
-          <h3 class="text-base font-bold text-slate-900">3. Relational Schema Structure (regularttGetData)</h3>
-          <p class="text-xs text-slate-600">
-            The relational model returned in <code class="font-mono bg-slate-100 px-1 py-0.5 rounded">dbiAccessorRes.tables</code>:
-          </p>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left border border-slate-200 rounded-lg">
-              <thead class="bg-slate-100 text-slate-700 font-semibold">
-                <tr>
-                  <th class="p-2.5 border-b border-r">Table ID</th>
-                  <th class="p-2.5 border-b border-r">Primary Keys / Fields</th>
-                  <th class="p-2.5 border-b">Description</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200 font-mono">
-                <tr>
-                  <td class="p-2.5 border-r font-bold text-blue-600">classes</td>
-                  <td class="p-2.5 border-r">id, name, short, teacherid, color</td>
-                  <td class="p-2.5 font-sans">14 student groups (5-Blue through 11-Green)</td>
-                </tr>
-                <tr>
-                  <td class="p-2.5 border-r font-bold text-blue-600">teachers</td>
-                  <td class="p-2.5 border-r">id, short, name, color, classids</td>
-                  <td class="p-2.5 font-sans">36 faculty instructors and homeroom assignments</td>
-                </tr>
-                <tr>
-                  <td class="p-2.5 border-r font-bold text-blue-600">subjects</td>
-                  <td class="p-2.5 border-r">id, name, short, color, contract_weight</td>
-                  <td class="p-2.5 font-sans">39 curriculum courses</td>
-                </tr>
-                <tr>
-                  <td class="p-2.5 border-r font-bold text-blue-600">classrooms</td>
-                  <td class="p-2.5 border-r">id, name, short, color</td>
-                  <td class="p-2.5 font-sans">20 physical rooms (101–210)</td>
-                </tr>
-                <tr>
-                  <td class="p-2.5 border-r font-bold text-blue-600">periods</td>
-                  <td class="p-2.5 border-r">period, starttime, endtime</td>
-                  <td class="p-2.5 font-sans">7 bell periods (08:30 to 15:35)</td>
-                </tr>
-                <tr>
-                  <td class="p-2.5 border-r font-bold text-blue-600">lessons</td>
-                  <td class="p-2.5 border-r">id, subjectid, teacherids, classids, groupids</td>
-                  <td class="p-2.5 font-sans">222 master lesson contracts linking courses to teachers & classes</td>
-                </tr>
-                <tr>
-                  <td class="p-2.5 border-r font-bold text-blue-600">cards</td>
-                  <td class="p-2.5 border-r">lessonid, period, days, classroomids</td>
-                  <td class="p-2.5 font-sans">434 scheduled blocks with day bitmask (10000=Mon..00001=Fri)</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 font-semibold">regularttGetData</code>
+            </div>
+            <p class="text-[11px] text-slate-600">Returns the full relational database: classes, teachers, subjects, rooms, lessons, cards.</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 font-semibold">getSubstViewerDayDataHtml</code>
+            </div>
+            <p class="text-[11px] text-slate-600">Retrieves daily teacher substitution duties and class room adjustments.</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 font-semibold">curentttGetData</code>
+            </div>
+            <p class="text-[11px] text-slate-600">Retrieves dynamic daily cards for any class and date.</p>
           </div>
         </div>
       </div>
@@ -769,40 +674,40 @@ Referer: https://nampm.edupage.org/timetable/
   <!-- Modal Dialog for Lesson Details -->
   <dialog id="lesson-modal" class="p-0 overflow-hidden bg-transparent backdrop:bg-slate-900/40">
     <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden max-w-md w-full m-4">
-      <div id="modal-header" class="p-5 text-white bg-blue-600 flex justify-between items-start">
+      <div id="modal-header" class="p-4 text-white bg-blue-600 flex justify-between items-start">
         <div>
-          <span id="modal-subject-tag" class="text-xs uppercase font-bold tracking-wider opacity-90">Subject</span>
-          <h3 id="modal-subject-name" class="text-xl font-extrabold mt-0.5 leading-tight">Mathematics</h3>
+          <span id="modal-subject-tag" class="text-[10px] uppercase font-bold tracking-wider opacity-90">Subject</span>
+          <h3 id="modal-subject-name" class="text-lg font-extrabold mt-0.5 leading-tight">Mathematics</h3>
         </div>
         <button onclick="closeLessonModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
           ✕
         </button>
       </div>
 
-      <div class="p-5 space-y-4 text-sm text-slate-700">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <span class="text-[11px] uppercase font-bold text-slate-400 block mb-0.5">Teacher</span>
+      <div class="p-4 space-y-3 text-xs text-slate-700">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Teacher</span>
             <span id="modal-teacher" class="font-semibold text-slate-900 block">--</span>
           </div>
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <span class="text-[11px] uppercase font-bold text-slate-400 block mb-0.5">Classroom</span>
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Classroom</span>
             <span id="modal-classroom" class="font-semibold text-slate-900 block">--</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <span class="text-[11px] uppercase font-bold text-slate-400 block mb-0.5">Class / Grade</span>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Class / Grade</span>
             <span id="modal-class" class="font-semibold text-slate-900 block">--</span>
           </div>
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <span class="text-[11px] uppercase font-bold text-slate-400 block mb-0.5">Time Period</span>
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Time Period</span>
             <span id="modal-time" class="font-semibold text-slate-900 block">--</span>
           </div>
         </div>
 
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 font-mono text-xs text-slate-600 space-y-1">
+        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-mono text-[11px] text-slate-600 space-y-1">
           <div class="flex justify-between">
             <span class="text-slate-400">Lesson ID:</span>
             <span id="modal-lesson-id">--</span>
@@ -814,26 +719,30 @@ Referer: https://nampm.edupage.org/timetable/
         </div>
       </div>
 
-      <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 text-right">
-        <button onclick="closeLessonModal()" class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-lg">
+      <div class="bg-slate-50 px-4 py-2.5 border-t border-slate-100 text-right">
+        <button onclick="closeLessonModal()" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-lg">
           Close
         </button>
       </div>
     </div>
   </dialog>
 
-  <!-- Footer -->
-  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto px-4 space-y-2">
-      <div class="flex items-center justify-center space-x-2">
-        <img src="logo.png" alt="Logo" class="w-5 h-5 object-contain">
-        <span class="font-bold text-slate-700">Presidential School in Namangan</span>
-        <span class="text-slate-300">•</span>
-        <span>Islom Karimov Street, Namangan, Uzbekistan</span>
-      </div>
-      <p class="text-slate-400">
-        Connected to EduPage RPC backend services • aSc Timetables Platform (edupage9) • Timezone: Asia/Tashkent (UTC+5)
-      </p>
+  <!-- Slim Single-Page App Footer -->
+  <footer class="bg-white border-t border-slate-200 py-1 px-3 sm:px-4 text-[11px] text-slate-500 flex flex-wrap justify-between items-center shrink-0 z-10 no-print select-none">
+    <div class="flex items-center space-x-2">
+      <img src="logo.png" alt="Logo" class="w-4 h-4 object-contain">
+      <span class="font-bold text-slate-700">Presidential School in Namangan</span>
+      <span class="text-slate-300">•</span>
+      <span class="hidden sm:inline">aSc EduPage 9 (nampm.edupage.org)</span>
+      <span class="text-slate-300 hidden sm:inline">•</span>
+      <span>UTC+5</span>
+    </div>
+    <div class="flex items-center space-x-3">
+      <button onclick="resetUserPreferences()" class="text-slate-500 hover:text-rose-600 transition flex items-center gap-1 font-medium text-[11px]" title="Reset all saved preferences to defaults">
+        <span>↺</span> Reset Preferences
+      </button>
+      <span class="text-slate-300">•</span>
+      <a href="https://nampm.edupage.org" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">Official Portal ↗</a>
     </div>
   </footer>
 
