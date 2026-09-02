@@ -551,6 +551,13 @@ async function handleRequest(req, res) {
     }
   }
 
+  // Stub Vercel analytics & speed insights for local development
+  if (pathname.startsWith('/_vercel/')) {
+    res.writeHead(200, { 'Content-Type': 'application/javascript' });
+    res.end('/* Vercel Insights & Speed Insights dev stub */');
+    return;
+  }
+
   // Static File Serving
   let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
   const extname = path.extname(filePath).toLowerCase();
