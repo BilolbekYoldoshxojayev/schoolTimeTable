@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   applyDensity(state.densityMode);
   applyStatsBanner(state.statsBannerCollapsed);
   setupEventListeners();
-  renderSliderScaleTicks('fullday');
+  renderSliderScaleTicks();
 
   // Restore saved form inputs
   const versionSelect = document.getElementById('version-select');
@@ -451,7 +451,7 @@ function updateCurrentTimeLine() {
     }
   }
 
-  // If targetX wasn't set by an active card on todayRow, calculate from column / break / boundary
+  // If targetX wasn't set by an active card on todayRow, calculate from column / break gap / boundary
   if (targetX === null) {
     if (schedState.activePeriod) {
       const th = document.getElementById(`th-period-${schedState.activePeriod.id}`);
@@ -461,27 +461,42 @@ function updateCurrentTimeLine() {
         targetX = colLeft + (schedState.periodFraction * colWidth);
         pillText = `${schedState.shortTimeString} • ${schedState.remainingMinutes}m left`;
       }
+    } else if (schedState.totalMinutes >= 480 && schedState.totalMinutes < 510) {
+      // Morning Arrival Gap (08:00 - 08:30)
+      const th = document.getElementById('th-gap-morning');
+      if (th) {
+        const frac = Math.max(0, Math.min(1, (schedState.totalMinutes - 480) / 30));
+        targetX = th.offsetLeft + (frac * th.offsetWidth);
+        const minsUntil = Math.max(0, 510 - Math.floor(schedState.totalMinutes));
+        pillText = `${schedState.shortTimeString} • Arrival (P1 in ${minsUntil}m)`;
+      }
     } else if (schedState.activeBreak) {
       const b = schedState.activeBreak;
-      const thPrev = document.getElementById(`th-period-${b.afterPeriod}`);
-      const thNext = document.getElementById(`th-period-${b.nextPeriod}`);
-      if (thPrev && thNext) {
-        const startX = thPrev.offsetLeft + thPrev.offsetWidth;
-        const endX = thNext.offsetLeft;
-        targetX = startX + (schedState.breakFraction * Math.max(1, endX - startX));
+      let thBreak = null;
+      if (b.isLong) {
+        thBreak = document.getElementById('th-gap-recess');
+      } else if (b.isLunch) {
+        thBreak = document.getElementById('th-gap-lunch');
+      } else if (b.afterPeriod === 1) {
+        thBreak = document.getElementById('th-gap-1');
+      } else if (b.afterPeriod === 2) {
+        thBreak = document.getElementById('th-gap-2');
+      } else if (b.afterPeriod === 4) {
+        thBreak = document.getElementById('th-gap-4');
+      } else if (b.afterPeriod === 6) {
+        thBreak = document.getElementById('th-gap-6');
+      }
+
+      if (thBreak) {
+        const frac = Math.max(0, Math.min(1, (schedState.totalMinutes - b.startMin) / (b.endMin - b.startMin)));
+        targetX = thBreak.offsetLeft + (frac * thBreak.offsetWidth);
+        pillText = `${schedState.shortTimeString} • ${b.name} (${schedState.remainingMinutes}m left)`;
+      } else {
+        const thPrev = document.getElementById(`th-period-${b.afterPeriod}`);
+        if (thPrev) targetX = thPrev.offsetLeft + thPrev.offsetWidth;
         pillText = `${schedState.shortTimeString} • ${b.name} (${schedState.remainingMinutes}m left)`;
       }
-    } else if (schedState.isBeforeSchool) {
-      const th1 = document.getElementById('th-period-1');
-      if (th1) {
-        targetX = th1.offsetLeft;
-        const minsUntil = Math.max(0, 510 - Math.floor(schedState.totalMinutes));
-        const h = Math.floor(minsUntil / 60);
-        const m = minsUntil % 60;
-        const waitStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-        pillText = `${schedState.shortTimeString} • Starts in ${waitStr}`;
-      }
-    } else if (schedState.isAfterSchool) {
+    } else if (schedState.totalMinutes >= 935) {
       const th7 = document.getElementById('th-period-7');
       if (th7) {
         targetX = th7.offsetLeft + th7.offsetWidth;
@@ -489,7 +504,13 @@ function updateCurrentTimeLine() {
         const h = Math.floor(minsSince / 60);
         const m = minsSince % 60;
         const agoStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-        pillText = `${schedState.shortTimeString} • Ended (${agoStr} ago)`;
+        pillText = `${schedState.shortTimeString} • Day Ended (${agoStr} ago)`;
+      }
+    } else if (schedState.totalMinutes < 480) {
+      const th = document.getElementById('th-gap-morning');
+      if (th) {
+        targetX = th.offsetLeft;
+        pillText = `${schedState.shortTimeString} • Doors Open at 08:00`;
       }
     }
   }
@@ -584,8 +605,7 @@ function toggleTimeSimulator() {
   if (popover) {
     popover.classList.toggle('hidden');
     if (!popover.classList.contains('hidden')) {
-      const slider = document.getElementById('time-slider');
-      renderSliderScaleTicks(slider && slider.min === '480' ? 'school' : 'fullday');
+      renderSliderScaleTicks();
       updateTimeSimulatorUI();
     }
   }
@@ -651,28 +671,23 @@ function setSimulatedRangeMode(mode) {
 }
 window.setSimulatedRangeMode = setSimulatedRangeMode;
 
-function renderSliderScaleTicks(mode = 'fullday') {
+function renderSliderScaleTicks() {
   const container = document.getElementById('slider-scale-container');
   if (!container) return;
 
-  const ticks = mode === 'school' ? [
-    { val: 480, label: '08:00', isEdge: 'start' },
+  const ticks = [
+    { val: 480, label: '08:00', isEdge: 'start', title: 'School Doors Open & Arrival (08:00)' },
     { val: 510, label: '08:30 (P1)', title: 'Period 1 Starts (08:30)' },
-    { val: 660, label: '11:00 (Recess)', title: 'Morning Recess (11:00)' },
-    { val: 780, label: '13:00 (Lunch)', title: 'Lunch Break (13:00)' },
-    { val: 935, label: '15:35 (P7)', title: 'School Ends (15:35)' },
-    { val: 960, label: '16:00', isEdge: 'end' }
-  ] : [
-    { val: 0, label: '00:00', isEdge: 'start' },
-    { val: 510, label: '08:30 (P1)', title: 'Period 1 Starts (08:30)' },
-    { val: 780, label: '13:00 (Lunch)', title: 'Lunch Break (13:00)' },
-    { val: 935, label: '15:35 (P7)', title: 'School Ends (15:35)' },
-    { val: 1439, label: '23:59', isEdge: 'end' }
+    { val: 655, label: '10:55 (Recess)', title: 'Morning Recess (10:55 - 11:25)' },
+    { val: 685, label: '11:25 (P4)', title: 'Period 4 Starts (11:25)' },
+    { val: 780, label: '13:00 (Lunch)', title: 'Lunch Break (13:00 - 14:00)' },
+    { val: 840, label: '14:00 (P6)', title: 'Period 6 Starts (14:00)' },
+    { val: 935, label: '15:35', isEdge: 'end', title: 'School Dismissal (15:35)' }
   ];
 
-  const min = mode === 'school' ? 480 : 0;
-  const max = mode === 'school' ? 960 : 1439;
-  const span = max - min;
+  const min = 480;
+  const max = 935;
+  const span = max - min; // 455 minutes
 
   container.innerHTML = ticks.map(t => {
     const fraction = Math.max(0, Math.min(1, (t.val - min) / span));
@@ -703,33 +718,25 @@ window.renderSliderScaleTicks = renderSliderScaleTicks;
 function stepSimulatedTime(deltaMinutes) {
   const current = state.simulatedMinutes !== null ? state.simulatedMinutes : 580;
   let next = current + deltaMinutes;
-  if (next < 0) next = 1440 + next;
-  if (next >= 1440) next = next % 1440;
+  if (next < 480) next = 480;
+  if (next > 935) next = 935;
   applySimulatedTime(next);
 }
 window.stepSimulatedTime = stepSimulatedTime;
 
 function setSimulatedPeriod(periodOrPhase) {
   const presets = {
-    // Full 24-hour milestones
-    'midnight': 0,     // 00:00 Midnight
-    'early': 420,      // 07:00 Early Morning
-    'open': 495,       // 08:15 School Opens
-    // Academic periods & breaks
+    'open': 480,       // 08:00 School Arrival
     1: 530,            // 08:50 (in Period 1)
     2: 580,            // 09:40 (in Period 2)
     3: 630,            // 10:30 (in Period 3)
-    'recess': 665,     // 11:05 (Morning Recess)
+    'recess': 665,     // 11:05 (in Morning Recess)
     4: 705,            // 11:45 (in Period 4)
     5: 760,            // 12:40 (in Period 5)
-    'lunch': 810,      // 13:30 (Lunch Break)
+    'lunch': 810,      // 13:30 (in Lunch Break)
     6: 860,            // 14:20 (in Period 6)
     7: 910,            // 15:10 (in Period 7)
-    // After school & evening
-    'dismissal': 945,  // 15:45 Dismissal
-    'clubs': 1020,     // 17:00 Clubs / Sports
-    'evening': 1200,   // 20:00 Evening
-    'night': 1380      // 23:00 Night
+    'dismissal': 935   // 15:35 Dismissal
   };
   const targetMin = presets[periodOrPhase] !== undefined ? presets[periodOrPhase] : 580;
   applySimulatedTime(targetMin);
@@ -1233,20 +1240,32 @@ function renderGrid() {
     }
     tr.appendChild(thDay);
 
-    // Periods 1 through 7 with multi-period span support
+    // Column 2: Morning Arrival Gap (08:00 - 08:30)
+    const tdArrival = document.createElement('td');
+    tdArrival.className = 'border-r border-slate-200 bg-slate-50/50 p-1 text-center select-none align-middle';
+    tdArrival.title = 'School Arrival & Doors Open (08:00 - 08:30)';
+    tdArrival.innerHTML = `
+      <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-slate-100/60 border border-dashed border-slate-200 text-slate-400">
+        <span class="text-[10px]">🌅</span>
+        <span class="text-[8px] font-mono text-slate-400">08:00</span>
+      </div>
+    `;
+    tr.appendChild(tdArrival);
+
+    // Periods 1 through 7 with multi-period span and gap support
     let period = 1;
     while (period <= 7) {
       const currentPeriod = period;
       const items = gridData[day.id]?.[period] || [];
       const primaryItem = items[0];
       const isStartOfMulti = primaryItem && primaryItem.startPeriod === period && primaryItem.duration > 1;
-      const span = isStartOfMulti ? Math.min(primaryItem.duration, 8 - period) : 1;
+      const span = isStartOfMulti ? 3 : 1;
 
       const td = document.createElement('td');
       td.className = 'timetable-cell border-r border-slate-200 align-top p-1';
-      if (period + span - 1 >= 7) td.className = 'timetable-cell align-top p-1';
+      if (period === 7) td.className = 'timetable-cell align-top p-1';
       if (span > 1) {
-        td.colSpan = span;
+        td.colSpan = 3;
         td.className += ' bg-amber-50/20';
       }
 
@@ -1354,7 +1373,49 @@ function renderGrid() {
       }
 
       tr.appendChild(td);
-      period += span;
+
+      if (isStartOfMulti) {
+        period += 2;
+      } else {
+        period += 1;
+      }
+
+      if (period <= 7) {
+        // Gap after (period - 1)
+        const tdGap = document.createElement('td');
+        const afterP = period - 1;
+        if (afterP === 3) {
+          // Morning Recess (10:55 - 11:25)
+          tdGap.className = 'border-r border-amber-200 bg-amber-50/40 p-1 text-center select-none align-middle';
+          tdGap.title = 'Morning Recess (10:55 - 11:25)';
+          tdGap.innerHTML = `
+            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 border border-amber-200/80 text-amber-800 text-[10px] font-bold shadow-2xs">
+              <span>☕</span>
+              <span class="text-[8px] font-semibold text-amber-700 leading-none mt-0.5">Recess</span>
+            </div>
+          `;
+        } else if (afterP === 5) {
+          // Lunch & Recreation (13:00 - 14:00)
+          tdGap.className = 'border-r border-amber-200 bg-amber-50/40 p-1 text-center select-none align-middle';
+          tdGap.title = 'Lunch & Recreation (13:00 - 14:00)';
+          tdGap.innerHTML = `
+            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 border border-amber-200/80 text-amber-800 text-[10px] font-bold shadow-2xs">
+              <span>🍽️</span>
+              <span class="text-[8px] font-semibold text-amber-700 leading-none mt-0.5">Lunch</span>
+            </div>
+          `;
+        } else {
+          // 5m passing break (1, 2, 4, 6)
+          tdGap.className = 'border-r border-slate-200/60 bg-slate-50/30 p-0 text-center select-none align-middle';
+          tdGap.title = 'Passing Break (5 min)';
+          tdGap.innerHTML = `
+            <div class="h-full min-h-[36px] flex items-center justify-center">
+              <div class="w-px h-5 bg-slate-200"></div>
+            </div>
+          `;
+        }
+        tr.appendChild(tdGap);
+      }
     }
 
     tbody.appendChild(tr);
@@ -1367,14 +1428,14 @@ function renderGrid() {
 function showLoadingGrid() {
   const tbody = document.getElementById('timetable-grid-body');
   if (tbody) {
-    tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">Loading schedule data...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="15" class="p-8 text-center text-slate-400">Loading schedule data...</td></tr>`;
   }
 }
 
 function showErrorGrid(msg) {
   const tbody = document.getElementById('timetable-grid-body');
   if (tbody) {
-    tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-rose-500 font-medium">${msg}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="15" class="p-8 text-center text-rose-500 font-medium">${msg}</td></tr>`;
   }
 }
 

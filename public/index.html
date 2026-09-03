@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <script>
     tailwind.config = {
       theme: {
@@ -273,45 +273,22 @@
                   </div>
                 </div>
 
-                <!-- Full Day 24-Hour Slider -->
+                <!-- School Day 08:00 – 15:35 Slider -->
                 <div class="space-y-1.5 pt-1">
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-1">
                       <span class="text-[10px] uppercase font-bold text-slate-500">Timeline Slider:</span>
-                      <span id="slider-range-desc" class="text-[10px] font-semibold text-slate-400">(00:00 – 23:59)</span>
+                      <span id="slider-range-desc" class="text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200">08:00 – 15:35</span>
                     </div>
-                    <!-- Range Mode Toggle -->
-                    <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[10px]">
-                      <button onclick="setSimulatedRangeMode('fullday')" id="btn-range-fullday" class="px-2 py-0.5 rounded-md font-bold bg-blue-600 text-white shadow-2xs">24h Full Day</button>
-                      <button onclick="setSimulatedRangeMode('school')" id="btn-range-school" class="px-2 py-0.5 rounded-md font-medium text-slate-600 hover:text-slate-900">School Hours</button>
-                    </div>
+                    <span class="text-[10px] text-slate-400 font-mono">7 Periods + Gaps</span>
                   </div>
 
                   <!-- Slider Track -->
                   <div class="relative py-1">
-                    <input type="range" id="time-slider" min="0" max="1439" step="1" value="580" class="w-full accent-blue-600 cursor-pointer h-2 bg-slate-200 rounded-lg">
-                    <!-- Scale ticks container mathematically aligned with slider values -->
+                    <input type="range" id="time-slider" min="480" max="935" step="1" value="580" class="w-full accent-blue-600 cursor-pointer h-2 bg-slate-200 rounded-lg">
+                    <!-- Scale ticks container mathematically aligned with slider values (480 to 935) -->
                     <div id="slider-scale-container" class="relative h-6 text-[9px] font-mono select-none mt-1">
-                      <div class="slider-tick-marker absolute top-0 left-0 flex flex-col items-start cursor-pointer group" onclick="applySimulatedTime(0)" title="00:00 Midnight">
-                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
-                        <span id="slider-min-label" class="text-slate-400 group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">00:00</span>
-                      </div>
-                      <div class="slider-tick-marker absolute top-0 flex flex-col items-center -translate-x-1/2 cursor-pointer group" style="left: calc(8px + (100% - 16px) * 0.3544);" onclick="applySimulatedTime(510)" title="08:30 Period 1 Starts">
-                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
-                        <span class="text-slate-500 font-semibold group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">08:30 (P1)</span>
-                      </div>
-                      <div class="slider-tick-marker absolute top-0 flex flex-col items-center -translate-x-1/2 cursor-pointer group" style="left: calc(8px + (100% - 16px) * 0.5420);" onclick="applySimulatedTime(780)" title="13:00 Lunch Break">
-                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
-                        <span class="text-slate-500 font-semibold group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">13:00 (Lunch)</span>
-                      </div>
-                      <div class="slider-tick-marker absolute top-0 flex flex-col items-center -translate-x-1/2 cursor-pointer group" style="left: calc(8px + (100% - 16px) * 0.6498);" onclick="applySimulatedTime(935)" title="15:35 School Ends">
-                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
-                        <span class="text-slate-500 font-semibold group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">15:35 (P7)</span>
-                      </div>
-                      <div class="slider-tick-marker absolute top-0 right-0 flex flex-col items-end cursor-pointer group" onclick="applySimulatedTime(1439)" title="23:59 End of Day">
-                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
-                        <span id="slider-max-label" class="text-slate-400 group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">23:59</span>
-                      </div>
+                      <!-- Rendered by renderSliderScaleTicks() -->
                     </div>
                   </div>
 
@@ -332,32 +309,28 @@
 
                 <!-- Quick Jump Presets -->
                 <div class="space-y-2 pt-1 border-t border-slate-100">
-                  <!-- School Periods -->
+                  <!-- Non-Lesson Gaps & Break Presets -->
                   <div>
-                    <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Academic Periods & Breaks:</span>
+                    <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Gaps & Non-Lesson Times:</span>
+                    <div class="grid grid-cols-4 gap-1">
+                      <button onclick="setSimulatedPeriod('open')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 text-[10px] font-semibold border border-slate-200">🌅 08:00 Arrival</button>
+                      <button onclick="setSimulatedPeriod('recess')" class="px-1.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">☕ 10:55 Recess</button>
+                      <button onclick="setSimulatedPeriod('lunch')" class="px-1.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">🍽️ 13:00 Lunch</button>
+                      <button onclick="setSimulatedPeriod('dismissal')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 text-[10px] font-semibold border border-slate-200">🏁 15:35 Dismiss</button>
+                    </div>
+                  </div>
+
+                  <!-- Academic Periods -->
+                  <div>
+                    <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Academic Lessons (P1 – P7):</span>
                     <div class="grid grid-cols-4 gap-1">
                       <button onclick="setSimulatedPeriod(1)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P1 08:50</button>
                       <button onclick="setSimulatedPeriod(2)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P2 09:40</button>
                       <button onclick="setSimulatedPeriod(3)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P3 10:30</button>
-                      <button onclick="setSimulatedPeriod('recess')" class="px-1.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">☕ Recess</button>
                       <button onclick="setSimulatedPeriod(4)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P4 11:45</button>
                       <button onclick="setSimulatedPeriod(5)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P5 12:40</button>
-                      <button onclick="setSimulatedPeriod('lunch')" class="px-1.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">🍽️ Lunch</button>
                       <button onclick="setSimulatedPeriod(6)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P6 14:20</button>
-                      <button onclick="setSimulatedPeriod(7)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200 col-span-4">P7 15:10</button>
-                    </div>
-                  </div>
-
-                  <!-- Full Day Milestones -->
-                  <div>
-                    <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Full 24-Hour Day Milestones:</span>
-                    <div class="grid grid-cols-3 gap-1">
-                      <button onclick="setSimulatedPeriod('midnight')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🌑 00:00 Mid</button>
-                      <button onclick="setSimulatedPeriod('early')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🌅 07:00 Morning</button>
-                      <button onclick="setSimulatedPeriod('open')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🔔 08:15 Open</button>
-                      <button onclick="setSimulatedPeriod('dismissal')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🏃 15:45 Dismiss</button>
-                      <button onclick="setSimulatedPeriod('clubs')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">⚽ 17:00 Clubs</button>
-                      <button onclick="setSimulatedPeriod('evening')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🌙 20:00 Night</button>
+                      <button onclick="setSimulatedPeriod(7)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200 col-span-2">P7 15:10</button>
                     </div>
                   </div>
                 </div>
@@ -399,36 +372,52 @@
         </div>
 
         <div id="timetable-scroll-container" class="flex-1 min-h-0 overflow-x-auto overflow-y-hidden flex flex-col relative">
-          <div id="timetable-table-wrapper" class="relative min-w-[840px] flex-1 flex flex-col">
-            <table id="timetable-table" class="timetable-table min-w-[840px] text-left border-collapse">
+          <div id="timetable-table-wrapper" class="relative min-w-[960px] flex-1 flex flex-col">
+            <table id="timetable-table" class="timetable-table min-w-[960px] text-left border-collapse">
               <thead class="bg-slate-100/90 border-b border-slate-200 text-xs font-semibold text-slate-600 shrink-0 select-none">
-                <tr class="h-8">
-                  <th class="p-1 w-24 border-r border-slate-200 text-center text-xs">Day / Period</th>
-                  <th id="th-period-1" class="p-1 border-r border-slate-200 text-center w-[13.5%] transition">
+                <tr class="h-8 select-none">
+                  <th class="p-1 w-20 sm:w-24 border-r border-slate-200 text-center text-xs">Day / Period</th>
+                  <th id="th-gap-morning" class="p-1 border-r border-slate-200 text-center w-10 sm:w-12 bg-slate-50/70 text-slate-500" title="School Doors Open & Arrival (08:00 - 08:30)">
+                    <div class="font-bold text-[10px]">🌅 Arrival</div>
+                    <div class="text-[8px] text-slate-400 font-normal">08:00</div>
+                  </th>
+                  <th id="th-period-1" class="p-1 border-r border-slate-200 text-center w-[12%] transition">
                     <div class="font-bold text-[11px]">Period 1</div>
                     <div class="text-[9px] text-slate-400 font-normal">08:30 - 09:15</div>
                   </th>
-                  <th id="th-period-2" class="p-1 border-r border-slate-200 text-center w-[13.5%] transition">
+                  <th id="th-gap-1" class="p-0.5 border-r border-slate-200 text-center w-3.5 bg-slate-50/50 text-slate-400 font-mono text-[8px]" title="Passing Break (09:15 - 09:20)">5m</th>
+                  <th id="th-period-2" class="p-1 border-r border-slate-200 text-center w-[12%] transition">
                     <div class="font-bold text-[11px]">Period 2</div>
                     <div class="text-[9px] text-slate-400 font-normal">09:20 - 10:05</div>
                   </th>
-                  <th id="th-period-3" class="p-1 border-r border-slate-200 text-center w-[13.5%] transition">
+                  <th id="th-gap-2" class="p-0.5 border-r border-slate-200 text-center w-3.5 bg-slate-50/50 text-slate-400 font-mono text-[8px]" title="Passing Break (10:05 - 10:10)">5m</th>
+                  <th id="th-period-3" class="p-1 border-r border-slate-200 text-center w-[12%] transition">
                     <div class="font-bold text-[11px]">Period 3</div>
                     <div class="text-[9px] text-slate-400 font-normal">10:10 - 10:55</div>
                   </th>
-                  <th id="th-period-4" class="p-1 border-r border-slate-200 text-center w-[13.5%] transition">
+                  <th id="th-gap-recess" class="p-1 border-r border-amber-200 text-center w-12 sm:w-14 bg-amber-50/80 text-amber-800" title="Morning Recess (10:55 - 11:25)">
+                    <div class="font-bold text-[10px]">☕ Recess</div>
+                    <div class="text-[8px] text-amber-600 font-normal">10:55 - 11:25</div>
+                  </th>
+                  <th id="th-period-4" class="p-1 border-r border-slate-200 text-center w-[12%] transition">
                     <div class="font-bold text-[11px]">Period 4</div>
                     <div class="text-[9px] text-slate-400 font-normal">11:25 - 12:10</div>
                   </th>
-                  <th id="th-period-5" class="p-1 border-r border-slate-200 text-center w-[13.5%] transition">
+                  <th id="th-gap-4" class="p-0.5 border-r border-slate-200 text-center w-3.5 bg-slate-50/50 text-slate-400 font-mono text-[8px]" title="Passing Break (12:10 - 12:15)">5m</th>
+                  <th id="th-period-5" class="p-1 border-r border-slate-200 text-center w-[12%] transition">
                     <div class="font-bold text-[11px]">Period 5</div>
                     <div class="text-[9px] text-slate-400 font-normal">12:15 - 13:00</div>
                   </th>
-                  <th id="th-period-6" class="p-1 border-r border-slate-200 text-center w-[13.5%] transition">
+                  <th id="th-gap-lunch" class="p-1 border-r border-amber-200 text-center w-14 sm:w-16 bg-amber-50/80 text-amber-800" title="Lunch & Recreation (13:00 - 14:00)">
+                    <div class="font-bold text-[10px]">🍽️ Lunch</div>
+                    <div class="text-[8px] text-amber-600 font-normal">13:00 - 14:00</div>
+                  </th>
+                  <th id="th-period-6" class="p-1 border-r border-slate-200 text-center w-[12%] transition">
                     <div class="font-bold text-[11px]">Period 6</div>
                     <div class="text-[9px] text-slate-400 font-normal">14:00 - 14:45</div>
                   </th>
-                  <th id="th-period-7" class="p-1 text-center w-[13.5%] transition">
+                  <th id="th-gap-6" class="p-0.5 border-r border-slate-200 text-center w-3.5 bg-slate-50/50 text-slate-400 font-mono text-[8px]" title="Passing Break (14:45 - 14:50)">5m</th>
+                  <th id="th-period-7" class="p-1 text-center w-[12%] transition">
                     <div class="font-bold text-[11px]">Period 7</div>
                     <div class="text-[9px] text-slate-400 font-normal">14:50 - 15:35</div>
                   </th>
@@ -912,6 +901,6 @@ Referer: https://nampm.edupage.org/timetable/
   </footer>
 
   <!-- Main JavaScript Controller -->
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>
