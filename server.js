@@ -159,7 +159,13 @@ function transformTimetableData(rawDbi) {
   (tables.classes || []).forEach(c => { classesMap[c.id] = c; });
   (tables.teachers || []).forEach(t => { teachersMap[t.id] = t; });
   (tables.subjects || []).forEach(s => { subjectsMap[s.id] = s; });
-  (tables.classrooms || []).forEach(r => { classroomsMap[r.id] = r; });
+  (tables.classrooms || []).forEach(r => {
+    if (r.name && r.name.toLowerCase() === 's-zal') {
+      r.name = 'Sport Zal';
+      r.short = 'Sport Zal';
+    }
+    classroomsMap[r.id] = r;
+  });
   (tables.periods || []).forEach(p => { periodsMap[p.period || p.id] = p; });
   (tables.days || []).forEach(d => { daysMap[d.id] = d; });
   (tables.lessons || []).forEach(l => { lessonsMap[l.id] = l; });

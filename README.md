@@ -38,9 +38,9 @@ This repository provides everything developers need to build custom student apps
 
 The included web app provides an 8-tab dashboard connected to the live school APIs:
 
-1. **📅 Interactive Weekly Timetable**: View by **Class** (14 classes), **Teacher** (36 faculty), or **Classroom** (20 rooms) with version switcher across 8 terms. Features automatic multi-period spanning (`colSpan = 2`) for Grade 10 & 11 elective block lessons (A10, B10, A11, B11) with zero schedule gaps.
+1. **📅 Interactive Weekly Timetable**: View by **Class** (14 classes), **Teacher** (36 faculty), or **Classroom** (20 rooms, including normalized gymnasium "Sport Zal") with version switcher across 8 terms. Features automatic multi-period spanning (`colSpan = 2`) for Grade 10 & 11 elective block lessons (A10, B10, A11, B11) with zero schedule gaps. Real-time timeline indicator, live Tashkent clock (UTC+5), and interactive lesson inspector modal with accurate period timings.
 2. **⚡ Live Substitution Viewer**: Daily teacher substitutions with date picker and "By Classes" or "By Teachers" view.
-3. **🏛 Master Directory**: Filterable cards for all 36 teachers, 14 classes, 20 classrooms (with occupancy % metrics), 39 subjects, and 7 bell periods.
+3. **🏛 Master Directory**: Filterable cards for all 36 teachers, 14 classes, 20 classrooms (with occupancy % metrics and Sport Zal gymnasium), 32 organized and deduplicated subjects (categorized across 5 academic departments with period counts, assigned faculty, and cohort distributions), and 7 bell periods.
 4. **🕒 Dynamic Daily Schedule**: Dated daily overrides via `curentttGetData`.
 5. **📰 Official News Feed**: Real-time RSS 2.0 parser.
 6. **🔐 Portal Login Simulation**: Mirroring EduPage credentials, Google Workspace, and Microsoft 365 SSO.
@@ -522,6 +522,8 @@ Referer: https://nampm.edupage.org/timetable/
 - **`__gsh`**: Guest security hash (`"00000000"` for anonymous read-only access).
 - **Day Bitmasks**: EduPage stores days as 5-character bitmasks (`10000` = Mon, `01000` = Tue, `00100` = Wed, `00010` = Thu, `00001` = Fri).
 - **Multi-Period Lessons (`durationperiods`)**: Elective block subjects in grades 10 & 11 (**A10**, **B10**, **A11**, **B11**) specify `durationperiods: 2`. The scheduler places the lesson starting at `card.period` and spans it across `durationperiods` consecutive periods, eliminating schedule gaps and ensuring 100% accurate faculty workloads and classroom bookings.
+- **Room Name Normalization (`Sport Zal`)**: Raw EduPage abbreviation `S-zal` is mapped to canonical `Sport Zal` across the room directory, filter dropdowns, timetable blocks, and inspector modals.
+- **Curriculum Subject Deduplication & Organization**: Consolidates 39 raw EduPage subject entries (including multiple split records for `Science` and trailing-dot variants like `Mathematics.`) into 32 unified academic disciplines. Groups them into 5 academic departments (STEM & Computing, Languages & Literature, Social Sciences & Humanities, Arts, Sports & Technology, and Specialized & Form Time) with aggregated lesson periods and faculty assignments.
 
 ---
 

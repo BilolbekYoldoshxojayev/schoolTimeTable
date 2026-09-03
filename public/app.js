@@ -64,8 +64,13 @@ const state = {
   substDate: StorageManager.get('substDate', '2026-09-02'),
   directoryTab: StorageManager.get('directoryTab', 'teachers'),
   directorySearchQuery: '',
+  subjectCategoryFilter: 'all',
   currentTab: StorageManager.get('lastTab', 'timetable'),
-  cachedTimetables: {}
+  cachedTimetables: {},
+  simulatedMinutes: null, // null for real time, or total minutes from 00:00 (e.g. 580 for 09:40)
+  simulatedDayId: null,   // null for real day, or '0'..'4'
+  lastKnownPeriodId: null,
+  lastKnownDayId: null
 };
 
 // ============================================================================
@@ -192,6 +197,370 @@ document.addEventListener('DOMContentLoaded', async () => {
   switchTab(state.currentTab);
 });
 
+// ============================================================================
+// Schedule Period Timings & Real-Time Tracking Logic
+// ============================================================================
+const SCHEDULE_PERIODS = [
+  { id: 1, name: 'Period 1', start: '08:30', end: '09:15', startMin: 510, endMin: 555 },
+  { id: 2, name: 'Period 2', start: '09:20', end: '10:05', startMin: 560, endMin: 605 },
+  { id: 3, name: 'Period 3', start: '10:10', end: '10:55', startMin: 610, endMin: 655 },
+  { id: 4, name: 'Period 4', start: '11:25', end: '12:10', startMin: 685, endMin: 730 },
+  { id: 5, name: 'Period 5', start: '12:15', end: '13:00', startMin: 735, endMin: 780 },
+  { id: 6, name: 'Period 6', start: '14:00', end: '14:45', startMin: 840, endMin: 885 },
+  { id: 7, name: 'Period 7', start: '14:50', end: '15:35', startMin: 890, endMin: 935 }
+];
+
+const SCHEDULE_BREAKS = [
+  { afterPeriod: 1, name: 'Short Break', start: '09:15', end: '09:20', startMin: 555, endMin: 560, nextPeriod: 2 },
+  { afterPeriod: 2, name: 'Short Break', start: '10:05', end: '10:10', startMin: 605, endMin: 610, nextPeriod: 3 },
+  { afterPeriod: 3, name: 'Morning Recess', start: '10:55', end: '11:25', startMin: 655, endMin: 685, nextPeriod: 4, isLong: true },
+  { afterPeriod: 4, name: 'Short Break', start: '12:10', end: '12:15', startMin: 730, endMin: 735, nextPeriod: 5 },
+  { afterPeriod: 5, name: 'Lunch & Recreation', start: '13:00', end: '14:00', startMin: 780, endMin: 840, nextPeriod: 6, isLunch: true },
+  { afterPeriod: 6, name: 'Short Break', start: '14:45', end: '14:50', startMin: 885, endMin: 890, nextPeriod: 7 }
+];
+
+function getPeriodStartMinutes(periodNum) {
+  const p = SCHEDULE_PERIODS.find(item => item.id === Number(periodNum));
+  return p ? p.startMin : (510 + (Number(periodNum) - 1) * 50);
+}
+
+function getPeriodEndMinutes(periodNum) {
+  const p = SCHEDULE_PERIODS.find(item => item.id === Number(periodNum));
+  return p ? p.endMin : (555 + (Number(periodNum) - 1) * 50);
+}
+
+function getPeriodStartTimeStr(periodNum) {
+  const p = SCHEDULE_PERIODS.find(item => item.id === Number(periodNum));
+  return p ? p.start : '08:30';
+}
+
+function getPeriodEndTimeStr(periodNum) {
+  const p = SCHEDULE_PERIODS.find(item => item.id === Number(periodNum));
+  return p ? p.end : '09:15';
+}
+
+function getTashkentNow() {
+  const now = new Date();
+  try {
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Tashkent',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+    const parts = formatter.formatToParts(now);
+    const getPart = type => parts.find(p => p.type === type)?.value;
+    const hour = parseInt(getPart('hour'), 10);
+    const minute = parseInt(getPart('minute'), 10);
+    const second = parseInt(getPart('second'), 10);
+    const weekdayStr = getPart('weekday');
+    const weekdayMap = { 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6, 'Sun': 0 };
+    const dayOfWeek = weekdayMap[weekdayStr] ?? now.getDay();
+
+    if (state.simulatedMinutes !== null) {
+      const simHour = Math.floor(state.simulatedMinutes / 60);
+      const simMinute = Math.floor(state.simulatedMinutes % 60);
+      const simSecond = second;
+      const simDay = state.simulatedDayId !== null ? (parseInt(state.simulatedDayId, 10) + 1) : dayOfWeek;
+      return {
+        hour: simHour,
+        minute: simMinute,
+        second: simSecond,
+        dayOfWeek: simDay,
+        totalMinutes: state.simulatedMinutes + (second / 60),
+        timeString: `${String(simHour).padStart(2, '0')}:${String(simMinute).padStart(2, '0')}:${String(simSecond).padStart(2, '0')}`,
+        shortTimeString: `${String(simHour).padStart(2, '0')}:${String(simMinute).padStart(2, '0')}`,
+        isSimulated: true
+      };
+    }
+
+    return {
+      hour,
+      minute,
+      second,
+      dayOfWeek,
+      totalMinutes: hour * 60 + minute + (second / 60),
+      timeString: `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`,
+      shortTimeString: `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
+      isSimulated: false
+    };
+  } catch (e) {
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    const second = now.getSeconds();
+    const totalMinutes = hour * 60 + minute + (second / 60);
+    return {
+      hour,
+      minute,
+      second,
+      dayOfWeek: now.getDay(),
+      totalMinutes,
+      timeString: `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`,
+      shortTimeString: `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
+      isSimulated: false
+    };
+  }
+}
+
+function getCurrentScheduleState() {
+  const time = getTashkentNow();
+  const dayOfWeek = time.dayOfWeek;
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  const currentDayId = isWeekend ? null : String(dayOfWeek - 1); // '0' = Monday, '3' = Thursday
+
+  const totalMinutes = time.totalMinutes;
+  let activePeriod = null;
+  let periodFraction = 0;
+  let remainingMinutes = 0;
+  let elapsedMinutes = 0;
+
+  let activeBreak = null;
+  let breakFraction = 0;
+
+  // Check periods
+  for (const p of SCHEDULE_PERIODS) {
+    if (totalMinutes >= p.startMin && totalMinutes < p.endMin) {
+      activePeriod = p;
+      periodFraction = Math.max(0, Math.min(1, (totalMinutes - p.startMin) / (p.endMin - p.startMin)));
+      remainingMinutes = Math.max(0, Math.ceil(p.endMin - totalMinutes));
+      elapsedMinutes = Math.floor(totalMinutes - p.startMin);
+      break;
+    }
+  }
+
+  // Check breaks
+  if (!activePeriod) {
+    for (const b of SCHEDULE_BREAKS) {
+      if (totalMinutes >= b.startMin && totalMinutes < b.endMin) {
+        activeBreak = b;
+        breakFraction = Math.max(0, Math.min(1, (totalMinutes - b.startMin) / (b.endMin - b.startMin)));
+        remainingMinutes = Math.max(0, Math.ceil(b.endMin - totalMinutes));
+        elapsedMinutes = Math.floor(totalMinutes - b.startMin);
+        break;
+      }
+    }
+  }
+
+  const isBeforeSchool = totalMinutes < 510;
+  const isAfterSchool = totalMinutes >= 935;
+
+  return {
+    ...time,
+    isWeekend,
+    currentDayId,
+    currentPeriod: activePeriod ? activePeriod.id : null,
+    activePeriod,
+    periodFraction,
+    remainingMinutes,
+    elapsedMinutes,
+    activeBreak,
+    breakFraction,
+    isBeforeSchool,
+    isAfterSchool
+  };
+}
+
+function updateCurrentTimeLine() {
+  const schedState = getCurrentScheduleState();
+  const lineEl = document.getElementById('current-time-line');
+  const lineTextEl = document.getElementById('current-time-line-text');
+  const nodeEl = document.getElementById('current-time-node');
+  const headerStatusEl = document.getElementById('grid-header-current-status');
+  const headerStatusText = document.getElementById('header-status-text');
+
+  if (!lineEl || !lineTextEl) return;
+
+  // 1. Highlight the current active period column in thead
+  for (let p = 1; p <= 7; p++) {
+    const th = document.getElementById(`th-period-${p}`);
+    if (th) {
+      if (schedState.currentPeriod === p) {
+        th.classList.add('current-period-col');
+      } else {
+        th.classList.remove('current-period-col');
+      }
+    }
+  }
+
+  // 2. Highlight Today button in Day Filter toolbar
+  document.querySelectorAll('.day-filter-btn').forEach(btn => {
+    const d = btn.getAttribute('data-day');
+    if (d === schedState.currentDayId && !schedState.isWeekend) {
+      btn.classList.add('ring-2', 'ring-blue-400');
+      btn.title = 'Today';
+    } else {
+      btn.classList.remove('ring-2', 'ring-blue-400');
+    }
+  });
+
+  // 3. Compute X position of the timeline indicator
+  let targetX = null;
+  let pillText = '';
+
+  if (schedState.activePeriod) {
+    const th = document.getElementById(`th-period-${schedState.activePeriod.id}`);
+    if (th) {
+      const colLeft = th.offsetLeft;
+      const colWidth = th.offsetWidth;
+      targetX = colLeft + (schedState.periodFraction * colWidth);
+      pillText = `${schedState.shortTimeString} • ${schedState.remainingMinutes}m left`;
+    }
+  } else if (schedState.activeBreak) {
+    const b = schedState.activeBreak;
+    const thPrev = document.getElementById(`th-period-${b.afterPeriod}`);
+    const thNext = document.getElementById(`th-period-${b.nextPeriod}`);
+    if (thPrev && thNext) {
+      const startX = thPrev.offsetLeft + thPrev.offsetWidth;
+      const endX = thNext.offsetLeft;
+      targetX = startX + (schedState.breakFraction * Math.max(1, endX - startX));
+      pillText = `${schedState.shortTimeString} • ${b.name} (${schedState.remainingMinutes}m left)`;
+    }
+  } else if (schedState.isBeforeSchool) {
+    const th1 = document.getElementById('th-period-1');
+    if (th1) {
+      targetX = th1.offsetLeft;
+      pillText = `${schedState.shortTimeString} • Starts at 08:30`;
+    }
+  } else if (schedState.isAfterSchool) {
+    const th7 = document.getElementById('th-period-7');
+    if (th7) {
+      targetX = th7.offsetLeft + th7.offsetWidth;
+      pillText = `${schedState.shortTimeString} • Day Ended`;
+    }
+  }
+
+  // 4. Update vertical line position and text
+  if (targetX !== null) {
+    lineEl.style.left = `${Math.round(targetX)}px`;
+    lineEl.classList.remove('hidden');
+    lineTextEl.textContent = pillText;
+  } else {
+    lineEl.classList.add('hidden');
+  }
+
+  // 5. Position intersection node dot on the current day's row
+  if (nodeEl) {
+    const todayRow = document.querySelector('tr.timetable-current-day-row');
+    if (todayRow && targetX !== null) {
+      const rowTop = todayRow.offsetTop;
+      const rowHeight = todayRow.offsetHeight;
+      nodeEl.style.top = `${rowTop + rowHeight / 2}px`;
+      nodeEl.classList.remove('hidden');
+    } else {
+      nodeEl.classList.add('hidden');
+    }
+  }
+
+  // 6. Update in-card progress bars and timers for active cards
+  document.querySelectorAll('.lesson-card.is-current-lesson').forEach(card => {
+    const fill = card.querySelector('.lesson-progress-fill');
+    if (fill) {
+      fill.style.width = `${Math.min(100, Math.max(0, schedState.periodFraction * 100))}%`;
+    }
+    const timeLeft = card.querySelector('.lesson-time-left');
+    if (timeLeft) {
+      timeLeft.textContent = `${schedState.remainingMinutes}m left`;
+    }
+  });
+
+  // 7. Update header status chip
+  if (headerStatusEl && headerStatusText) {
+    if (schedState.isWeekend) {
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200';
+      headerStatusText.textContent = `🏖️ Weekend (${schedState.timeString})`;
+    } else if (schedState.activePeriod) {
+      const activeCardTitle = document.querySelector('.lesson-card.is-current-lesson .lesson-card-title');
+      const subjectName = activeCardTitle ? (activeCardTitle.getAttribute('title') || activeCardTitle.textContent) : 'Lesson';
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs';
+      headerStatusText.innerHTML = `<span class="font-bold text-rose-800">Period ${schedState.activePeriod.id}:</span> ${subjectName} (${schedState.remainingMinutes}m left)`;
+    } else if (schedState.activeBreak) {
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs';
+      headerStatusText.innerHTML = `<span>☕ ${schedState.activeBreak.name}:</span> Period ${schedState.activeBreak.nextPeriod} in ${schedState.remainingMinutes}m`;
+    } else if (schedState.isBeforeSchool) {
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs';
+      headerStatusText.textContent = `🌅 School Starts at 08:30 (Period 1)`;
+    } else if (schedState.isAfterSchool) {
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200';
+      headerStatusText.textContent = `🏁 Day Ended (15:35)`;
+    }
+  }
+
+  // 8. If period or day changed, trigger grid re-render to update active card markers
+  if (state.lastKnownPeriodId !== schedState.currentPeriod || state.lastKnownDayId !== schedState.currentDayId) {
+    state.lastKnownPeriodId = schedState.currentPeriod;
+    state.lastKnownDayId = schedState.currentDayId;
+    renderGrid();
+  }
+}
+
+// Time Simulator Controllers
+function toggleTimeSimulator() {
+  const popover = document.getElementById('time-simulator-popover');
+  if (popover) {
+    popover.classList.toggle('hidden');
+  }
+}
+
+function setSimulatedPeriod(periodOrBreak) {
+  const presets = {
+    1: 530, // 08:50 (in Period 1)
+    2: 580, // 09:40 (in Period 2)
+    3: 630, // 10:30 (in Period 3)
+    'recess': 665, // 11:05 (in Morning Recess)
+    4: 705, // 11:45 (in Period 4)
+    5: 760, // 12:40 (in Period 5)
+    'lunch': 810, // 13:30 (in Lunch Break)
+    7: 910  // 15:10 (in Period 7)
+  };
+  const targetMin = presets[periodOrBreak] || 580;
+  applySimulatedTime(targetMin);
+}
+
+function applySimulatedTime(totalMinutes) {
+  state.simulatedMinutes = totalMinutes;
+  if (state.simulatedDayId === null) {
+    state.simulatedDayId = '3'; // Default to Thursday if current day is weekend
+  }
+  const slider = document.getElementById('time-slider');
+  const sliderVal = document.getElementById('slider-time-val');
+  const modeLabel = document.getElementById('simulator-mode-label');
+  const btnLabel = document.getElementById('time-sim-label');
+
+  const h = Math.floor(totalMinutes / 60);
+  const m = Math.floor(totalMinutes % 60);
+  const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+
+  if (slider) slider.value = totalMinutes;
+  if (sliderVal) sliderVal.textContent = timeStr;
+  if (modeLabel) modeLabel.innerHTML = `<span class="text-amber-600 font-bold">● Simulated (${timeStr})</span>`;
+  if (btnLabel) btnLabel.textContent = `Sim (${timeStr})`;
+
+  renderGrid();
+  updateCurrentTimeLine();
+}
+
+function resetToLiveTime() {
+  state.simulatedMinutes = null;
+  state.simulatedDayId = null;
+  const slider = document.getElementById('time-slider');
+  const modeLabel = document.getElementById('simulator-mode-label');
+  const btnLabel = document.getElementById('time-sim-label');
+
+  if (modeLabel) modeLabel.innerHTML = `<span class="text-emerald-600 font-bold">● Live Real-Time</span>`;
+  if (btnLabel) btnLabel.textContent = `Live Time`;
+
+  const popover = document.getElementById('time-simulator-popover');
+  if (popover) popover.classList.add('hidden');
+
+  renderGrid();
+  updateCurrentTimeLine();
+}
+
 // Live Tashkent Clock (UTC+5)
 function initClock() {
   const clockEl = document.getElementById('live-clock');
@@ -209,10 +578,15 @@ function initClock() {
     } catch (e) {
       if (clockEl) clockEl.textContent = `Tashkent Time: ${new Date().toLocaleTimeString()} (UTC+5)`;
     }
+    updateCurrentTimeLine();
   }
   updateTime();
   setInterval(updateTime, 1000);
 }
+
+window.addEventListener('resize', () => {
+  updateCurrentTimeLine();
+});
 
 // Setup Event Listeners
 function setupEventListeners() {
@@ -273,6 +647,13 @@ function setupEventListeners() {
     endpointInput.addEventListener('input', updateCurl);
     payloadInput.addEventListener('input', updateCurl);
   }
+
+  const timeSlider = document.getElementById('time-slider');
+  if (timeSlider) {
+    timeSlider.addEventListener('input', (e) => {
+      applySimulatedTime(parseInt(e.target.value, 10));
+    });
+  }
 }
 
 // ============================================================================
@@ -299,6 +680,8 @@ function switchTab(tabId) {
 
   if (tabId === 'directory') {
     renderDirectory();
+  } else if (tabId === 'timetable') {
+    updateCurrentTimeLine();
   } else if (tabId === 'substitution' && !state.substitutionData) {
     loadSubstitution();
   }
@@ -339,6 +722,7 @@ async function loadTimetable(ttNum = '13') {
     state.cachedTimetables[ttNum] = data;
 
     updateKPIs(data.stats);
+    updateDirectoryTabBadges();
     populateEntityDropdown();
     renderGrid();
     renderDirectory();
@@ -358,9 +742,11 @@ function updateKPIs(stats = {}) {
   const lessonsEl = document.getElementById('stat-lessons');
   const cardsEl = document.getElementById('stat-cards');
 
+  const uniqueSubs = state.timetableData ? getOrganizedSubjects(state.timetableData).length : 32;
+
   if (classesEl) classesEl.textContent = stats.totalClasses || 14;
   if (teachersEl) teachersEl.textContent = stats.totalTeachers || 36;
-  if (subjectsEl) subjectsEl.textContent = stats.totalSubjects || 39;
+  if (subjectsEl) subjectsEl.textContent = uniqueSubs;
   if (roomsEl) roomsEl.textContent = stats.totalClassrooms || 20;
   if (lessonsEl) lessonsEl.textContent = stats.totalLessons || 222;
   if (cardsEl) cardsEl.textContent = stats.totalCards || 434;
@@ -414,7 +800,7 @@ function populateEntityDropdown() {
     items = (state.timetableData.teachers || []).map(t => ({ id: t.id, name: `Teacher: ${t.name || t.short}` }));
     items.sort((a, b) => a.name.localeCompare(b.name));
   } else if (state.filterMode === 'classroom') {
-    items = (state.timetableData.classrooms || []).map(r => ({ id: r.id, name: `Room: ${r.name}` }));
+    items = (state.timetableData.classrooms || []).map(r => ({ id: r.id, name: `Room: ${normalizeClassroomName(r.name)}` }));
     items.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
   }
 
@@ -500,32 +886,51 @@ function renderGrid() {
   } else if (state.filterMode === 'classroom') {
     gridData = data.classroomGrid?.[state.selectedEntityId] || {};
     currentEntity = (data.classrooms || []).find(r => r.id === state.selectedEntityId);
-    if (titleEl) titleEl.textContent = `Schedule for Room ${currentEntity?.name || ''}`;
+    if (titleEl) titleEl.textContent = `Schedule for Room ${normalizeClassroomName(currentEntity?.name || '')}`;
     if (subtitleEl) subtitleEl.textContent = `Occupancy: ${currentEntity?.bookedSlots || 0}/35 slots (${currentEntity?.utilizationRate || 0}% utilization)`;
   }
 
   tbody.innerHTML = '';
+
+  const schedState = getCurrentScheduleState();
 
   const daysToRender = state.activeDayFilter === 'all'
     ? days
     : days.filter(d => d.id === state.activeDayFilter);
 
   daysToRender.forEach(day => {
+    const isToday = day.id === schedState.currentDayId && !schedState.isWeekend;
+
     const tr = document.createElement('tr');
-    tr.className = 'timetable-day-row hover:bg-slate-50/50 transition border-b border-slate-200/80';
+    tr.className = `timetable-day-row ${isToday ? 'timetable-current-day-row bg-blue-50/20' : 'hover:bg-slate-50/50'} transition border-b border-slate-200/80`;
 
     // Day label cell
     const thDay = document.createElement('th');
-    thDay.className = 'p-1 font-semibold text-slate-800 bg-slate-50/80 border-r border-slate-200 text-center w-24 select-none';
-    thDay.innerHTML = `
-      <div class="text-xs font-bold leading-tight">${day.name}</div>
-      <div class="text-[10px] text-slate-400 font-normal uppercase tracking-wider">${day.short}</div>
-    `;
+    if (isToday) {
+      thDay.className = 'p-1 font-semibold text-slate-800 bg-blue-100/60 border-r-2 border-r-blue-500 text-center w-24 select-none';
+      thDay.innerHTML = `
+        <div class="text-xs font-bold leading-tight flex items-center justify-center gap-1 text-blue-950">
+          ${day.name}
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" title="Today"></span>
+        </div>
+        <div class="flex items-center justify-center gap-1 mt-0.5">
+          <span class="text-[10px] text-blue-700 font-bold uppercase tracking-wider">${day.short}</span>
+          <span class="px-1 py-0.2 rounded text-[8px] font-black bg-blue-600 text-white leading-none tracking-wide">TODAY</span>
+        </div>
+      `;
+    } else {
+      thDay.className = 'p-1 font-semibold text-slate-800 bg-slate-50/80 border-r border-slate-200 text-center w-24 select-none';
+      thDay.innerHTML = `
+        <div class="text-xs font-bold leading-tight">${day.name}</div>
+        <div class="text-[10px] text-slate-400 font-normal uppercase tracking-wider">${day.short}</div>
+      `;
+    }
     tr.appendChild(thDay);
 
     // Periods 1 through 7 with multi-period span support
     let period = 1;
     while (period <= 7) {
+      const currentPeriod = period;
       const items = gridData[day.id]?.[period] || [];
       const primaryItem = items[0];
       const isStartOfMulti = primaryItem && primaryItem.startPeriod === period && primaryItem.duration > 1;
@@ -561,11 +966,11 @@ function renderGrid() {
           let subText = '';
           if (state.filterMode === 'class') {
             const tNames = item.teachers.map(t => t.short).join(', ') || 'Staff';
-            const rNames = item.classrooms.map(r => r.short).join(', ') || 'TBD';
+            const rNames = item.classrooms.map(r => normalizeClassroomName(r.short || r.name)).join(', ') || 'TBD';
             subText = `${tNames} • <span class="font-bold text-slate-800">${rNames}</span>`;
           } else if (state.filterMode === 'teacher') {
             const cNames = item.classes.map(c => c.short).join(', ') || 'Class';
-            const rNames = item.classrooms.map(r => r.short).join(', ') || 'TBD';
+            const rNames = item.classrooms.map(r => normalizeClassroomName(r.short || r.name)).join(', ') || 'TBD';
             subText = `<span class="font-bold text-blue-700">${cNames}</span> • ${rNames}`;
           } else if (state.filterMode === 'classroom') {
             const cNames = item.classes.map(c => c.short).join(', ') || 'Class';
@@ -578,19 +983,57 @@ function renderGrid() {
             badgeHtml = `<span class="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shrink-0 ml-0.5">2P</span>`;
           }
 
-          card.className = 'lesson-card rounded-md border border-slate-200/90 bg-white cursor-pointer relative overflow-hidden h-full flex flex-col justify-center select-none shadow-2xs hover:shadow-xs transition';
+          // Check if this card represents the current active lesson
+          const startP = Number(item.startPeriod || item.period || currentPeriod);
+          const dur = Number(item.duration || 1);
+          const endP = startP + dur - 1;
+          const isCurrentLesson = isToday && schedState.activePeriod && (schedState.activePeriod.id >= startP && schedState.activePeriod.id <= endP);
+
+          let liveBadgeHtml = '';
+          let progressHtml = '';
+
+          if (isCurrentLesson) {
+            liveBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-500 text-white shrink-0 ml-1 shadow-2xs animate-pulse"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>NOW</span>`;
+
+            const startMin = getPeriodStartMinutes(startP);
+            const endMin = getPeriodEndMinutes(endP);
+            const cardProgress = Math.max(0, Math.min(1, (schedState.totalMinutes - startMin) / Math.max(1, endMin - startMin)));
+            const cardPercent = Math.min(100, Math.max(0, Math.round(cardProgress * 100)));
+            const cardRemainingMin = Math.max(0, Math.ceil(endMin - schedState.totalMinutes));
+
+            progressHtml = `
+              <div class="lesson-progress-wrap mt-1" title="${cardPercent}% elapsed • ${cardRemainingMin}m remaining">
+                <div class="lesson-progress-fill" style="width: ${cardPercent}%;">
+                  <div class="lesson-progress-pointer"></div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center text-[9px] text-slate-500 font-mono mt-0.5">
+                <span>${getPeriodStartTimeStr(startP)}</span>
+                <span class="lesson-time-left font-sans font-bold text-rose-600">${cardRemainingMin}m left</span>
+                <span>${getPeriodEndTimeStr(endP)}</span>
+              </div>
+            `;
+          }
+
+          card.className = `lesson-card ${isCurrentLesson ? 'is-current-lesson' : ''} rounded-md border border-slate-200/90 bg-white cursor-pointer relative overflow-hidden h-full flex flex-col justify-center select-none shadow-2xs hover:shadow-xs transition`;
           card.innerHTML = `
             <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: ${bgColor}"></div>
             <div class="pl-1.5 min-w-0">
               <div class="flex items-center justify-between gap-0.5">
-                <div class="font-bold text-slate-900 truncate lesson-card-title" title="${item.subject.name}">${item.subject.name}</div>
-                ${badgeHtml}
+                <div class="font-bold text-slate-900 truncate lesson-card-title flex items-center gap-1 min-w-0" title="${item.subject.name}">
+                  <span class="truncate">${item.subject.name}</span>
+                </div>
+                <div class="flex items-center shrink-0">
+                  ${badgeHtml}
+                  ${liveBadgeHtml}
+                </div>
               </div>
               <div class="text-slate-500 truncate lesson-card-sub mt-0.5">${subText}</div>
+              ${progressHtml}
             </div>
           `;
 
-          card.onclick = () => openLessonModal(item, period, day.name);
+          card.onclick = () => openLessonModal(item, startP, day.name);
           stack.appendChild(card);
         });
 
@@ -605,6 +1048,9 @@ function renderGrid() {
 
     tbody.appendChild(tr);
   });
+
+  // Position vertical time line immediately after DOM render
+  updateCurrentTimeLine();
 }
 
 function showLoadingGrid() {
@@ -646,32 +1092,35 @@ function openLessonModal(item, periodNumber, dayName) {
     7: '14:50 – 15:35'
   };
 
-  const startP = item.startPeriod || periodNumber;
-  const dur = item.duration || 1;
+  const startP = Number(item?.startPeriod || item?.period || periodNumber || 1);
+  const dur = Number(item?.duration || 1);
   const endP = startP + dur - 1;
+
+  const sTime = (periodMap[startP] ? periodMap[startP].split('–')[0].trim() : getPeriodStartTimeStr(startP));
+  const eTime = (periodMap[endP] ? periodMap[endP].split('–')[1].trim() : getPeriodEndTimeStr(endP));
+
   let timeStr = '';
-  if (dur > 1 && periodMap[startP] && periodMap[endP]) {
-    const sTime = periodMap[startP].split('–')[0].trim();
-    const eTime = periodMap[endP].split('–')[1].trim();
+  if (dur > 1) {
     timeStr = `${dayName}, Periods ${startP}–${endP} (${sTime} – ${eTime}) • Double Period (${dur * 45} mins)`;
   } else {
-    timeStr = `${dayName}, Period ${periodNumber} (${periodMap[periodNumber] || ''})`;
+    const pTime = periodMap[startP] || `${sTime} – ${eTime}`;
+    timeStr = `${dayName}, Period ${startP} (${pTime})`;
   }
 
-  if (header) header.style.backgroundColor = item.subject.color || '#2563eb';
+  if (header) header.style.backgroundColor = item?.subject?.color || '#2563eb';
   if (subjectTag) {
-    const doubleTag = dur > 1 ? ` • Double Period (2x 45 min)` : '';
-    subjectTag.textContent = `Course • ${item.subject.short || 'ID: ' + item.subject.id}${doubleTag}`;
+    const doubleTag = dur > 1 ? ` • Double Period (${dur}x 45 min)` : '';
+    subjectTag.textContent = `Course • ${item?.subject?.short || 'ID: ' + (item?.subject?.id || '')}${doubleTag}`;
   }
-  if (subjectName) subjectName.textContent = item.subject.name;
+  if (subjectName) subjectName.textContent = item?.subject?.name || 'Untitled Lesson';
 
-  if (teacherVal) teacherVal.textContent = item.teachers.map(t => t.name || t.short).join(', ') || 'Not Assigned';
-  if (classroomVal) classroomVal.textContent = item.classrooms.map(r => r.name).join(', ') || 'General Classroom';
-  if (classVal) classVal.textContent = item.classes.map(c => c.name).join(', ') || 'All Groups';
+  if (teacherVal) teacherVal.textContent = (item?.teachers || []).map(t => t.name || t.short).join(', ') || 'Not Assigned';
+  if (classroomVal) classroomVal.textContent = (item?.classrooms || []).map(r => normalizeClassroomName(r.name || r.short)).join(', ') || 'General Classroom';
+  if (classVal) classVal.textContent = (item?.classes || []).map(c => c.name).join(', ') || 'All Groups';
   if (timeVal) timeVal.textContent = timeStr;
 
-  if (lessonIdVal) lessonIdVal.textContent = item.lessonId || 'N/A';
-  if (cardIdVal) cardIdVal.textContent = item.cardId || 'N/A';
+  if (lessonIdVal) lessonIdVal.textContent = item?.lessonId || 'N/A';
+  if (cardIdVal) cardIdVal.textContent = item?.cardId || 'N/A';
 
   modal.showModal();
 }
@@ -812,6 +1261,138 @@ function setSubstDateRelative(deltaDays) {
 }
 
 // ============================================================================
+// Classroom & Subject Normalization Helpers
+// ============================================================================
+function normalizeClassroomName(name) {
+  if (!name) return '';
+  const trimmed = name.trim();
+  if (trimmed.toLowerCase() === 's-zal') return 'Sport Zal';
+  return trimmed;
+}
+
+function normalizeSubjectName(rawName) {
+  if (!rawName) return 'Untitled Subject';
+  let clean = rawName.trim().replace(/\.+$/, '').trim();
+  if (clean.toLowerCase() === 'english languge') {
+    clean = 'English Language';
+  }
+  return clean;
+}
+
+function getSubjectCategory(name) {
+  const n = (name || '').toLowerCase();
+  if (/physical|sport|military|music|art|drawing|tech/i.test(n)) {
+    return { id: 'arts', name: 'Arts, Sports & Tech', icon: '🎨', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' };
+  }
+  if (/math|science|physics|chem|bio|comput/i.test(n)) {
+    return { id: 'stem', name: 'STEM & Computing', icon: '📐', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' };
+  }
+  if (/english|language|literature|russian/i.test(n)) {
+    return { id: 'languages', name: 'Languages & Literature', icon: '📖', bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' };
+  }
+  if (/history|geography|law|global|education/i.test(n)) {
+    return { id: 'social', name: 'Social Sciences & Humanities', icon: '🌍', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' };
+  }
+  if (/kelajak|a10|b10|a11|b11/i.test(n)) {
+    return { id: 'specialized', name: 'Specialized & Form Time', icon: '⭐', bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' };
+  }
+  return { id: 'other', name: 'General Studies', icon: '📚', bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200' };
+}
+
+function getOrganizedSubjects(data) {
+  if (!data) return [];
+  const subjectsMap = new Map();
+
+  // 1. Initialize grouped subjects from data.subjects
+  (data.subjects || []).forEach(s => {
+    const normName = normalizeSubjectName(s.name);
+    const key = normName.toLowerCase();
+
+    if (!subjectsMap.has(key)) {
+      const cat = getSubjectCategory(normName);
+      subjectsMap.set(key, {
+        name: normName,
+        short: (s.short || '').trim().replace(/\.+$/, '').trim() || normName.substring(0, 4).toUpperCase(),
+        color: s.color || '#3b82f6',
+        category: cat,
+        rawIds: [s.id],
+        totalLessons: s.totalLessons || 0,
+        mergedCount: 1,
+        teachers: new Set(),
+        classes: new Set()
+      });
+    } else {
+      const existing = subjectsMap.get(key);
+      existing.rawIds.push(s.id);
+      existing.totalLessons += (s.totalLessons || 0);
+      existing.mergedCount += 1;
+      if (s.color && s.color !== '#999999' && existing.color === '#999999') {
+        existing.color = s.color;
+      }
+    }
+  });
+
+  // 2. Scan classGrid to associate teachers and classes to each subject accurately
+  if (data.classGrid) {
+    for (const [classId, dayObj] of Object.entries(data.classGrid)) {
+      const targetClass = (data.classes || []).find(c => c.id === classId);
+      const className = targetClass ? (targetClass.name || targetClass.short) : classId;
+
+      for (const daySlots of Object.values(dayObj)) {
+        for (const items of Object.values(daySlots)) {
+          for (const item of items) {
+            if (item.isContinuation) continue;
+            const normName = normalizeSubjectName(item.subject?.name);
+            const key = normName.toLowerCase();
+            const record = subjectsMap.get(key);
+            if (record) {
+              if (className) record.classes.add(className);
+              (item.teachers || []).forEach(t => {
+                const tName = t.name || t.short;
+                if (tName) record.teachers.add(tName);
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 3. Convert teachers and classes sets to sorted arrays
+  const result = Array.from(subjectsMap.values()).map(sub => ({
+    ...sub,
+    teachersList: Array.from(sub.teachers).sort((a, b) => a.localeCompare(b)),
+    classesList: Array.from(sub.classes).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  }));
+
+  return result;
+}
+
+function filterSubjectCategory(catId) {
+  state.subjectCategoryFilter = catId;
+  renderDirectory();
+}
+window.filterSubjectCategory = filterSubjectCategory;
+
+function updateDirectoryTabBadges() {
+  if (!state.timetableData) return;
+  const facultyCount = (state.timetableData.teachers || []).length;
+  const classCount = (state.timetableData.classes || []).length;
+  const roomCount = (state.timetableData.classrooms || []).length;
+  const subjectCount = getOrganizedSubjects(state.timetableData).length;
+
+  const bFaculty = document.getElementById('dirtab-teachers');
+  const bClasses = document.getElementById('dirtab-classes');
+  const bRooms = document.getElementById('dirtab-classrooms');
+  const bSubjects = document.getElementById('dirtab-subjects');
+
+  if (bFaculty) bFaculty.innerHTML = `👨‍🏫 Faculty (${facultyCount})`;
+  if (bClasses) bClasses.innerHTML = `🏫 Classes (${classCount})`;
+  if (bRooms) bRooms.innerHTML = `🚪 Rooms (${roomCount})`;
+  if (bSubjects) bSubjects.innerHTML = `📚 Subjects (${subjectCount})`;
+}
+
+// ============================================================================
 // TAB 3: SCHOOL DIRECTORY & ENTITY EXPLORER
 // ============================================================================
 function switchDirectoryTab(subTab) {
@@ -913,7 +1494,8 @@ function renderDirectory() {
     `;
   } else if (subTab === 'classrooms') {
     const rooms = (state.timetableData.classrooms || []).filter(r => {
-      return (r.name || '').toLowerCase().includes(q);
+      const roomName = normalizeClassroomName(r.name);
+      return roomName.toLowerCase().includes(q) || (r.short || '').toLowerCase().includes(q);
     });
 
     rooms.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
@@ -921,6 +1503,7 @@ function renderDirectory() {
     container.innerHTML = `
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         ${rooms.map(r => {
+          const roomName = normalizeClassroomName(r.name);
           const util = r.utilizationRate || 0;
           let utilColor = 'bg-emerald-500';
           if (util > 75) utilColor = 'bg-rose-500';
@@ -932,7 +1515,7 @@ function renderDirectory() {
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-2">
                     <span class="w-3 h-3 rounded-full" style="background-color: ${r.color || '#a855f7'}"></span>
-                    <h3 class="font-bold text-slate-900 text-base">Room ${r.name}</h3>
+                    <h3 class="font-bold text-slate-900 text-base">Room ${roomName}</h3>
                   </div>
                   <span class="text-xs font-mono text-slate-500 font-semibold">${r.bookedSlots || 0}/35</span>
                 </div>
@@ -955,28 +1538,154 @@ function renderDirectory() {
       </div>
     `;
   } else if (subTab === 'subjects') {
-    const subjects = (state.timetableData.subjects || []).filter(s => {
-      return (s.name || '').toLowerCase().includes(q) || (s.short || '').toLowerCase().includes(q);
-    });
+    const allOrganized = getOrganizedSubjects(state.timetableData);
 
-    subjects.sort((a, b) => a.name.localeCompare(b.name));
+    const categories = [
+      { id: 'all', name: 'All Disciplines', icon: '📚' },
+      { id: 'stem', name: 'STEM & Computing', icon: '📐' },
+      { id: 'languages', name: 'Languages & Literature', icon: '📖' },
+      { id: 'social', name: 'Social Sciences & Humanities', icon: '🌍' },
+      { id: 'arts', name: 'Arts, Sports & Tech', icon: '🎨' },
+      { id: 'specialized', name: 'Specialized & Form Time', icon: '⭐' }
+    ];
+
+    const categoryCounts = {
+      all: allOrganized.length,
+      stem: allOrganized.filter(s => s.category.id === 'stem').length,
+      languages: allOrganized.filter(s => s.category.id === 'languages').length,
+      social: allOrganized.filter(s => s.category.id === 'social').length,
+      arts: allOrganized.filter(s => s.category.id === 'arts').length,
+      specialized: allOrganized.filter(s => s.category.id === 'specialized').length
+    };
+
+    const activeCat = state.subjectCategoryFilter || 'all';
+
+    let filtered = allOrganized;
+    if (activeCat !== 'all') {
+      filtered = filtered.filter(s => s.category.id === activeCat);
+    }
+    if (q) {
+      filtered = filtered.filter(s => {
+        const matchName = s.name.toLowerCase().includes(q);
+        const matchShort = s.short.toLowerCase().includes(q);
+        const matchCat = s.category.name.toLowerCase().includes(q);
+        const matchTeachers = s.teachersList.some(t => t.toLowerCase().includes(q));
+        const matchClasses = s.classesList.some(c => c.toLowerCase().includes(q));
+        return matchName || matchShort || matchCat || matchTeachers || matchClasses;
+      });
+    }
+
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+    const totalCurriculumPeriods = allOrganized.reduce((acc, s) => acc + (s.totalLessons || 0), 0);
+    const totalTeachersCount = new Set(allOrganized.flatMap(s => s.teachersList)).size;
 
     container.innerHTML = `
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        ${subjects.map(s => `
-          <div class="p-3.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between space-x-3">
-            <div class="flex items-center space-x-2.5 min-w-0">
-              <span class="w-3.5 h-3.5 rounded-md flex-shrink-0" style="background-color: ${s.color || '#3b82f6'}"></span>
-              <div class="truncate">
-                <div class="font-bold text-slate-900 text-xs truncate" title="${s.name}">${s.name}</div>
-                <div class="text-[11px] font-mono text-slate-400 uppercase">${s.short || 'N/A'}</div>
+      <div class="space-y-4">
+        <!-- Subjects Top Controls & Department Category Filter Pills -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold shadow-2xs">📚</span>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm leading-tight">Academic Curriculum & Disciplines</h3>
+                <p class="text-[11px] text-slate-500">Organized by academic departments • Consolidated and deduplicated from raw EduPage schedule entries</p>
               </div>
             </div>
-            <span class="text-xs font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 flex-shrink-0">
-              ${s.totalLessons || 0} periods
-            </span>
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-100 text-[11px]">
+                ${allOrganized.length} Disciplines
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-medium border border-slate-200 text-[11px]">
+                ${totalCurriculumPeriods} Periods / Week
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-100 text-[11px]">
+                ${totalTeachersCount} Faculty
+              </span>
+            </div>
           </div>
-        `).join('')}
+
+          <!-- Category Filter Pills -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+            ${categories.map(c => {
+              const count = categoryCounts[c.id] || 0;
+              const isActive = activeCat === c.id;
+              const btnClass = isActive
+                ? 'bg-blue-600 text-white font-bold shadow-2xs border-blue-600'
+                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border-slate-200';
+              return `
+                <button onclick="filterSubjectCategory('${c.id}')" class="px-2.5 py-1 rounded-lg text-xs border transition flex items-center gap-1.5 ${btnClass}">
+                  <span>${c.icon}</span>
+                  <span>${c.name}</span>
+                  <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'} font-mono font-bold">${count}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Subjects Grid -->
+        ${filtered.length > 0 ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            ${filtered.map(s => {
+              const teachersPreview = s.teachersList.length > 0
+                ? s.teachersList.slice(0, 3).join(', ') + (s.teachersList.length > 3 ? ` +${s.teachersList.length - 3}` : '')
+                : 'General Faculty';
+              const classesPreview = s.classesList.length > 0
+                ? `${s.classesList.length} Classes (${s.classesList[0]}–${s.classesList[s.classesList.length - 1]})`
+                : 'All Classes';
+              const dedupBadge = s.mergedCount > 1
+                ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shrink-0" title="Consolidated ${s.mergedCount} EduPage entries into a single academic discipline">Deduplicated (${s.mergedCount} entries)</span>`
+                : '';
+
+              return `
+                <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-xs transition flex flex-col justify-between space-y-3 relative overflow-hidden group">
+                  <div class="absolute top-0 left-0 bottom-0 w-1" style="background-color: ${s.color || '#3b82f6'}"></div>
+                  <div class="pl-1">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs" style="background-color: ${s.color || '#3b82f6'}"></span>
+                          <h4 class="font-bold text-slate-900 text-sm truncate leading-tight group-hover:text-blue-600 transition" title="${s.name}">${s.name}</h4>
+                        </div>
+                        <div class="flex items-center flex-wrap gap-1.5 mt-1">
+                          <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.2 rounded uppercase">${s.short}</span>
+                          <span class="text-[10px] font-medium px-2 py-0.2 rounded-full ${s.category.bg} ${s.category.text} border ${s.category.border}">${s.category.name}</span>
+                        </div>
+                      </div>
+                      <div class="flex flex-col items-end shrink-0">
+                        <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 shadow-2xs">
+                          ${s.totalLessons} periods
+                        </span>
+                        <div class="mt-1">${dedupBadge}</div>
+                      </div>
+                    </div>
+
+                    <div class="mt-3 pt-2.5 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-slate-400 font-medium">Faculty (${s.teachersList.length}):</span>
+                        <span class="font-semibold text-slate-800 truncate max-w-[65%]" title="${s.teachersList.join(', ')}">${teachersPreview}</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-slate-400 font-medium">Class Cohort:</span>
+                        <span class="font-semibold text-slate-700 truncate max-w-[65%]" title="${s.classesList.join(', ')}">${classesPreview}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        ` : `
+          <div class="p-12 text-center bg-white rounded-2xl border border-slate-200 text-slate-400 space-y-2">
+            <div class="text-3xl">🔍</div>
+            <div class="font-bold text-slate-700">No subjects found matching current filter</div>
+            <p class="text-xs text-slate-400">Try changing department filter or clearing your search term</p>
+            <button onclick="filterSubjectCategory('all'); const inp = document.getElementById('directory-search-input'); if(inp){ inp.value=''; state.directorySearchQuery=''; } renderDirectory();" class="mt-2 px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold text-xs rounded-lg transition border border-blue-100">
+              Reset Filters
+            </button>
+          </div>
+        `}
       </div>
     `;
   } else if (subTab === 'bells') {

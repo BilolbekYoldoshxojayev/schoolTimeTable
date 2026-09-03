@@ -68,6 +68,10 @@ def transform_dbi(raw_dbi):
     teachers_map = {t['id']: t for t in tables.get('teachers', [])}
     subjects_map = {s['id']: s for s in tables.get('subjects', [])}
     classrooms_map = {r['id']: r for r in tables.get('classrooms', [])}
+    for r in classrooms_map.values():
+        if (r.get('name') or '').lower() == 's-zal':
+            r['name'] = 'Sport Zal'
+            r['short'] = 'Sport Zal'
     periods_map = {p.get('period', p.get('id')): p for p in tables.get('periods', [])}
     lessons_map = {l['id']: l for l in tables.get('lessons', [])}
 
