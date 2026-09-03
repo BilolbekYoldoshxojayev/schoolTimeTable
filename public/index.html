@@ -239,40 +239,118 @@
                 <span id="time-sim-icon">⏰</span> <span id="time-sim-label" class="hidden sm:inline">Live Time</span>
               </button>
               <!-- Time Simulator Dropdown/Popover -->
-              <div id="time-simulator-popover" class="hidden absolute right-0 top-full mt-1 w-72 bg-white rounded-xl shadow-xl border border-slate-200 p-3 z-50 text-xs space-y-2">
-                <div class="flex items-center justify-between font-bold text-slate-800 pb-1 border-b border-slate-100">
-                  <span>⏱ Schedule Time Controller</span>
-                  <button onclick="toggleTimeSimulator()" class="text-slate-400 hover:text-slate-600 text-sm">✕</button>
+              <div id="time-simulator-popover" class="hidden absolute right-0 top-full mt-1 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3.5 z-50 text-xs space-y-3">
+                <div class="flex items-center justify-between font-bold text-slate-800 pb-2 border-b border-slate-100">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-5 h-5 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs">⏱</span>
+                    <span class="text-sm font-extrabold text-slate-900">Schedule Time Controller</span>
+                  </div>
+                  <button onclick="toggleTimeSimulator()" class="text-slate-400 hover:text-slate-600 p-0.5 rounded-md hover:bg-slate-100 text-sm">✕</button>
                 </div>
-                <div class="flex items-center justify-between text-[11px] text-slate-500">
-                  <span>Mode:</span>
-                  <span id="simulator-mode-label" class="font-bold text-emerald-600">● Live Real-Time</span>
+
+                <!-- Active Mode & Time Status Pill -->
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-[11px]">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span id="simulator-mode-dot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                    <span id="simulator-mode-label" class="font-bold text-slate-800 truncate">Live Real-Time Clock</span>
+                  </div>
+                  <span id="simulator-phase-pill" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-700 border border-slate-200 shrink-0 shadow-2xs">Live</span>
                 </div>
-                <div>
-                  <label for="time-slider" class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scrub School Day (08:15 – 16:00):</label>
-                  <input type="range" id="time-slider" min="495" max="960" step="1" value="623" class="w-full accent-blue-600 cursor-pointer">
-                  <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-0.5">
-                    <span>08:15</span>
-                    <span id="slider-time-val" class="font-bold text-blue-600">10:23</span>
-                    <span>16:00</span>
+
+                <!-- Day of Week Selector (Full Week Simulation) -->
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between text-[10px] uppercase font-bold text-slate-400">
+                    <span>Simulate Day:</span>
+                    <span id="sim-day-label" class="text-blue-600 font-bold lowercase">auto (today)</span>
+                  </div>
+                  <div class="grid grid-cols-6 gap-1" id="sim-day-btn-group">
+                    <button onclick="setSimulatedDay('0')" data-simday="0" class="sim-day-btn py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-200 transition text-center">Mon</button>
+                    <button onclick="setSimulatedDay('1')" data-simday="1" class="sim-day-btn py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-200 transition text-center">Tue</button>
+                    <button onclick="setSimulatedDay('2')" data-simday="2" class="sim-day-btn py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-200 transition text-center">Wed</button>
+                    <button onclick="setSimulatedDay('3')" data-simday="3" class="sim-day-btn py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-200 transition text-center">Thu</button>
+                    <button onclick="setSimulatedDay('4')" data-simday="4" class="sim-day-btn py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-200 transition text-center">Fri</button>
+                    <button onclick="setSimulatedDay('weekend')" data-simday="weekend" class="sim-day-btn py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-200 transition text-center">Wknd</button>
                   </div>
                 </div>
-                <div class="pt-1 border-t border-slate-100">
-                  <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Jump to Period / Break:</span>
-                  <div class="grid grid-cols-4 gap-1">
-                    <button onclick="setSimulatedPeriod(1)" class="px-1.5 py-1 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P1 08:50</button>
-                    <button onclick="setSimulatedPeriod(2)" class="px-1.5 py-1 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P2 09:40</button>
-                    <button onclick="setSimulatedPeriod(3)" class="px-1.5 py-1 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P3 10:30</button>
-                    <button onclick="setSimulatedPeriod('recess')" class="px-1.5 py-1 rounded bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">Recess</button>
-                    <button onclick="setSimulatedPeriod(4)" class="px-1.5 py-1 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P4 11:45</button>
-                    <button onclick="setSimulatedPeriod(5)" class="px-1.5 py-1 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P5 12:40</button>
-                    <button onclick="setSimulatedPeriod('lunch')" class="px-1.5 py-1 rounded bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">Lunch</button>
-                    <button onclick="setSimulatedPeriod(7)" class="px-1.5 py-1 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P7 15:10</button>
+
+                <!-- Full Day 24-Hour Slider -->
+                <div class="space-y-1.5 pt-1">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1">
+                      <span class="text-[10px] uppercase font-bold text-slate-500">Timeline Slider:</span>
+                      <span id="slider-range-desc" class="text-[10px] font-semibold text-slate-400">(00:00 – 23:59)</span>
+                    </div>
+                    <!-- Range Mode Toggle -->
+                    <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[10px]">
+                      <button onclick="setSimulatedRangeMode('fullday')" id="btn-range-fullday" class="px-2 py-0.5 rounded-md font-bold bg-blue-600 text-white shadow-2xs">24h Full Day</button>
+                      <button onclick="setSimulatedRangeMode('school')" id="btn-range-school" class="px-2 py-0.5 rounded-md font-medium text-slate-600 hover:text-slate-900">School Hours</button>
+                    </div>
+                  </div>
+
+                  <!-- Slider Track -->
+                  <div class="relative py-1">
+                    <input type="range" id="time-slider" min="0" max="1439" step="1" value="580" class="w-full accent-blue-600 cursor-pointer h-2 bg-slate-200 rounded-lg">
+                    <!-- Scale ticks -->
+                    <div class="flex justify-between text-[9px] font-mono text-slate-400 mt-1">
+                      <span id="slider-min-label">00:00</span>
+                      <span class="text-slate-500 font-semibold" title="School Starts">08:30 (P1)</span>
+                      <span class="text-slate-500 font-semibold" title="Lunch Break">13:00 (Lunch)</span>
+                      <span class="text-slate-500 font-semibold" title="School Ends">15:35 (P7)</span>
+                      <span id="slider-max-label">23:59</span>
+                    </div>
+                  </div>
+
+                  <!-- Digital Time Readout & Fine Tune Steppers -->
+                  <div class="flex items-center justify-between bg-blue-50/50 p-2 rounded-xl border border-blue-100">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span id="slider-time-val" class="font-mono font-black text-lg text-blue-700 leading-none shrink-0">09:40</span>
+                      <span id="slider-phase-text" class="text-[11px] font-semibold text-blue-900 truncate">Period 2 (09:20 – 10:05)</span>
+                    </div>
+                    <div class="flex items-center gap-0.5 shrink-0">
+                      <button onclick="stepSimulatedTime(-15)" class="px-1.5 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 shadow-2xs" title="Step back 15 minutes">-15m</button>
+                      <button onclick="stepSimulatedTime(-5)" class="px-1.5 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 shadow-2xs" title="Step back 5 minutes">-5m</button>
+                      <button onclick="stepSimulatedTime(5)" class="px-1.5 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 shadow-2xs" title="Step forward 5 minutes">+5m</button>
+                      <button onclick="stepSimulatedTime(15)" class="px-1.5 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 shadow-2xs" title="Step forward 15 minutes">+15m</button>
+                    </div>
                   </div>
                 </div>
-                <div class="pt-1 flex gap-1">
-                  <button onclick="resetToLiveTime()" class="w-full py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] border border-blue-200 flex items-center justify-center gap-1">
-                    <span>🔄</span> Reset to Live Clock
+
+                <!-- Quick Jump Presets -->
+                <div class="space-y-2 pt-1 border-t border-slate-100">
+                  <!-- School Periods -->
+                  <div>
+                    <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Academic Periods & Breaks:</span>
+                    <div class="grid grid-cols-4 gap-1">
+                      <button onclick="setSimulatedPeriod(1)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P1 08:50</button>
+                      <button onclick="setSimulatedPeriod(2)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P2 09:40</button>
+                      <button onclick="setSimulatedPeriod(3)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P3 10:30</button>
+                      <button onclick="setSimulatedPeriod('recess')" class="px-1.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">☕ Recess</button>
+                      <button onclick="setSimulatedPeriod(4)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P4 11:45</button>
+                      <button onclick="setSimulatedPeriod(5)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P5 12:40</button>
+                      <button onclick="setSimulatedPeriod('lunch')" class="px-1.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">🍽️ Lunch</button>
+                      <button onclick="setSimulatedPeriod(6)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200">P6 14:20</button>
+                      <button onclick="setSimulatedPeriod(7)" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[10px] font-semibold border border-slate-200 col-span-4">P7 15:10</button>
+                    </div>
+                  </div>
+
+                  <!-- Full Day Milestones -->
+                  <div>
+                    <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Full 24-Hour Day Milestones:</span>
+                    <div class="grid grid-cols-3 gap-1">
+                      <button onclick="setSimulatedPeriod('midnight')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🌑 00:00 Mid</button>
+                      <button onclick="setSimulatedPeriod('early')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🌅 07:00 Morning</button>
+                      <button onclick="setSimulatedPeriod('open')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🔔 08:15 Open</button>
+                      <button onclick="setSimulatedPeriod('dismissal')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🏃 15:45 Dismiss</button>
+                      <button onclick="setSimulatedPeriod('clubs')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">⚽ 17:00 Clubs</button>
+                      <button onclick="setSimulatedPeriod('evening')" class="px-1.5 py-1 rounded-lg bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-[10px] font-semibold border border-slate-200">🌙 20:00 Night</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="pt-1 border-t border-slate-100 flex gap-1">
+                  <button onclick="resetToLiveTime()" class="w-full py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 flex items-center justify-center gap-1.5 transition shadow-2xs">
+                    <span>🔄</span> Reset to Live Real-Time Clock
                   </button>
                 </div>
               </div>
@@ -819,6 +897,6 @@ Referer: https://nampm.edupage.org/timetable/
   </footer>
 
   <!-- Main JavaScript Controller -->
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

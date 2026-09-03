@@ -262,17 +262,23 @@ function getTashkentNow() {
     const weekdayMap = { 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6, 'Sun': 0 };
     const dayOfWeek = weekdayMap[weekdayStr] ?? now.getDay();
 
-    if (state.simulatedMinutes !== null) {
-      const simHour = Math.floor(state.simulatedMinutes / 60);
-      const simMinute = Math.floor(state.simulatedMinutes % 60);
+    if (state.simulatedMinutes !== null || state.simulatedDayId !== null) {
+      const activeMinutes = state.simulatedMinutes !== null ? state.simulatedMinutes : (hour * 60 + minute);
+      const simHour = Math.floor(activeMinutes / 60);
+      const simMinute = Math.floor(activeMinutes % 60);
       const simSecond = second;
-      const simDay = state.simulatedDayId !== null ? (parseInt(state.simulatedDayId, 10) + 1) : dayOfWeek;
+      let simDay = dayOfWeek;
+      if (state.simulatedDayId === 'weekend') {
+        simDay = 6; // Saturday (weekend)
+      } else if (state.simulatedDayId !== null && state.simulatedDayId !== undefined) {
+        simDay = parseInt(state.simulatedDayId, 10) + 1;
+      }
       return {
         hour: simHour,
         minute: simMinute,
         second: simSecond,
         dayOfWeek: simDay,
-        totalMinutes: state.simulatedMinutes + (second / 60),
+        totalMinutes: activeMinutes + (second / 60),
         timeString: `${String(simHour).padStart(2, '0')}:${String(simMinute).padStart(2, '0')}:${String(simSecond).padStart(2, '0')}`,
         shortTimeString: `${String(simHour).padStart(2, '0')}:${String(simMinute).padStart(2, '0')}`,
         isSimulated: true
@@ -293,16 +299,25 @@ function getTashkentNow() {
     const hour = now.getHours();
     const minute = now.getMinutes();
     const second = now.getSeconds();
-    const totalMinutes = hour * 60 + minute + (second / 60);
+    let simDay = now.getDay();
+    if (state.simulatedDayId === 'weekend') {
+      simDay = 6;
+    } else if (state.simulatedDayId !== null && state.simulatedDayId !== undefined) {
+      simDay = parseInt(state.simulatedDayId, 10) + 1;
+    }
+    const isSim = state.simulatedMinutes !== null || state.simulatedDayId !== null;
+    const activeMinutes = state.simulatedMinutes !== null ? state.simulatedMinutes : (hour * 60 + minute);
+    const simHour = Math.floor(activeMinutes / 60);
+    const simMinute = Math.floor(activeMinutes % 60);
     return {
-      hour,
-      minute,
+      hour: simHour,
+      minute: simMinute,
       second,
-      dayOfWeek: now.getDay(),
-      totalMinutes,
-      timeString: `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`,
-      shortTimeString: `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
-      isSimulated: false
+      dayOfWeek: simDay,
+      totalMinutes: activeMinutes + (second / 60),
+      timeString: `${String(simHour).padStart(2, '0')}:${String(simMinute).padStart(2, '0')}:${String(second).padStart(2, '0')}`,
+      shortTimeString: `${String(simHour).padStart(2, '0')}:${String(simMinute).padStart(2, '0')}`,
+      isSimulated: isSim
     };
   }
 }
@@ -424,13 +439,21 @@ function updateCurrentTimeLine() {
     const th1 = document.getElementById('th-period-1');
     if (th1) {
       targetX = th1.offsetLeft;
-      pillText = `${schedState.shortTimeString} • Starts at 08:30`;
+      const minsUntil = Math.max(0, 510 - Math.floor(schedState.totalMinutes));
+      const h = Math.floor(minsUntil / 60);
+      const m = minsUntil % 60;
+      const waitStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+      pillText = `${schedState.shortTimeString} • Starts in ${waitStr}`;
     }
   } else if (schedState.isAfterSchool) {
     const th7 = document.getElementById('th-period-7');
     if (th7) {
       targetX = th7.offsetLeft + th7.offsetWidth;
-      pillText = `${schedState.shortTimeString} • Day Ended`;
+      const minsSince = Math.floor(schedState.totalMinutes - 935);
+      const h = Math.floor(minsSince / 60);
+      const m = minsSince % 60;
+      const agoStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+      pillText = `${schedState.shortTimeString} • Ended (${agoStr} ago)`;
     }
   }
 
@@ -482,11 +505,19 @@ function updateCurrentTimeLine() {
       headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs';
       headerStatusText.innerHTML = `<span>☕ ${schedState.activeBreak.name}:</span> Period ${schedState.activeBreak.nextPeriod} in ${schedState.remainingMinutes}m`;
     } else if (schedState.isBeforeSchool) {
+      const minsUntil = Math.max(0, 510 - Math.floor(schedState.totalMinutes));
+      const h = Math.floor(minsUntil / 60);
+      const m = minsUntil % 60;
+      const waitStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
       headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs';
-      headerStatusText.textContent = `🌅 School Starts at 08:30 (Period 1)`;
+      headerStatusText.innerHTML = `<span>🌅 Before School (${schedState.shortTimeString}):</span> Period 1 in ${waitStr}`;
     } else if (schedState.isAfterSchool) {
+      const minsSince = Math.floor(schedState.totalMinutes - 935);
+      const h = Math.floor(minsSince / 60);
+      const m = minsSince % 60;
+      const agoStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
       headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200';
-      headerStatusText.textContent = `🏁 Day Ended (15:35)`;
+      headerStatusText.innerHTML = `<span>🏁 Day Ended at 15:35</span> (${agoStr} ago • ${schedState.shortTimeString})`;
     }
   }
 
@@ -496,50 +527,214 @@ function updateCurrentTimeLine() {
     state.lastKnownDayId = schedState.currentDayId;
     renderGrid();
   }
+
+  // 9. Sync open schedule controller popover UI if visible
+  const popover = document.getElementById('time-simulator-popover');
+  if (popover && !popover.classList.contains('hidden')) {
+    updateTimeSimulatorUI();
+  }
 }
 
-// Time Simulator Controllers
+// ============================================================================
+// Time & Schedule Simulator Controllers (Full 24-Hour Day & Weekday System)
+// ============================================================================
 function toggleTimeSimulator() {
   const popover = document.getElementById('time-simulator-popover');
   if (popover) {
     popover.classList.toggle('hidden');
+    if (!popover.classList.contains('hidden')) {
+      updateTimeSimulatorUI();
+    }
   }
 }
+window.toggleTimeSimulator = toggleTimeSimulator;
 
-function setSimulatedPeriod(periodOrBreak) {
+function setSimulatedDay(dayId) {
+  state.simulatedDayId = dayId; // '0'..'4' (Mon-Fri) or 'weekend'
+  if (state.simulatedMinutes === null) {
+    state.simulatedMinutes = 580; // Default to Period 2 (09:40) if not currently set
+  }
+  updateTimeSimulatorUI();
+  renderGrid();
+  updateCurrentTimeLine();
+}
+window.setSimulatedDay = setSimulatedDay;
+
+function setSimulatedRangeMode(mode) {
+  const slider = document.getElementById('time-slider');
+  const labelMin = document.getElementById('slider-min-label');
+  const labelMax = document.getElementById('slider-max-label');
+  const rangeDesc = document.getElementById('slider-range-desc');
+  const btnFull = document.getElementById('btn-range-fullday');
+  const btnSchool = document.getElementById('btn-range-school');
+
+  if (!slider) return;
+
+  if (mode === 'school') {
+    slider.min = 480; // 08:00
+    slider.max = 960; // 16:00
+    if (labelMin) labelMin.textContent = '08:00';
+    if (labelMax) labelMax.textContent = '16:00';
+    if (rangeDesc) rangeDesc.textContent = '(08:00 – 16:00)';
+    if (btnSchool) {
+      btnSchool.className = 'px-2 py-0.5 rounded-md font-bold bg-blue-600 text-white shadow-2xs';
+    }
+    if (btnFull) {
+      btnFull.className = 'px-2 py-0.5 rounded-md font-medium text-slate-600 hover:text-slate-900';
+    }
+    const curMin = state.simulatedMinutes ?? 580;
+    if (curMin < 480 || curMin > 960) {
+      applySimulatedTime(580);
+    } else {
+      slider.value = curMin;
+    }
+  } else {
+    // 24-Hour Full Day
+    slider.min = 0;
+    slider.max = 1439;
+    if (labelMin) labelMin.textContent = '00:00';
+    if (labelMax) labelMax.textContent = '23:59';
+    if (rangeDesc) rangeDesc.textContent = '(00:00 – 23:59)';
+    if (btnFull) {
+      btnFull.className = 'px-2 py-0.5 rounded-md font-bold bg-blue-600 text-white shadow-2xs';
+    }
+    if (btnSchool) {
+      btnSchool.className = 'px-2 py-0.5 rounded-md font-medium text-slate-600 hover:text-slate-900';
+    }
+    slider.value = state.simulatedMinutes ?? 580;
+  }
+}
+window.setSimulatedRangeMode = setSimulatedRangeMode;
+
+function stepSimulatedTime(deltaMinutes) {
+  const current = state.simulatedMinutes !== null ? state.simulatedMinutes : 580;
+  let next = current + deltaMinutes;
+  if (next < 0) next = 1440 + next;
+  if (next >= 1440) next = next % 1440;
+  applySimulatedTime(next);
+}
+window.stepSimulatedTime = stepSimulatedTime;
+
+function setSimulatedPeriod(periodOrPhase) {
   const presets = {
-    1: 530, // 08:50 (in Period 1)
-    2: 580, // 09:40 (in Period 2)
-    3: 630, // 10:30 (in Period 3)
-    'recess': 665, // 11:05 (in Morning Recess)
-    4: 705, // 11:45 (in Period 4)
-    5: 760, // 12:40 (in Period 5)
-    'lunch': 810, // 13:30 (in Lunch Break)
-    7: 910  // 15:10 (in Period 7)
+    // Full 24-hour milestones
+    'midnight': 0,     // 00:00 Midnight
+    'early': 420,      // 07:00 Early Morning
+    'open': 495,       // 08:15 School Opens
+    // Academic periods & breaks
+    1: 530,            // 08:50 (in Period 1)
+    2: 580,            // 09:40 (in Period 2)
+    3: 630,            // 10:30 (in Period 3)
+    'recess': 665,     // 11:05 (Morning Recess)
+    4: 705,            // 11:45 (in Period 4)
+    5: 760,            // 12:40 (in Period 5)
+    'lunch': 810,      // 13:30 (Lunch Break)
+    6: 860,            // 14:20 (in Period 6)
+    7: 910,            // 15:10 (in Period 7)
+    // After school & evening
+    'dismissal': 945,  // 15:45 Dismissal
+    'clubs': 1020,     // 17:00 Clubs / Sports
+    'evening': 1200,   // 20:00 Evening
+    'night': 1380      // 23:00 Night
   };
-  const targetMin = presets[periodOrBreak] || 580;
+  const targetMin = presets[periodOrPhase] !== undefined ? presets[periodOrPhase] : 580;
   applySimulatedTime(targetMin);
+}
+window.setSimulatedPeriod = setSimulatedPeriod;
+
+function getSchedulePhaseInfo(totalMinutes, isWeekend) {
+  if (isWeekend) {
+    return { type: 'weekend', title: 'Weekend', subtitle: 'Weekend • School Closed' };
+  }
+  for (const p of SCHEDULE_PERIODS) {
+    if (totalMinutes >= p.startMin && totalMinutes < p.endMin) {
+      const remaining = Math.max(0, Math.ceil(p.endMin - totalMinutes));
+      return { type: 'period', title: `Period ${p.id}`, subtitle: `${p.name} (${p.start} – ${p.end}) • ${remaining}m left` };
+    }
+  }
+  for (const b of SCHEDULE_BREAKS) {
+    if (totalMinutes >= b.startMin && totalMinutes < b.endMin) {
+      const remaining = Math.max(0, Math.ceil(b.endMin - totalMinutes));
+      return { type: 'break', title: b.name, subtitle: `${b.name} (${b.start} – ${b.end}) • P${b.nextPeriod} in ${remaining}m` };
+    }
+  }
+  if (totalMinutes < 510) {
+    const minsUntil = 510 - Math.floor(totalMinutes);
+    const h = Math.floor(minsUntil / 60);
+    const m = minsUntil % 60;
+    const waitStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+    return { type: 'before_school', title: 'Before School', subtitle: `Period 1 starts at 08:30 (in ${waitStr})` };
+  }
+  const minsSince = Math.floor(totalMinutes - 935);
+  const h = Math.floor(minsSince / 60);
+  const m = minsSince % 60;
+  const agoStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+  return { type: 'after_school', title: 'After School', subtitle: `Day ended at 15:35 (${agoStr} ago)` };
+}
+
+function updateTimeSimulatorUI() {
+  const slider = document.getElementById('time-slider');
+  const sliderVal = document.getElementById('slider-time-val');
+  const phaseText = document.getElementById('slider-phase-text');
+  const modeLabel = document.getElementById('simulator-mode-label');
+  const modeDot = document.getElementById('simulator-mode-dot');
+  const phasePill = document.getElementById('simulator-phase-pill');
+  const simDayLabel = document.getElementById('sim-day-label');
+  const btnLabel = document.getElementById('time-sim-label');
+
+  const sched = getCurrentScheduleState();
+  const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const dayName = sched.isWeekend ? 'Weekend' : (dayNames[parseInt(sched.currentDayId || '0', 10)] || 'Weekday');
+
+  // Update day buttons active styles
+  document.querySelectorAll('.sim-day-btn').forEach(btn => {
+    const d = btn.getAttribute('data-simday');
+    const isSelected = (state.simulatedDayId === d) || (state.simulatedDayId === null && ((sched.isWeekend && d === 'weekend') || (!sched.isWeekend && d === sched.currentDayId)));
+    if (isSelected) {
+      btn.className = 'sim-day-btn py-1 rounded-lg bg-blue-600 text-white font-bold text-[11px] shadow-2xs border border-blue-600 transition text-center';
+    } else {
+      btn.className = 'sim-day-btn py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-[11px] border border-slate-200 transition text-center';
+    }
+  });
+
+  const phaseInfo = getSchedulePhaseInfo(sched.totalMinutes, sched.isWeekend);
+
+  if (sliderVal) sliderVal.textContent = sched.shortTimeString;
+  if (phaseText) phaseText.textContent = phaseInfo.subtitle;
+
+  if (state.simulatedMinutes !== null || state.simulatedDayId !== null) {
+    if (slider && state.simulatedMinutes !== null) slider.value = Math.floor(state.simulatedMinutes);
+    if (modeDot) modeDot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0';
+    if (modeLabel) modeLabel.innerHTML = `<span class="text-amber-700 font-bold">Simulating: ${dayName}, ${sched.shortTimeString}</span>`;
+    if (phasePill) {
+      phasePill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shrink-0 shadow-2xs';
+      phasePill.textContent = phaseInfo.title;
+    }
+    if (simDayLabel) simDayLabel.textContent = state.simulatedDayId ? `${dayName}` : 'auto';
+    if (btnLabel) btnLabel.textContent = `Sim: ${dayName.slice(0, 3)} ${sched.shortTimeString}`;
+  } else {
+    if (slider) slider.value = Math.floor(sched.totalMinutes);
+    if (modeDot) modeDot.className = 'w-2 h-2 rounded-full bg-emerald-500 shrink-0';
+    if (modeLabel) modeLabel.innerHTML = `<span class="text-slate-800 font-bold">Live: ${dayName}, ${sched.shortTimeString}</span>`;
+    if (phasePill) {
+      phasePill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-emerald-700 border border-emerald-200 shrink-0 shadow-2xs';
+      phasePill.textContent = phaseInfo.title;
+    }
+    if (simDayLabel) simDayLabel.textContent = `auto (${dayName})`;
+    if (btnLabel) btnLabel.textContent = `Live Time`;
+  }
 }
 
 function applySimulatedTime(totalMinutes) {
   state.simulatedMinutes = totalMinutes;
   if (state.simulatedDayId === null) {
-    state.simulatedDayId = '3'; // Default to Thursday if current day is weekend
+    const today = getTashkentNow();
+    state.simulatedDayId = (!today.isWeekend && today.dayOfWeek >= 1 && today.dayOfWeek <= 5)
+      ? String(today.dayOfWeek - 1)
+      : '3'; // Default to Thursday if weekend or unselected
   }
-  const slider = document.getElementById('time-slider');
-  const sliderVal = document.getElementById('slider-time-val');
-  const modeLabel = document.getElementById('simulator-mode-label');
-  const btnLabel = document.getElementById('time-sim-label');
 
-  const h = Math.floor(totalMinutes / 60);
-  const m = Math.floor(totalMinutes % 60);
-  const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-
-  if (slider) slider.value = totalMinutes;
-  if (sliderVal) sliderVal.textContent = timeStr;
-  if (modeLabel) modeLabel.innerHTML = `<span class="text-amber-600 font-bold">● Simulated (${timeStr})</span>`;
-  if (btnLabel) btnLabel.textContent = `Sim (${timeStr})`;
-
+  updateTimeSimulatorUI();
   renderGrid();
   updateCurrentTimeLine();
 }
@@ -547,12 +742,8 @@ function applySimulatedTime(totalMinutes) {
 function resetToLiveTime() {
   state.simulatedMinutes = null;
   state.simulatedDayId = null;
-  const slider = document.getElementById('time-slider');
-  const modeLabel = document.getElementById('simulator-mode-label');
-  const btnLabel = document.getElementById('time-sim-label');
 
-  if (modeLabel) modeLabel.innerHTML = `<span class="text-emerald-600 font-bold">● Live Real-Time</span>`;
-  if (btnLabel) btnLabel.textContent = `Live Time`;
+  updateTimeSimulatorUI();
 
   const popover = document.getElementById('time-simulator-popover');
   if (popover) popover.classList.add('hidden');
@@ -654,6 +845,17 @@ function setupEventListeners() {
       applySimulatedTime(parseInt(e.target.value, 10));
     });
   }
+
+  // Close schedule controller popover when clicking outside
+  document.addEventListener('click', (e) => {
+    const popover = document.getElementById('time-simulator-popover');
+    const toggleBtn = document.getElementById('time-simulator-btn');
+    if (popover && !popover.classList.contains('hidden')) {
+      if (!popover.contains(e.target) && !toggleBtn?.contains(e.target)) {
+        popover.classList.add('hidden');
+      }
+    }
+  });
 }
 
 // ============================================================================
