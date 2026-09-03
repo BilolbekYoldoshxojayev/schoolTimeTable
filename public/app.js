@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   applyDensity(state.densityMode);
   applyStatsBanner(state.statsBannerCollapsed);
   setupEventListeners();
+  renderSliderScaleTicks('fullday');
 
   // Restore saved form inputs
   const versionSelect = document.getElementById('version-select');
@@ -417,43 +418,79 @@ function updateCurrentTimeLine() {
   let targetX = null;
   let pillText = '';
 
-  if (schedState.activePeriod) {
-    const th = document.getElementById(`th-period-${schedState.activePeriod.id}`);
-    if (th) {
-      const colLeft = th.offsetLeft;
-      const colWidth = th.offsetWidth;
-      targetX = colLeft + (schedState.periodFraction * colWidth);
-      pillText = `${schedState.shortTimeString} • ${schedState.remainingMinutes}m left`;
+  const tableWrapper = document.getElementById('timetable-table-wrapper');
+  const wrapperRect = tableWrapper ? tableWrapper.getBoundingClientRect() : null;
+
+  // Check if there is an active lesson card on the current day's row
+  const todayRow = document.querySelector('tr.timetable-current-day-row');
+  const activeCard = todayRow ? todayRow.querySelector('.lesson-card.is-current-lesson') : null;
+
+  if (activeCard && wrapperRect) {
+    const wrap = activeCard.querySelector('.lesson-progress-wrap');
+    const fill = activeCard.querySelector('.lesson-progress-fill');
+    const timeLeftEl = activeCard.querySelector('.lesson-time-left');
+
+    const startMin = parseFloat(activeCard.dataset.startMin || (schedState.activePeriod ? schedState.activePeriod.startMin : 510));
+    const endMin = parseFloat(activeCard.dataset.endMin || (schedState.activePeriod ? schedState.activePeriod.endMin : 555));
+    const cardProgress = Math.max(0, Math.min(1, (schedState.totalMinutes - startMin) / Math.max(1, endMin - startMin)));
+    const remainingMin = Math.max(0, Math.ceil(endMin - schedState.totalMinutes));
+
+    if (wrap && fill) {
+      const wrapRect = wrap.getBoundingClientRect();
+      const wrapLeft = wrapRect.left - wrapperRect.left;
+      const wrapWidth = wrapRect.width;
+
+      // Update fill width exactly
+      const percent = (cardProgress * 100).toFixed(2);
+      fill.style.width = `${percent}%`;
+      if (timeLeftEl) timeLeftEl.textContent = `${remainingMin}m left`;
+
+      // Align targetX directly with the card's dot position (center of dot is at wrapLeft + cardProgress * wrapWidth)
+      targetX = wrapLeft + (cardProgress * wrapWidth);
+      pillText = `${schedState.shortTimeString} • ${remainingMin}m left`;
     }
-  } else if (schedState.activeBreak) {
-    const b = schedState.activeBreak;
-    const thPrev = document.getElementById(`th-period-${b.afterPeriod}`);
-    const thNext = document.getElementById(`th-period-${b.nextPeriod}`);
-    if (thPrev && thNext) {
-      const startX = thPrev.offsetLeft + thPrev.offsetWidth;
-      const endX = thNext.offsetLeft;
-      targetX = startX + (schedState.breakFraction * Math.max(1, endX - startX));
-      pillText = `${schedState.shortTimeString} • ${b.name} (${schedState.remainingMinutes}m left)`;
-    }
-  } else if (schedState.isBeforeSchool) {
-    const th1 = document.getElementById('th-period-1');
-    if (th1) {
-      targetX = th1.offsetLeft;
-      const minsUntil = Math.max(0, 510 - Math.floor(schedState.totalMinutes));
-      const h = Math.floor(minsUntil / 60);
-      const m = minsUntil % 60;
-      const waitStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-      pillText = `${schedState.shortTimeString} • Starts in ${waitStr}`;
-    }
-  } else if (schedState.isAfterSchool) {
-    const th7 = document.getElementById('th-period-7');
-    if (th7) {
-      targetX = th7.offsetLeft + th7.offsetWidth;
-      const minsSince = Math.floor(schedState.totalMinutes - 935);
-      const h = Math.floor(minsSince / 60);
-      const m = minsSince % 60;
-      const agoStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-      pillText = `${schedState.shortTimeString} • Ended (${agoStr} ago)`;
+  }
+
+  // If targetX wasn't set by an active card on todayRow, calculate from column / break / boundary
+  if (targetX === null) {
+    if (schedState.activePeriod) {
+      const th = document.getElementById(`th-period-${schedState.activePeriod.id}`);
+      if (th) {
+        const colLeft = th.offsetLeft;
+        const colWidth = th.offsetWidth;
+        targetX = colLeft + (schedState.periodFraction * colWidth);
+        pillText = `${schedState.shortTimeString} • ${schedState.remainingMinutes}m left`;
+      }
+    } else if (schedState.activeBreak) {
+      const b = schedState.activeBreak;
+      const thPrev = document.getElementById(`th-period-${b.afterPeriod}`);
+      const thNext = document.getElementById(`th-period-${b.nextPeriod}`);
+      if (thPrev && thNext) {
+        const startX = thPrev.offsetLeft + thPrev.offsetWidth;
+        const endX = thNext.offsetLeft;
+        targetX = startX + (schedState.breakFraction * Math.max(1, endX - startX));
+        pillText = `${schedState.shortTimeString} • ${b.name} (${schedState.remainingMinutes}m left)`;
+      }
+    } else if (schedState.isBeforeSchool) {
+      const th1 = document.getElementById('th-period-1');
+      if (th1) {
+        targetX = th1.offsetLeft;
+        const minsUntil = Math.max(0, 510 - Math.floor(schedState.totalMinutes));
+        const h = Math.floor(minsUntil / 60);
+        const m = minsUntil % 60;
+        const waitStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        pillText = `${schedState.shortTimeString} • Starts in ${waitStr}`;
+      }
+    } else if (schedState.isAfterSchool) {
+      const th7 = document.getElementById('th-period-7');
+      if (th7) {
+        targetX = th7.offsetLeft + th7.offsetWidth;
+        const minsSince = Math.floor(schedState.totalMinutes - 935);
+        const h = Math.floor(minsSince / 60);
+        const m = minsSince % 60;
+        const agoStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        pillText = `${schedState.shortTimeString} • Ended (${agoStr} ago)`;
+      }
     }
   }
 
@@ -466,10 +503,9 @@ function updateCurrentTimeLine() {
     lineEl.classList.add('hidden');
   }
 
-  // 5. Position intersection node dot on the current day's row
+  // 5. Position intersection node dot on the current day's row only if there is no active card dot
   if (nodeEl) {
-    const todayRow = document.querySelector('tr.timetable-current-day-row');
-    if (todayRow && targetX !== null) {
+    if (todayRow && targetX !== null && !activeCard) {
       const rowTop = todayRow.offsetTop;
       const rowHeight = todayRow.offsetHeight;
       nodeEl.style.top = `${rowTop + rowHeight / 2}px`;
@@ -479,15 +515,20 @@ function updateCurrentTimeLine() {
     }
   }
 
-  // 6. Update in-card progress bars and timers for active cards
+  // 6. Update in-card progress bars and timers for other active cards
   document.querySelectorAll('.lesson-card.is-current-lesson').forEach(card => {
+    if (card === activeCard) return;
     const fill = card.querySelector('.lesson-progress-fill');
+    const startMin = parseFloat(card.dataset.startMin || (schedState.activePeriod ? schedState.activePeriod.startMin : 510));
+    const endMin = parseFloat(card.dataset.endMin || (schedState.activePeriod ? schedState.activePeriod.endMin : 555));
+    const cardProgress = Math.max(0, Math.min(1, (schedState.totalMinutes - startMin) / Math.max(1, endMin - startMin)));
+    const remainingMin = Math.max(0, Math.ceil(endMin - schedState.totalMinutes));
     if (fill) {
-      fill.style.width = `${Math.min(100, Math.max(0, schedState.periodFraction * 100))}%`;
+      fill.style.width = `${(cardProgress * 100).toFixed(2)}%`;
     }
     const timeLeft = card.querySelector('.lesson-time-left');
     if (timeLeft) {
-      timeLeft.textContent = `${schedState.remainingMinutes}m left`;
+      timeLeft.textContent = `${remainingMin}m left`;
     }
   });
 
@@ -543,6 +584,8 @@ function toggleTimeSimulator() {
   if (popover) {
     popover.classList.toggle('hidden');
     if (!popover.classList.contains('hidden')) {
+      const slider = document.getElementById('time-slider');
+      renderSliderScaleTicks(slider && slider.min === '480' ? 'school' : 'fullday');
       updateTimeSimulatorUI();
     }
   }
@@ -603,8 +646,59 @@ function setSimulatedRangeMode(mode) {
     }
     slider.value = state.simulatedMinutes ?? 580;
   }
+
+  renderSliderScaleTicks(mode);
 }
 window.setSimulatedRangeMode = setSimulatedRangeMode;
+
+function renderSliderScaleTicks(mode = 'fullday') {
+  const container = document.getElementById('slider-scale-container');
+  if (!container) return;
+
+  const ticks = mode === 'school' ? [
+    { val: 480, label: '08:00', isEdge: 'start' },
+    { val: 510, label: '08:30 (P1)', title: 'Period 1 Starts (08:30)' },
+    { val: 660, label: '11:00 (Recess)', title: 'Morning Recess (11:00)' },
+    { val: 780, label: '13:00 (Lunch)', title: 'Lunch Break (13:00)' },
+    { val: 935, label: '15:35 (P7)', title: 'School Ends (15:35)' },
+    { val: 960, label: '16:00', isEdge: 'end' }
+  ] : [
+    { val: 0, label: '00:00', isEdge: 'start' },
+    { val: 510, label: '08:30 (P1)', title: 'Period 1 Starts (08:30)' },
+    { val: 780, label: '13:00 (Lunch)', title: 'Lunch Break (13:00)' },
+    { val: 935, label: '15:35 (P7)', title: 'School Ends (15:35)' },
+    { val: 1439, label: '23:59', isEdge: 'end' }
+  ];
+
+  const min = mode === 'school' ? 480 : 0;
+  const max = mode === 'school' ? 960 : 1439;
+  const span = max - min;
+
+  container.innerHTML = ticks.map(t => {
+    const fraction = Math.max(0, Math.min(1, (t.val - min) / span));
+    const percent = (fraction * 100).toFixed(2);
+
+    let style = '';
+    let alignClass = 'items-center -translate-x-1/2';
+    if (t.isEdge === 'start') {
+      style = 'left: 0;';
+      alignClass = 'items-start translate-x-0';
+    } else if (t.isEdge === 'end') {
+      style = 'right: 0;';
+      alignClass = 'items-end translate-x-0';
+    } else {
+      style = `left: calc(8px + (100% - 16px) * ${percent} / 100);`;
+    }
+
+    return `
+      <div class="slider-tick-marker absolute top-0 flex flex-col ${alignClass} cursor-pointer group select-none" style="${style}" onclick="applySimulatedTime(${t.val})" title="${t.title || t.label}">
+        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
+        <span class="text-slate-500 font-semibold group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">${t.label}</span>
+      </div>
+    `;
+  }).join('');
+}
+window.renderSliderScaleTicks = renderSliderScaleTicks;
 
 function stepSimulatedTime(deltaMinutes) {
   const current = state.simulatedMinutes !== null ? state.simulatedMinutes : 580;
@@ -841,9 +935,19 @@ function setupEventListeners() {
 
   const timeSlider = document.getElementById('time-slider');
   if (timeSlider) {
+    const startScrub = () => document.body.classList.add('no-transition');
+    const stopScrub = () => document.body.classList.remove('no-transition');
+
+    timeSlider.addEventListener('mousedown', startScrub);
+    timeSlider.addEventListener('touchstart', startScrub, { passive: true });
+    window.addEventListener('mouseup', stopScrub);
+    window.addEventListener('touchend', stopScrub);
+
     timeSlider.addEventListener('input', (e) => {
+      document.body.classList.add('no-transition');
       applySimulatedTime(parseInt(e.target.value, 10));
     });
+    timeSlider.addEventListener('change', stopScrub);
   }
 
   // Close schedule controller popover when clicking outside
@@ -1194,17 +1298,18 @@ function renderGrid() {
           let liveBadgeHtml = '';
           let progressHtml = '';
 
+          const startMin = getPeriodStartMinutes(startP);
+          const endMin = getPeriodEndMinutes(endP);
+
           if (isCurrentLesson) {
             liveBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-500 text-white shrink-0 ml-1 shadow-2xs animate-pulse"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>NOW</span>`;
 
-            const startMin = getPeriodStartMinutes(startP);
-            const endMin = getPeriodEndMinutes(endP);
             const cardProgress = Math.max(0, Math.min(1, (schedState.totalMinutes - startMin) / Math.max(1, endMin - startMin)));
-            const cardPercent = Math.min(100, Math.max(0, Math.round(cardProgress * 100)));
+            const cardPercent = (cardProgress * 100).toFixed(2);
             const cardRemainingMin = Math.max(0, Math.ceil(endMin - schedState.totalMinutes));
 
             progressHtml = `
-              <div class="lesson-progress-wrap mt-1" title="${cardPercent}% elapsed • ${cardRemainingMin}m remaining">
+              <div class="lesson-progress-wrap mt-1" title="${Math.round(cardProgress * 100)}% elapsed • ${cardRemainingMin}m remaining">
                 <div class="lesson-progress-fill" style="width: ${cardPercent}%;">
                   <div class="lesson-progress-pointer"></div>
                 </div>
@@ -1218,6 +1323,10 @@ function renderGrid() {
           }
 
           card.className = `lesson-card ${isCurrentLesson ? 'is-current-lesson' : ''} rounded-md border border-slate-200/90 bg-white cursor-pointer relative overflow-hidden h-full flex flex-col justify-center select-none shadow-2xs hover:shadow-xs transition`;
+          card.dataset.startMin = startMin;
+          card.dataset.endMin = endMin;
+          card.dataset.startP = startP;
+          card.dataset.endP = endP;
           card.innerHTML = `
             <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: ${bgColor}"></div>
             <div class="pl-1.5 min-w-0">

@@ -346,13 +346,13 @@ dialog::backdrop {
   background: linear-gradient(90deg, #3b82f6 0%, #ef4444 100%);
   border-radius: 9999px;
   position: relative;
-  transition: width 0.3s ease-out;
+  transition: width 0.15s ease-out;
   min-width: 4px;
 }
 
 .lesson-progress-pointer {
   position: absolute;
-  right: -3px;
+  right: -5px;
   top: -3px;
   width: 10px;
   height: 10px;
@@ -372,6 +372,12 @@ dialog::backdrop {
   }
 }
 
+/* Instant movement during active slider scrubbing */
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
 /* Table-Level Vertical Timeline Line Overlay */
 .current-time-line-overlay {
   position: absolute;
@@ -382,7 +388,7 @@ dialog::backdrop {
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.7), 0 0 2px rgba(239, 68, 68, 1);
   z-index: 25;
   pointer-events: none;
-  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.15s ease-out;
 }
 
 .current-time-pill {

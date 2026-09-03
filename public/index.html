@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3">
   <script>
     tailwind.config = {
       theme: {
@@ -290,13 +290,28 @@
                   <!-- Slider Track -->
                   <div class="relative py-1">
                     <input type="range" id="time-slider" min="0" max="1439" step="1" value="580" class="w-full accent-blue-600 cursor-pointer h-2 bg-slate-200 rounded-lg">
-                    <!-- Scale ticks -->
-                    <div class="flex justify-between text-[9px] font-mono text-slate-400 mt-1">
-                      <span id="slider-min-label">00:00</span>
-                      <span class="text-slate-500 font-semibold" title="School Starts">08:30 (P1)</span>
-                      <span class="text-slate-500 font-semibold" title="Lunch Break">13:00 (Lunch)</span>
-                      <span class="text-slate-500 font-semibold" title="School Ends">15:35 (P7)</span>
-                      <span id="slider-max-label">23:59</span>
+                    <!-- Scale ticks container mathematically aligned with slider values -->
+                    <div id="slider-scale-container" class="relative h-6 text-[9px] font-mono select-none mt-1">
+                      <div class="slider-tick-marker absolute top-0 left-0 flex flex-col items-start cursor-pointer group" onclick="applySimulatedTime(0)" title="00:00 Midnight">
+                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
+                        <span id="slider-min-label" class="text-slate-400 group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">00:00</span>
+                      </div>
+                      <div class="slider-tick-marker absolute top-0 flex flex-col items-center -translate-x-1/2 cursor-pointer group" style="left: calc(8px + (100% - 16px) * 0.3544);" onclick="applySimulatedTime(510)" title="08:30 Period 1 Starts">
+                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
+                        <span class="text-slate-500 font-semibold group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">08:30 (P1)</span>
+                      </div>
+                      <div class="slider-tick-marker absolute top-0 flex flex-col items-center -translate-x-1/2 cursor-pointer group" style="left: calc(8px + (100% - 16px) * 0.5420);" onclick="applySimulatedTime(780)" title="13:00 Lunch Break">
+                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
+                        <span class="text-slate-500 font-semibold group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">13:00 (Lunch)</span>
+                      </div>
+                      <div class="slider-tick-marker absolute top-0 flex flex-col items-center -translate-x-1/2 cursor-pointer group" style="left: calc(8px + (100% - 16px) * 0.6498);" onclick="applySimulatedTime(935)" title="15:35 School Ends">
+                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
+                        <span class="text-slate-500 font-semibold group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">15:35 (P7)</span>
+                      </div>
+                      <div class="slider-tick-marker absolute top-0 right-0 flex flex-col items-end cursor-pointer group" onclick="applySimulatedTime(1439)" title="23:59 End of Day">
+                        <div class="w-0.5 h-1.5 bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
+                        <span id="slider-max-label" class="text-slate-400 group-hover:text-blue-600 transition-colors whitespace-nowrap text-[9px] mt-0.5">23:59</span>
+                      </div>
                     </div>
                   </div>
 
@@ -897,6 +912,6 @@ Referer: https://nampm.edupage.org/timetable/
   </footer>
 
   <!-- Main JavaScript Controller -->
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>
