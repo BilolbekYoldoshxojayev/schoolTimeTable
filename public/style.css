@@ -10,35 +10,35 @@
   --card-sub-size: calc(0.65rem * var(--zoom-scale));
   --table-cell-pad: calc(0.25rem * var(--zoom-scale));
 
-  /* Semantic Light Palette */
-  --bg-base: #f8fafc;
-  --surface-0: #f1f5f9;
-  --surface-1: #ffffff;
-  --surface-2: #f8fafc;
-  --surface-3: #f1f5f9;
-  --border-subtle: #e2e8f0;
-  --border-muted: #cbd5e1;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #94a3b8;
-  --accent: #2563eb;
-  --accent-light: #dbeafe;
+  /* Semantic Light Palette (Linear / Vercel Modern Light) */
+  --bg-base: #f6f8fb;       /* Soft neutral slate canvas, reduces eye fatigue vs harsh pure white */
+  --surface-0: #edf2f7;     /* Level 0: Top micro status bar, bottom footer, subtle recessed track */
+  --surface-1: #ffffff;     /* Level 1: Primary cards, timetable table wrapper, dialogs */
+  --surface-2: #f1f5f9;     /* Level 2: Interactive filter chips, table column headers, active inputs */
+  --surface-3: #e2e8f0;     /* Level 3: Dropdowns hover, button hover, elevated elements */
+  --border-subtle: #e2e8f0; /* Gentle contrast boundary */
+  --border-muted: #cbd5e1;  /* High definition structural dividers */
+  --text-primary: #0f172a;  /* Deep rich slate text (14:1 contrast) */
+  --text-secondary: #475569;/* Readable secondary text (>6:1 contrast) */
+  --text-tertiary: #64748b; /* Accessible tertiary labels (>4.5:1 contrast) */
+  --accent: #2563eb;        /* Rich royal brand blue */
+  --accent-light: #eff6ff;  /* Soft light blue badge background */
 }
 
 html.dark {
-  /* Semantic Dark Palette (Material 3 & Apple HIG Elevation Model) */
-  --bg-base: #0b0f19;       /* Baseline Background */
-  --surface-0: #111827;     /* Level 0: Topbars, base panels */
-  --surface-1: #1a2234;     /* Level 1: Standard Cards & Tables */
-  --surface-2: #242e42;     /* Level 2: Interactive Controls, Hover & Subcards */
-  --surface-3: #2e3b52;     /* Level 3: Popovers, Active Pills, Modals */
-  --border-subtle: #26334a; /* Subtle borders with 3:1+ contrast */
-  --border-muted: #33435e;  /* Distinct borders & active dividers */
-  --text-primary: #f8fafc;  /* 95% White with warm neutral tint (Anti-halation) */
-  --text-secondary: #94a3b8;/* High-readability secondary text (>4.5:1 WCAG AAA) */
-  --text-tertiary: #64748b; /* Tertiary label text */
-  --accent: #60a5fa;        /* Calibrated 400-level blue (Anti-vibration) */
-  --accent-light: #1e3a8a;  /* Desaturated dark accent container */
+  /* Semantic Dark Palette (Linear / Raycast Elevation Model) */
+  --bg-base: #0a0e17;       /* Midnight canvas, eliminates AMOLED black smearing */
+  --surface-0: #101624;     /* Level 0: Header status strip, table footer, scroll tracks */
+  --surface-1: #161f31;     /* Level 1: Main Timetable grid cells, Directory cards, Dialogs */
+  --surface-2: #202b42;     /* Level 2: Active subtabs, select inputs, card hover, table headers */
+  --surface-3: #2a3754;     /* Level 3: Popovers, elevated pills, focused controls */
+  --border-subtle: #222e44; /* Subtle 3:1 contrast borders for crisp card definition */
+  --border-muted: #2f3e5c;  /* Structural divider borders & active outlines */
+  --text-primary: #f8fafc;  /* Warm ivory white (eliminates halation glow) */
+  --text-secondary: #94a3b8;/* High-contrast secondary text (>7:1 WCAG AAA) */
+  --text-tertiary: #64748b; /* Readable muted metadata text */
+  --accent: #60a5fa;        /* 400-level electric sky blue (vibration-free) */
+  --accent-light: #1e293b;  /* Elevated dark accent container */
 }
 
 html, body {
@@ -98,10 +98,10 @@ html, body {
   white-space: nowrap;
 }
 .tab-btn.active {
-  background-color: white;
-  color: #2563eb;
+  background-color: var(--surface-1);
+  color: var(--accent);
   font-weight: 600;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
 }
 
 .dirtab-btn {
@@ -109,10 +109,10 @@ html, body {
   white-space: nowrap;
 }
 .dirtab-btn.active {
-  background-color: white;
-  color: #2563eb;
+  background-color: var(--surface-1);
+  color: var(--accent);
   font-weight: 600;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* Card hover animation */
