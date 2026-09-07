@@ -9,6 +9,36 @@
   --card-title-size: calc(0.74rem * var(--zoom-scale));
   --card-sub-size: calc(0.65rem * var(--zoom-scale));
   --table-cell-pad: calc(0.25rem * var(--zoom-scale));
+
+  /* Semantic Light Palette */
+  --bg-base: #f8fafc;
+  --surface-0: #f1f5f9;
+  --surface-1: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #f1f5f9;
+  --border-subtle: #e2e8f0;
+  --border-muted: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --accent: #2563eb;
+  --accent-light: #dbeafe;
+}
+
+html.dark {
+  /* Semantic Dark Palette (Material 3 & Apple HIG Elevation Model) */
+  --bg-base: #0b0f19;       /* Baseline Background */
+  --surface-0: #111827;     /* Level 0: Topbars, base panels */
+  --surface-1: #1a2234;     /* Level 1: Standard Cards & Tables */
+  --surface-2: #242e42;     /* Level 2: Interactive Controls, Hover & Subcards */
+  --surface-3: #2e3b52;     /* Level 3: Popovers, Active Pills, Modals */
+  --border-subtle: #26334a; /* Subtle borders with 3:1+ contrast */
+  --border-muted: #33435e;  /* Distinct borders & active dividers */
+  --text-primary: #f8fafc;  /* 95% White with warm neutral tint (Anti-halation) */
+  --text-secondary: #94a3b8;/* High-readability secondary text (>4.5:1 WCAG AAA) */
+  --text-tertiary: #64748b; /* Tertiary label text */
+  --accent: #60a5fa;        /* Calibrated 400-level blue (Anti-vibration) */
+  --accent-light: #1e3a8a;  /* Desaturated dark accent container */
 }
 
 html, body {
@@ -18,8 +48,9 @@ html, body {
   padding: 0;
   overflow: hidden;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: #f1f5f9;
-  color: #1e293b;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Custom modern scrollbars */
@@ -451,119 +482,123 @@ dialog::backdrop {
 }
 
 /* ========================================================================== */
-/* Dark Mode Comprehensive Styling                                            */
+/* Dark Mode Comprehensive Styling (Material 3 & Apple HIG Elevation Model)   */
 /* ========================================================================== */
 
 html.dark, body.dark {
-  background-color: #090d16;
-  color: #e2e8f0;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
 }
 
 /* Dark mode scrollbars */
 .dark ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: var(--bg-base);
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--border-subtle);
+  border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: var(--border-muted);
 }
 
-/* Dark glass */
+/* Dark glass and panels */
 .dark .glass-panel {
-  background: rgba(15, 23, 42, 0.9);
-  border-color: rgba(51, 65, 85, 0.7);
+  background: rgba(17, 24, 39, 0.92);
+  border-color: var(--border-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-/* Dark tab indicator */
+/* Dark tab indicators */
 .dark .tab-btn.active {
-  background-color: #1e293b !important;
-  color: #60a5fa !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  background-color: var(--surface-2) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
 .dark .dirtab-btn.active {
-  background-color: #1e293b !important;
-  color: #60a5fa !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  background-color: var(--surface-2) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
-/* Dark Lesson Cards */
+/* Dark Lesson Cards - Level 1 Surface */
 .dark .lesson-card {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 .dark .lesson-card:hover {
-  box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.4);
-  border-color: #475569 !important;
+  background-color: var(--surface-2) !important;
+  box-shadow: 0 6px 14px -2px rgba(0, 0, 0, 0.5);
+  border-color: var(--border-muted) !important;
 }
 
 .dark .lesson-card .lesson-card-title {
-  color: #f1f5f9 !important;
+  color: var(--text-primary) !important;
 }
 
 .dark .lesson-card .lesson-card-sub {
-  color: #94a3b8 !important;
+  color: var(--text-secondary) !important;
 }
 
 .dark .lesson-card .lesson-card-sub .text-slate-800 {
-  color: #cbd5e1 !important;
+  color: #e2e8f0 !important;
 }
 
 .dark .lesson-card .lesson-card-sub .text-blue-700 {
   color: #93c5fd !important;
 }
 
-/* Dark Active Lesson Glow */
+/* Dark Active Lesson Glow - Accent Container with High Contrast */
 .dark .lesson-card.is-current-lesson {
   border-color: #3b82f6 !important;
-  background: linear-gradient(135deg, #1e293b 0%, #172554 100%) !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3), 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+  background: linear-gradient(135deg, #162032 0%, #172554 100%) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(0, 0, 0, 0.6) !important;
 }
 
 .dark .lesson-progress-wrap {
-  background: rgba(51, 65, 85, 0.7);
+  background: rgba(36, 46, 66, 0.85);
 }
 
 .dark .lesson-progress-pointer {
-  border-color: #0f172a;
+  border-color: var(--bg-base);
 }
 
 /* Dark timetable grid cells & highlights */
 .dark .timetable-day-row {
-  border-color: #334155 !important;
+  border-color: var(--border-subtle) !important;
 }
 .dark .timetable-cell {
-  border-color: #334155 !important;
+  border-color: var(--border-subtle) !important;
 }
 
 .dark .timetable-current-day-row {
-  background-color: rgba(30, 58, 138, 0.2) !important;
+  background-color: rgba(30, 58, 138, 0.18) !important;
 }
 
 .dark .current-period-col {
-  background-color: rgba(30, 58, 138, 0.45) !important;
+  background-color: rgba(30, 58, 138, 0.38) !important;
   color: #93c5fd !important;
-  box-shadow: inset 0 2px 0 #60a5fa;
+  box-shadow: inset 0 2px 0 var(--accent);
 }
 
 /* Dark Substitution Report Styles */
 .dark [class^="_RSS"] .section {
-  border-color: #334155;
-  background: #1e293b;
+  border-color: var(--border-subtle);
+  background: var(--surface-1);
 }
 
 .dark [class^="_RSS"] .header {
-  color: #f1f5f9;
-  background: #334155;
+  color: var(--text-primary);
+  background: var(--surface-2);
 }
 
 .dark [class^="_RSS"] .row {
-  background: #0f172a;
-  border-color: #334155;
-  color: #cbd5e1;
+  background: var(--surface-0);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .dark [class^="_RSS"] .row.nosubst {
@@ -573,12 +608,12 @@ html.dark, body.dark {
 }
 
 .dark [class^="_RSS"] .period {
-  color: #60a5fa;
+  color: #93c5fd;
   background: #1e3a8a;
 }
 
 .dark [class^="_RSS"] .info {
-  color: #94a3b8;
+  color: var(--text-tertiary);
 }
 
 /* Dynamic JS Cards in Dark Mode (Directory, News, Daily, Stats) */
@@ -586,9 +621,9 @@ html.dark, body.dark {
 .dark #daily-schedule-container .bg-white,
 .dark #news-feed-container .bg-white,
 .dark #api-history-list .bg-white {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
-  color: #cbd5e1 !important;
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
 }
 
 .dark #directory-results-container h3,
@@ -596,7 +631,7 @@ html.dark, body.dark {
 .dark #daily-schedule-container .text-slate-900,
 .dark #news-feed-container h3,
 .dark #news-feed-container .text-slate-900 {
-  color: #f1f5f9 !important;
+  color: var(--text-primary) !important;
 }
 
 .dark #directory-results-container strong.text-slate-800,
@@ -605,18 +640,18 @@ html.dark, body.dark {
 }
 
 .dark #directory-results-container button.bg-slate-50 {
-  background-color: #0f172a !important;
-  border-color: #334155 !important;
-  color: #60a5fa !important;
+  background-color: var(--surface-2) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--accent) !important;
 }
 .dark #directory-results-container button.bg-slate-50:hover {
-  background-color: #1e3a8a !important;
+  background-color: var(--surface-3) !important;
   color: #93c5fd !important;
 }
 
 .dark #directory-results-container span.bg-slate-100 {
-  background-color: #334155 !important;
-  color: #cbd5e1 !important;
+  background-color: var(--surface-2) !important;
+  color: var(--text-secondary) !important;
 }
 
 .dark #directory-results-container span.bg-blue-100 {

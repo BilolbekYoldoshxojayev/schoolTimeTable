@@ -141,8 +141,15 @@ function applyTheme(themeName) {
   document.body.classList.toggle('dark', isDark);
   const icon = document.getElementById('theme-icon');
   const label = document.getElementById('theme-label');
+  const btn = document.getElementById('theme-toggle-btn');
+  
   if (icon) icon.textContent = isDark ? '☀️' : '🌙';
   if (label) label.textContent = isDark ? 'Light' : 'Dark';
+  if (btn) {
+    btn.setAttribute('title', isDark ? 'Switch to Light theme' : 'Switch to Dark theme');
+    btn.setAttribute('aria-label', isDark ? 'Switch to Light theme' : 'Switch to Dark theme');
+  }
+  
   state.theme = themeName;
   if (themeName !== null) {
     StorageManager.set('theme', themeName);
