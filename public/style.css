@@ -943,7 +943,7 @@ html.dark, body.dark {
 }
 
 /* ========================================================================== */
-/* Horizontal Scanner / Curtain Wipe Theme Transitions                        */
+/* Diagonal Falling Curtain Theme Transitions                                 */
 /* ========================================================================== */
 
 /* Native View Transitions API Styling */
@@ -953,48 +953,50 @@ html.dark, body.dark {
 }
 
 ::view-transition-new(root) {
-  animation: curtain-wipe-in 450ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: diagonal-curtain-fall 650ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   z-index: 9999;
 }
 
-@keyframes curtain-wipe-in {
-  from {
-    clip-path: inset(0 100% 0 0);
+@keyframes diagonal-curtain-fall {
+  0% {
+    clip-path: polygon(0 0, 100% 0, 100% -10%, 0 -50%);
   }
-  to {
-    clip-path: inset(0 0 0 0);
+  100% {
+    clip-path: polygon(0 0, 100% 0, 100% 150%, 0 110%);
   }
 }
 
-/* Glowing Scanner Wavefront Beam */
+/* Glowing Diagonal Curtain Wavefront Beam */
 .scanner-wavefront-beam {
+  --beam-angle: 14deg;
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 3px;
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, #38bdf8 20%, #60a5fa 50%, #34d399 80%, rgba(59, 130, 246, 0.1) 100%);
-  box-shadow: 0 0 14px 3px rgba(56, 189, 248, 0.85),
-              0 0 28px 6px rgba(59, 130, 246, 0.55),
-              0 0 45px 10px rgba(52, 211, 153, 0.35);
+  left: -25vw;
+  width: 150vw;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(56, 189, 248, 0.9) 15%, #60a5fa 50%, #34d399 85%, rgba(52, 211, 153, 0) 100%);
+  box-shadow: 0 0 16px 3px rgba(56, 189, 248, 0.85),
+              0 0 32px 6px rgba(96, 165, 250, 0.55),
+              0 0 50px 10px rgba(52, 211, 153, 0.35);
   z-index: 100000;
   pointer-events: none;
-  animation: scanner-beam-sweep 450ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  transform-origin: center center;
+  transform: rotate(var(--beam-angle));
+  animation: diagonal-beam-fall 650ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes scanner-beam-sweep {
+@keyframes diagonal-beam-fall {
   0% {
-    transform: translateX(0);
+    top: -30vh;
     opacity: 0;
   }
-  6% {
+  10% {
     opacity: 1;
   }
-  88% {
+  86% {
     opacity: 1;
   }
   100% {
-    transform: translateX(100vw);
+    top: 130vh;
     opacity: 0;
   }
 }
@@ -1002,15 +1004,15 @@ html.dark, body.dark {
 /* Theme Toggle Button Icon Flip Animation */
 .theme-icon-rotating {
   display: inline-block;
-  animation: theme-icon-spin 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: theme-icon-spin 650ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes theme-icon-spin {
   0% {
-    transform: rotate(0deg) scale(0.8);
+    transform: rotate(0deg) scale(0.85);
   }
-  50% {
-    transform: rotate(180deg) scale(1.3);
+  45% {
+    transform: rotate(180deg) scale(1.25);
   }
   100% {
     transform: rotate(360deg) scale(1);
@@ -1022,10 +1024,10 @@ html.dark, body.dark {
 .theme-transitioning *,
 .theme-transitioning *::before,
 .theme-transitioning *::after {
-  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
-              color 300ms cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: background-color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+              color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 500ms cubic-bezier(0.16, 1, 0.3, 1) !important;
   transition-delay: 0s !important;
 }
 

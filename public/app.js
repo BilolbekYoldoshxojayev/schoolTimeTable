@@ -163,13 +163,18 @@ function triggerScannerBeam() {
   const beam = document.createElement('div');
   beam.id = 'scanner-beam';
   beam.className = 'scanner-wavefront-beam';
+
+  // Calculate dynamic angle matching the diagonal curtain hem across all viewport sizes
+  const angle = Math.atan2(0.40 * window.innerHeight, window.innerWidth) * (180 / Math.PI);
+  beam.style.setProperty('--beam-angle', `${angle.toFixed(2)}deg`);
+
   document.body.appendChild(beam);
 
   setTimeout(() => {
     if (beam && beam.parentNode) {
       beam.remove();
     }
-  }, 500);
+  }, 700);
 }
 
 function toggleTheme() {
@@ -186,7 +191,7 @@ function toggleTheme() {
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // View Transitions API: Horizontal Scanner / Curtain Wipe
+  // View Transitions API: Diagonal Falling Curtain
   if (typeof document.startViewTransition === 'function' && !prefersReduced) {
     triggerScannerBeam();
     document.startViewTransition(() => {
@@ -198,7 +203,7 @@ function toggleTheme() {
     applyTheme(targetTheme);
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transitioning');
-    }, 350);
+    }, 550);
   } else {
     // Instant switch when reduced motion is preferred
     applyTheme(targetTheme);
