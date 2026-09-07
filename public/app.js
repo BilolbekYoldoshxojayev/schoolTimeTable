@@ -43,6 +43,7 @@ const StorageManager = {
 
 // Global Application State (hydrated from memory)
 const state = {
+  theme: StorageManager.get('theme', null), // null = auto (system preference), 'dark', or 'light'
   timetableData: null,
   filterMode: StorageManager.get('filterMode', 'class'), // 'class', 'teacher', or 'classroom'
   selectedEntityId: null,
@@ -134,6 +135,26 @@ function toggleStatsBanner() {
   applyStatsBanner(!state.statsBannerCollapsed);
 }
 
+function applyTheme(themeName) {
+  const isDark = themeName === 'dark' || (themeName === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', isDark);
+  document.body.classList.toggle('dark', isDark);
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+  if (label) label.textContent = isDark ? 'Light' : 'Dark';
+  state.theme = themeName;
+  if (themeName !== null) {
+    StorageManager.set('theme', themeName);
+  }
+}
+
+function toggleTheme() {
+  const currentIsDark = document.documentElement.classList.contains('dark');
+  applyTheme(currentIsDark ? 'light' : 'dark');
+}
+window.toggleTheme = toggleTheme;
+
 function resetUserPreferences() {
   if (confirm('Reset all saved timetable choices, zoom level, and view settings to default?')) {
     StorageManager.clear();
@@ -145,6 +166,14 @@ function resetUserPreferences() {
 // Initialization
 // ============================================================================
 document.addEventListener('DOMContentLoaded', async () => {
+  applyTheme(state.theme);
+  // Listen for system theme changes if user hasn't explicitly set a preference
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (state.theme === null) {
+      applyTheme(null);
+    }
+  });
+
   initClock();
   applyZoom(state.zoomLevel);
   applyDensity(state.densityMode);

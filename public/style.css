@@ -450,6 +450,185 @@ dialog::backdrop {
   box-shadow: inset 0 2px 0 #3b82f6;
 }
 
+/* ========================================================================== */
+/* Dark Mode Comprehensive Styling                                            */
+/* ========================================================================== */
+
+html.dark, body.dark {
+  background-color: #090d16;
+  color: #e2e8f0;
+}
+
+/* Dark mode scrollbars */
+.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Dark glass */
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(51, 65, 85, 0.7);
+}
+
+/* Dark tab indicator */
+.dark .tab-btn.active {
+  background-color: #1e293b !important;
+  color: #60a5fa !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+.dark .dirtab-btn.active {
+  background-color: #1e293b !important;
+  color: #60a5fa !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Dark Lesson Cards */
+.dark .lesson-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.dark .lesson-card:hover {
+  box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.4);
+  border-color: #475569 !important;
+}
+
+.dark .lesson-card .lesson-card-title {
+  color: #f1f5f9 !important;
+}
+
+.dark .lesson-card .lesson-card-sub {
+  color: #94a3b8 !important;
+}
+
+.dark .lesson-card .lesson-card-sub .text-slate-800 {
+  color: #cbd5e1 !important;
+}
+
+.dark .lesson-card .lesson-card-sub .text-blue-700 {
+  color: #93c5fd !important;
+}
+
+/* Dark Active Lesson Glow */
+.dark .lesson-card.is-current-lesson {
+  border-color: #3b82f6 !important;
+  background: linear-gradient(135deg, #1e293b 0%, #172554 100%) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3), 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .lesson-progress-wrap {
+  background: rgba(51, 65, 85, 0.7);
+}
+
+.dark .lesson-progress-pointer {
+  border-color: #0f172a;
+}
+
+/* Dark timetable grid cells & highlights */
+.dark .timetable-day-row {
+  border-color: #334155 !important;
+}
+.dark .timetable-cell {
+  border-color: #334155 !important;
+}
+
+.dark .timetable-current-day-row {
+  background-color: rgba(30, 58, 138, 0.2) !important;
+}
+
+.dark .current-period-col {
+  background-color: rgba(30, 58, 138, 0.45) !important;
+  color: #93c5fd !important;
+  box-shadow: inset 0 2px 0 #60a5fa;
+}
+
+/* Dark Substitution Report Styles */
+.dark [class^="_RSS"] .section {
+  border-color: #334155;
+  background: #1e293b;
+}
+
+.dark [class^="_RSS"] .header {
+  color: #f1f5f9;
+  background: #334155;
+}
+
+.dark [class^="_RSS"] .row {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+.dark [class^="_RSS"] .row.nosubst {
+  background: #064e3b;
+  border-color: #047857;
+  color: #a7f3d0;
+}
+
+.dark [class^="_RSS"] .period {
+  color: #60a5fa;
+  background: #1e3a8a;
+}
+
+.dark [class^="_RSS"] .info {
+  color: #94a3b8;
+}
+
+/* Dynamic JS Cards in Dark Mode (Directory, News, Daily, Stats) */
+.dark #directory-results-container .bg-white,
+.dark #daily-schedule-container .bg-white,
+.dark #news-feed-container .bg-white,
+.dark #api-history-list .bg-white {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark #directory-results-container h3,
+.dark #directory-results-container .text-slate-900,
+.dark #daily-schedule-container .text-slate-900,
+.dark #news-feed-container h3,
+.dark #news-feed-container .text-slate-900 {
+  color: #f1f5f9 !important;
+}
+
+.dark #directory-results-container strong.text-slate-800,
+.dark #daily-schedule-container strong.text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+.dark #directory-results-container button.bg-slate-50 {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #60a5fa !important;
+}
+.dark #directory-results-container button.bg-slate-50:hover {
+  background-color: #1e3a8a !important;
+  color: #93c5fd !important;
+}
+
+.dark #directory-results-container span.bg-slate-100 {
+  background-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark #directory-results-container span.bg-blue-100 {
+  background-color: #1e3a8a !important;
+  color: #bfdbfe !important;
+}
+
+/* Native dialog backdrop in dark mode */
+.dark dialog::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+}
+
 /* Print styles */
 @media print {
   html, body {
