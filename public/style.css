@@ -11,34 +11,58 @@
   --table-cell-pad: calc(0.25rem * var(--zoom-scale));
 
   /* Semantic Light Palette (Linear / Vercel Modern Light) */
-  --bg-base: #f6f8fb;       /* Soft neutral slate canvas, reduces eye fatigue vs harsh pure white */
-  --surface-0: #edf2f7;     /* Level 0: Top micro status bar, bottom footer, subtle recessed track */
+  --bg-base: #f6f8fb;       /* Soft neutral slate canvas */
+  --surface-0: #edf2f7;     /* Level 0: Top micro bar, footer, scroll track */
   --surface-1: #ffffff;     /* Level 1: Primary cards, timetable table wrapper, dialogs */
-  --surface-2: #f1f5f9;     /* Level 2: Interactive filter chips, table column headers, active inputs */
+  --surface-2: #f1f5f9;     /* Level 2: Interactive chips, table column headers, active inputs */
   --surface-3: #e2e8f0;     /* Level 3: Dropdowns hover, button hover, elevated elements */
+  --surface-card: #ffffff;
+  --surface-hover: #f1f5f9;
   --border-subtle: #e2e8f0; /* Gentle contrast boundary */
-  --border-muted: #cbd5e1;  /* High definition structural dividers */
+  --border-default: #cbd5e1;/* Clear definition structural dividers */
+  --border-strong: #94a3b8;
   --text-primary: #0f172a;  /* Deep rich slate text (14:1 contrast) */
   --text-secondary: #475569;/* Readable secondary text (>6:1 contrast) */
-  --text-tertiary: #64748b; /* Accessible tertiary labels (>4.5:1 contrast) */
-  --accent: #2563eb;        /* Rich royal brand blue */
-  --accent-light: #eff6ff;  /* Soft light blue badge background */
+  --text-muted: #94a3b8;    /* Accessible tertiary labels (>4.5:1 contrast) */
+  --accent-primary: #2563eb;/* Rich royal brand blue */
+  --accent-hover: #1d4ed8;
+  --accent-subtle: #eff6ff; /* Soft light blue badge background */
+  --accent-border: #bfdbfe;
+  --break-bg: #fefce8;
+  --break-border: #fef08a;
+  --break-text: #854d0e;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 4px 12px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-active: 0 0 0 2px rgba(37, 99, 235, 0.2), 0 4px 12px rgba(37, 99, 235, 0.15);
 }
 
 html.dark {
-  /* Semantic Dark Palette (Linear / Raycast Elevation Model) */
-  --bg-base: #0a0e17;       /* Midnight canvas, eliminates AMOLED black smearing */
-  --surface-0: #101624;     /* Level 0: Header status strip, table footer, scroll tracks */
-  --surface-1: #161f31;     /* Level 1: Main Timetable grid cells, Directory cards, Dialogs */
-  --surface-2: #202b42;     /* Level 2: Active subtabs, select inputs, card hover, table headers */
-  --surface-3: #2a3754;     /* Level 3: Popovers, elevated pills, focused controls */
-  --border-subtle: #222e44; /* Subtle 3:1 contrast borders for crisp card definition */
-  --border-muted: #2f3e5c;  /* Structural divider borders & active outlines */
-  --text-primary: #f8fafc;  /* Warm ivory white (eliminates halation glow) */
-  --text-secondary: #94a3b8;/* High-contrast secondary text (>7:1 WCAG AAA) */
-  --text-tertiary: #64748b; /* Readable muted metadata text */
-  --accent: #60a5fa;        /* 400-level electric sky blue (vibration-free) */
-  --accent-light: #1e293b;  /* Elevated dark accent container */
+  /* Semantic Dark Palette (Neutral Linear / Raycast / Apple Elevation Model) */
+  --bg-base: #0B0D12;       /* Deepest neutral charcoal/slate base (Zero navy blue tint) */
+  --surface-0: #11141C;     /* Level 0: Header status strip, table footer, scroll tracks */
+  --surface-1: #161922;     /* Level 1: Main Timetable container, Directory cards, Dialogs */
+  --surface-2: #1C202B;     /* Level 2: Individual Lesson Cards, Controls, Table Headers */
+  --surface-3: #242938;     /* Level 3: Active subtabs, popovers, elevated pills, hover surfaces */
+  --surface-card: #1C202B;  /* Distinct card surface, brighter than canvas & table container */
+  --surface-hover: #242938; /* Subtle elevated hover surface */
+  --border-subtle: rgba(255, 255, 255, 0.06); /* Translucent 3:1+ contrast border */
+  --border-default: rgba(255, 255, 255, 0.10);/* Active outline & distinct divider */
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text-primary: rgba(255, 255, 255, 0.92);   /* High-contrast ivory text (No halation) */
+  --text-secondary: rgba(255, 255, 255, 0.65); /* Readable secondary text (>7:1 WCAG AAA) */
+  --text-muted: rgba(255, 255, 255, 0.42);     /* Subdued metadata & empty indicators */
+  --accent-primary: #3b82f6;                   /* Pure electric blue accent */
+  --accent-hover: #60a5fa;
+  --accent-subtle: rgba(59, 130, 246, 0.12);   /* Translucent accent container */
+  --accent-border: rgba(59, 130, 246, 0.35);
+  --break-bg: rgba(255, 255, 255, 0.02);       /* Warm neutral break surface, not bright yellow */
+  --break-border: rgba(255, 255, 255, 0.05);
+  --break-text: rgba(255, 255, 255, 0.60);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.18);
+  --shadow-card-hover: 0 6px 16px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-active: 0 0 0 1px rgba(59, 130, 246, 0.5), 0 4px 16px rgba(0, 0, 0, 0.45);
 }
 
 html, body {
@@ -50,7 +74,7 @@ html, body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background-color: var(--bg-base);
   color: var(--text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 /* Custom modern scrollbars */
@@ -85,15 +109,15 @@ html, body {
 }
 
 .dark-glass {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(22, 25, 34, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  border: 1px solid var(--border-subtle);
 }
 
 /* Tab indicator */
 .tab-btn {
-  transition: all 0.15s ease;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   white-space: nowrap;
 }
@@ -105,7 +129,7 @@ html, body {
 }
 
 .dirtab-btn {
-  transition: all 0.15s ease;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
 }
 .dirtab-btn.active {
@@ -341,7 +365,7 @@ dialog::backdrop {
 /* Live Current Lesson & Moving Timeline Styles                               */
 /* ========================================================================== */
 
-/* Active / Current Lesson Card Highlight */
+/* Active / Current Lesson Card Highlight - Light Mode */
 .lesson-card.is-current-lesson {
   border: 2px solid #2563eb !important;
   background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%) !important;
@@ -356,8 +380,8 @@ dialog::backdrop {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2), 0 4px 12px rgba(37, 99, 235, 0.15);
   }
   50% {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25), 0 6px 16px rgba(239, 68, 68, 0.2);
-    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25), 0 6px 16px rgba(16, 185, 129, 0.2);
+    border-color: #10b981 !important;
   }
 }
 
@@ -374,7 +398,7 @@ dialog::backdrop {
 
 .lesson-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6 0%, #ef4444 100%);
+  background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
   border-radius: 9999px;
   position: relative;
   transition: width 0.15s ease-out;
@@ -388,9 +412,9 @@ dialog::backdrop {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #ef4444;
+  background: #10b981;
   border: 2px solid #ffffff;
-  box-shadow: 0 0 6px rgba(239, 68, 68, 0.7);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
   animation: pointer-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
@@ -409,14 +433,14 @@ dialog::backdrop {
   transition: none !important;
 }
 
-/* Table-Level Vertical Timeline Line Overlay */
+/* Table-Level Vertical Timeline Line Overlay (Refined Emerald) */
 .current-time-line-overlay {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #ef4444;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.7), 0 0 2px rgba(239, 68, 68, 1);
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4), 0 0 2px rgba(16, 185, 129, 0.8);
   z-index: 25;
   pointer-events: none;
   transition: left 0.15s ease-out;
@@ -427,14 +451,14 @@ dialog::backdrop {
   top: -1px;
   left: 50%;
   transform: translateX(-50%);
-  background: #ef4444;
+  background: #059669;
   color: #ffffff;
   font-size: 10px;
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 9999px;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.45);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -453,7 +477,7 @@ dialog::backdrop {
   transform: translateX(-50%);
   border-width: 4px 4px 0 4px;
   border-style: solid;
-  border-color: #ef4444 transparent transparent transparent;
+  border-color: #059669 transparent transparent transparent;
 }
 
 .current-time-node {
@@ -463,13 +487,13 @@ dialog::backdrop {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #ef4444;
+  background: #10b981;
   border: 2.5px solid #ffffff;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.9);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
   pointer-events: none;
 }
 
-/* Active Row and Header Highlights */
+/* Active Row and Header Highlights - Light Mode */
 .timetable-current-day-row {
   background-color: rgba(239, 246, 255, 0.45) !important;
 }
@@ -482,7 +506,7 @@ dialog::backdrop {
 }
 
 /* ========================================================================== */
-/* Dark Mode Comprehensive Styling (Material 3 & Apple HIG Elevation Model)   */
+/* Dark Mode Comprehensive Visual Design System (Linear / Raycast / Apple HIG)*/
 /* ========================================================================== */
 
 html.dark, body.dark {
@@ -490,178 +514,432 @@ html.dark, body.dark {
   color: var(--text-primary);
 }
 
-/* Dark mode scrollbars */
-.dark ::-webkit-scrollbar-track {
-  background: var(--bg-base);
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: var(--border-subtle);
-  border-radius: 4px;
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-muted);
+/* Universal Typography System in Dark Mode */
+.dark h1, .dark h2, .dark h3, .dark h4 {
+  color: var(--text-primary);
 }
 
-/* Dark glass and panels */
-.dark .glass-panel {
-  background: rgba(17, 24, 39, 0.92);
-  border-color: var(--border-subtle);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.dark .text-slate-900,
+.dark .text-slate-800 {
+  color: var(--text-primary);
 }
 
-/* Dark tab indicators */
-.dark .tab-btn.active {
-  background-color: var(--surface-2) !important;
-  color: var(--accent) !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+.dark .text-slate-700,
+.dark .text-slate-600 {
+  color: var(--text-secondary);
 }
 
-.dark .dirtab-btn.active {
-  background-color: var(--surface-2) !important;
-  color: var(--accent) !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+.dark .text-slate-500,
+.dark .text-slate-400 {
+  color: var(--text-muted);
 }
 
-/* Dark Lesson Cards - Level 1 Surface */
-.dark .lesson-card {
+/* Level 0: Topbar, Thead, Stats Strip, Footers */
+.dark .app-topbar {
+  background-color: var(--surface-0) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .stats-banner {
+  background-color: var(--surface-0) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .stats-banner button,
+.dark .stats-banner span.inline-flex {
+  box-shadow: var(--shadow-xs);
+}
+
+.dark .timetable-table thead {
+  background-color: var(--surface-0) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark .timetable-table thead th {
+  border-color: var(--border-subtle) !important;
+  color: var(--text-secondary);
+}
+
+.dark .timetable-day-row,
+.dark .timetable-cell {
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .timetable-current-day-row {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+.dark .current-period-col {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: #93c5fd !important;
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+
+/* Level 1: App Header, Controls Toolbar, Main Tab Containers, Footer */
+.dark .app-header {
   background-color: var(--surface-1) !important;
   border-color: var(--border-subtle) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
-.dark .lesson-card:hover {
+
+.dark .controls-toolbar {
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.dark footer {
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .tab-pane > div.bg-white,
+.dark .tab-pane > section.bg-white,
+.dark #tab-content-login > div.bg-white,
+.dark #tab-content-docs,
+.dark #tab-content-substitution > div,
+.dark #tab-content-directory > div,
+.dark #tab-content-daily > div,
+.dark #tab-content-news > div,
+.dark #tab-content-api > div > div {
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow: var(--shadow-xs);
+}
+
+/* Universal Tailwind Dark Variant Surface Overrides for Clean Elevation */
+.dark [class*="dark:bg-slate-900"] {
+  background-color: var(--surface-1);
+}
+.dark [class*="dark:bg-slate-800"] {
+  background-color: var(--surface-2);
+}
+.dark [class*="dark:bg-slate-700"] {
+  background-color: var(--surface-3);
+}
+.dark [class*="dark:border-slate-800"],
+.dark [class*="dark:border-slate-700"] {
+  border-color: var(--border-subtle);
+}
+
+/* Level 2: Cards, Inputs, Selects, Sub-panels, Segmented Controls */
+.dark select,
+.dark input[type="text"],
+.dark input[type="search"],
+.dark input[type="date"],
+.dark textarea {
   background-color: var(--surface-2) !important;
-  box-shadow: 0 6px 14px -2px rgba(0, 0, 0, 0.5);
+  border-color: var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark select:hover,
+.dark input[type="text"]:hover,
+.dark input[type="search"]:hover,
+.dark input[type="date"]:hover,
+.dark textarea:hover {
+  background-color: var(--surface-hover) !important;
   border-color: var(--border-muted) !important;
+}
+
+.dark select:focus,
+.dark input[type="text"]:focus,
+.dark input[type="search"]:focus,
+.dark input[type="date"]:focus,
+.dark textarea:focus {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+  outline: none;
+}
+
+/* Day Filter & Segmented Mode Buttons in Dark Mode */
+.dark .day-filter-btn:not(.bg-blue-600) {
+  background-color: var(--surface-2) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-subtle);
+}
+
+.dark .day-filter-btn:not(.bg-blue-600):hover {
+  background-color: var(--surface-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-muted);
+}
+
+.dark #mode-btn-class,
+.dark #mode-btn-teacher,
+.dark #mode-btn-classroom {
+  color: var(--text-secondary);
+}
+
+.dark #mode-btn-class.bg-white,
+.dark #mode-btn-teacher.bg-white,
+.dark #mode-btn-classroom.bg-white,
+.dark #mode-btn-class[class*="bg-white"],
+.dark #mode-btn-teacher[class*="bg-white"],
+.dark #mode-btn-classroom[class*="bg-white"] {
+  background-color: var(--surface-2) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-subtle);
+}
+
+.dark #subst-mode-classes:not(.bg-blue-600),
+.dark #subst-mode-teachers:not(.bg-blue-600) {
+  color: var(--text-secondary) !important;
+}
+
+/* Navigation & Directory Tabs in Dark Mode */
+.dark nav[aria-label="Tabs"] {
+  background-color: var(--surface-0) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .tab-btn.active,
+.dark .dirtab-btn.active {
+  background-color: var(--surface-2) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.dark .tab-btn:not(.active),
+.dark .dirtab-btn:not(.active) {
+  color: var(--text-secondary) !important;
+}
+
+.dark .tab-btn:not(.active):hover,
+.dark .dirtab-btn:not(.active):hover {
+  background-color: var(--surface-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Dark Timetable Lesson Cards (Level 2 Elevation) */
+.dark .lesson-card {
+  background-color: var(--surface-card) !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow: var(--shadow-card);
+}
+
+.dark .lesson-card:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--border-muted) !important;
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-1px);
+}
+
+/* Slim elegant subject color stripe */
+.dark .lesson-card > div[style*="background-color"] {
+  width: 3px !important;
+  border-radius: 2px 0 0 2px;
+  opacity: 0.85;
 }
 
 .dark .lesson-card .lesson-card-title {
   color: var(--text-primary) !important;
+  font-weight: 600;
 }
 
 .dark .lesson-card .lesson-card-sub {
   color: var(--text-secondary) !important;
 }
 
-.dark .lesson-card .lesson-card-sub .text-slate-800 {
-  color: #e2e8f0 !important;
-}
-
+.dark .lesson-card .lesson-card-sub .text-slate-800,
 .dark .lesson-card .lesson-card-sub .text-blue-700 {
-  color: #93c5fd !important;
-}
-
-/* Dark Active Lesson Glow - Accent Container with High Contrast */
-.dark .lesson-card.is-current-lesson {
-  border-color: #3b82f6 !important;
-  background: linear-gradient(135deg, #162032 0%, #172554 100%) !important;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(0, 0, 0, 0.6) !important;
-}
-
-.dark .lesson-progress-wrap {
-  background: rgba(36, 46, 66, 0.85);
-}
-
-.dark .lesson-progress-pointer {
-  border-color: var(--bg-base);
-}
-
-/* Dark timetable grid cells & highlights */
-.dark .timetable-day-row {
-  border-color: var(--border-subtle) !important;
-}
-.dark .timetable-cell {
-  border-color: var(--border-subtle) !important;
-}
-
-.dark .timetable-current-day-row {
-  background-color: rgba(30, 58, 138, 0.18) !important;
-}
-
-.dark .current-period-col {
-  background-color: rgba(30, 58, 138, 0.38) !important;
-  color: #93c5fd !important;
-  box-shadow: inset 0 2px 0 var(--accent);
-}
-
-/* Dark Substitution Report Styles */
-.dark [class^="_RSS"] .section {
-  border-color: var(--border-subtle);
-  background: var(--surface-1);
-}
-
-.dark [class^="_RSS"] .header {
-  color: var(--text-primary);
-  background: var(--surface-2);
-}
-
-.dark [class^="_RSS"] .row {
-  background: var(--surface-0);
-  border-color: var(--border-subtle);
-  color: var(--text-secondary);
-}
-
-.dark [class^="_RSS"] .row.nosubst {
-  background: #064e3b;
-  border-color: #047857;
-  color: #a7f3d0;
-}
-
-.dark [class^="_RSS"] .period {
-  color: #93c5fd;
-  background: #1e3a8a;
-}
-
-.dark [class^="_RSS"] .info {
-  color: var(--text-tertiary);
-}
-
-/* Dynamic JS Cards in Dark Mode (Directory, News, Daily, Stats) */
-.dark #directory-results-container .bg-white,
-.dark #daily-schedule-container .bg-white,
-.dark #news-feed-container .bg-white,
-.dark #api-history-list .bg-white {
-  background-color: var(--surface-1) !important;
-  border-color: var(--border-subtle) !important;
-  color: var(--text-secondary) !important;
-}
-
-.dark #directory-results-container h3,
-.dark #directory-results-container .text-slate-900,
-.dark #daily-schedule-container .text-slate-900,
-.dark #news-feed-container h3,
-.dark #news-feed-container .text-slate-900 {
   color: var(--text-primary) !important;
 }
 
-.dark #directory-results-container strong.text-slate-800,
-.dark #daily-schedule-container strong.text-slate-800 {
-  color: #e2e8f0 !important;
+/* Active / Current Lesson in Dark Mode */
+.dark .lesson-card.is-current-lesson {
+  border-color: rgba(59, 130, 246, 0.75) !important;
+  background-color: var(--surface-card) !important;
+  box-shadow: 0 0 0 1.5px rgba(59, 130, 246, 0.45), var(--shadow-card-hover) !important;
+  animation: dark-current-lesson-pulse 3s infinite ease-in-out;
 }
 
-.dark #directory-results-container button.bg-slate-50 {
+@keyframes dark-current-lesson-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 1.5px rgba(59, 130, 246, 0.45), 0 4px 16px rgba(0, 0, 0, 0.5);
+    border-color: rgba(59, 130, 246, 0.75) !important;
+  }
+  50% {
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.55), 0 4px 16px rgba(0, 0, 0, 0.5);
+    border-color: rgba(16, 185, 129, 0.8) !important;
+  }
+}
+
+.dark .lesson-progress-wrap {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark .lesson-progress-pointer {
+  background: #10b981;
+  border-color: var(--surface-card);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+}
+
+.dark .current-time-node {
+  border-color: var(--surface-1);
+}
+
+/* Dark Mode Break Columns (Recess & Lunch: Warm-Neutral Subtle Break Styling) */
+.dark th#th-gap-recess,
+.dark th#th-gap-lunch,
+.dark .timetable-break-cell {
+  background-color: var(--break-bg) !important;
+  border-color: var(--break-border) !important;
+  color: var(--break-text) !important;
+}
+
+.dark th#th-gap-recess div,
+.dark th#th-gap-lunch div {
+  color: var(--break-text) !important;
+}
+
+.dark th#th-gap-recess div.text-[8px],
+.dark th#th-gap-lunch div.text-[8px] {
+  color: var(--text-muted) !important;
+}
+
+.dark .timetable-break-cell > div {
+  background-color: rgba(255, 255, 255, 0.025) !important;
+  border-color: var(--break-border) !important;
+  color: var(--break-text) !important;
+  box-shadow: none !important;
+}
+
+.dark .timetable-break-cell span {
+  color: var(--break-text) !important;
+}
+
+/* Dynamic JS Cards in Dark Mode (Directory, News, Daily, Substitution) */
+.dark #directory-content-container .bg-white,
+.dark #daily-results-container .bg-white,
+.dark #news-cards-container .bg-white,
+.dark #news-cards-container article,
+.dark #subst-render-container .bg-white {
+  background-color: var(--surface-card) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+.dark #directory-content-container .bg-white:hover,
+.dark #daily-results-container .bg-white:hover,
+.dark #news-cards-container .bg-white:hover,
+.dark #news-cards-container article:hover,
+.dark #subst-render-container .bg-white:hover {
+  background-color: var(--surface-hover) !important;
+  border-color: var(--border-muted) !important;
+  box-shadow: var(--shadow-card-hover) !important;
+}
+
+.dark #directory-content-container h3,
+.dark #directory-content-container .text-slate-900,
+.dark #daily-results-container .text-slate-900,
+.dark #daily-results-container h3,
+.dark #news-cards-container h3,
+.dark #news-cards-container .text-slate-900 {
+  color: var(--text-primary) !important;
+}
+
+.dark #directory-content-container strong.text-slate-800,
+.dark #daily-results-container strong.text-slate-800 {
+  color: var(--text-primary) !important;
+}
+
+.dark #directory-content-container button.bg-slate-50,
+.dark #daily-results-container button.bg-slate-50 {
   background-color: var(--surface-2) !important;
   border-color: var(--border-subtle) !important;
   color: var(--accent) !important;
 }
-.dark #directory-results-container button.bg-slate-50:hover {
-  background-color: var(--surface-3) !important;
+
+.dark #directory-content-container button.bg-slate-50:hover,
+.dark #daily-results-container button.bg-slate-50:hover {
+  background-color: var(--surface-hover) !important;
   color: #93c5fd !important;
 }
 
-.dark #directory-results-container span.bg-slate-100 {
+.dark #directory-content-container span.bg-slate-100,
+.dark #daily-results-container span.bg-slate-100 {
   background-color: var(--surface-2) !important;
+  border: 1px solid var(--border-subtle) !important;
   color: var(--text-secondary) !important;
 }
 
-.dark #directory-results-container span.bg-blue-100 {
-  background-color: #1e3a8a !important;
-  color: #bfdbfe !important;
+.dark #directory-content-container span.bg-blue-100 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  color: #93c5fd !important;
 }
 
-/* Native dialog backdrop in dark mode */
+/* Time Simulator Popover & Panels in Dark Mode */
+.dark #time-simulator-popover {
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Native Dialog & Lesson Modal in Dark Mode */
+.dark dialog {
+  background-color: transparent !important;
+}
+
 .dark dialog::backdrop {
   background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.dark #lesson-modal > div {
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+}
+
+.dark #lesson-modal .bg-slate-50 {
+  background-color: var(--surface-2) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+/* Dark Code Blocks */
+.dark pre.json-code {
+  background-color: #0B0D12 !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: #cbd5e1 !important;
+}
+
+/* Dark Substitution Report Custom Styles */
+.dark [class^="_RSS"] .section {
+  border-color: var(--border-subtle) !important;
+  background: var(--surface-card) !important;
+  box-shadow: var(--shadow-card);
+}
+
+.dark [class^="_RSS"] .header {
+  color: var(--text-primary) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border-subtle);
+}
+
+.dark [class^="_RSS"] .row {
+  background: var(--surface-1) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark [class^="_RSS"] .row.nosubst {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+  color: #6ee7b7 !important;
+}
+
+.dark [class^="_RSS"] .period {
+  color: #93c5fd !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.dark [class^="_RSS"] .info {
+  color: var(--text-secondary) !important;
 }
 
 /* Print styles */

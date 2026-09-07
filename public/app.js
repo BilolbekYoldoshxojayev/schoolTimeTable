@@ -1214,13 +1214,13 @@ function setFilterMode(mode) {
 
   [btnClass, btnTeacher, btnClassroom].forEach(b => {
     if (b) {
-      b.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900';
+      b.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
     }
   });
 
   const activeBtn = mode === 'class' ? btnClass : (mode === 'teacher' ? btnTeacher : btnClassroom);
   if (activeBtn) {
-    activeBtn.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-2xs';
+    activeBtn.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-2xs transition';
   }
 
   populateEntityDropdown();
@@ -1231,53 +1231,43 @@ function populateEntityDropdown() {
   const select = document.getElementById('entity-select');
   if (!select || !state.timetableData) return;
 
+  const data = state.timetableData;
   select.innerHTML = '';
-  let items = [];
 
+  let list = [];
   if (state.filterMode === 'class') {
-    items = (state.timetableData.classes || []).map(c => ({ id: c.id, name: `Class: ${c.name}` }));
+    list = (data.classes || []).map(c => ({ id: c.id, label: `Class ${c.name}`, sort: c.name }));
   } else if (state.filterMode === 'teacher') {
-    items = (state.timetableData.teachers || []).map(t => ({ id: t.id, name: `Teacher: ${t.name || t.short}` }));
-    items.sort((a, b) => a.name.localeCompare(b.name));
+    list = (data.teachers || []).map(t => ({ id: t.id, label: t.name || t.short, sort: t.name || t.short }));
   } else if (state.filterMode === 'classroom') {
-    items = (state.timetableData.classrooms || []).map(r => ({ id: r.id, name: `Room: ${normalizeClassroomName(r.name)}` }));
-    items.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    list = (data.classrooms || []).map(r => ({ id: r.id, label: `Room ${normalizeClassroomName(r.short || r.name)}`, sort: r.short || r.name }));
   }
 
-  items.forEach(item => {
+  list.sort((a, b) => a.sort.localeCompare(b.sort, undefined, { numeric: true }));
+
+  list.forEach(item => {
     const opt = document.createElement('option');
     opt.value = item.id;
-    opt.textContent = item.name;
+    opt.textContent = item.label;
     select.appendChild(opt);
   });
 
-  if (items.length > 0) {
-    let targetId = state.selectedEntityId;
-    if (state.filterMode === 'class' && state.lastClassId) targetId = state.lastClassId;
-    if (state.filterMode === 'teacher' && state.lastTeacherId) targetId = state.lastTeacherId;
-    if (state.filterMode === 'classroom' && state.lastRoomId) targetId = state.lastRoomId;
-
-    if (!targetId || !items.find(i => i.id === targetId)) {
-      targetId = items[0].id;
-    }
-
-    state.selectedEntityId = targetId;
-    select.value = targetId;
-    saveCurrentEntityId(targetId);
+  // Pick previous selection if still exists, or default to first
+  if (state.selectedEntityId && list.some(i => i.id === state.selectedEntityId)) {
+    select.value = state.selectedEntityId;
+  } else if (list.length > 0) {
+    state.selectedEntityId = list[0].id;
+    select.value = state.selectedEntityId;
   }
-}
 
-function saveCurrentEntityId(id) {
-  if (state.filterMode === 'class') {
-    state.lastClassId = id;
-    StorageManager.set('lastClassId', id);
-  } else if (state.filterMode === 'teacher') {
-    state.lastTeacherId = id;
-    StorageManager.set('lastTeacherId', id);
-  } else if (state.filterMode === 'classroom') {
-    state.lastRoomId = id;
-    StorageManager.set('lastRoomId', id);
-  }
+  select.onchange = (e) => {
+    state.selectedEntityId = e.target.value;
+    if (state.filterMode === 'class') state.lastClassId = state.selectedEntityId;
+    if (state.filterMode === 'teacher') state.lastTeacherId = state.selectedEntityId;
+    if (state.filterMode === 'classroom') state.lastRoomId = state.selectedEntityId;
+    StorageManager.set(`last_${state.filterMode}`, state.selectedEntityId);
+    renderGrid();
+  };
 }
 
 function filterDay(day) {
@@ -1287,7 +1277,7 @@ function filterDay(day) {
     if (btn.getAttribute('data-day') === day) {
       btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-semibold bg-blue-600 text-white';
     } else {
-      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700';
+      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition';
     }
   });
   renderGrid();
@@ -1342,39 +1332,39 @@ function renderGrid() {
     const isToday = day.id === schedState.currentDayId && !schedState.isWeekend;
 
     const tr = document.createElement('tr');
-    tr.className = `timetable-day-row ${isToday ? 'timetable-current-day-row bg-blue-50/20' : 'hover:bg-slate-50/50'} transition border-b border-slate-200/80`;
+    tr.className = `timetable-day-row ${isToday ? 'timetable-current-day-row bg-blue-50/20' : 'hover:bg-slate-50/50 dark:hover:bg-white/[0.02]'} transition border-b border-slate-200/80 dark:border-white/5`;
 
     // Day label cell
     const thDay = document.createElement('th');
     if (isToday) {
-      thDay.className = 'p-1 font-semibold text-slate-800 bg-blue-100/60 border-r-2 border-r-blue-500 text-center w-24 select-none';
+      thDay.className = 'p-1 font-semibold text-slate-800 dark:text-blue-200 bg-blue-100/60 dark:bg-blue-950/30 border-r-2 border-r-blue-500 text-center w-24 select-none';
       thDay.innerHTML = `
-        <div class="text-xs font-bold leading-tight flex items-center justify-center gap-1 text-blue-950">
+        <div class="text-xs font-bold leading-tight flex items-center justify-center gap-1 text-blue-950 dark:text-blue-200">
           ${day.name}
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" title="Today"></span>
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" title="Today"></span>
         </div>
         <div class="flex items-center justify-center gap-1 mt-0.5">
-          <span class="text-[10px] text-blue-700 font-bold uppercase tracking-wider">${day.short}</span>
-          <span class="px-1 py-0.2 rounded text-[8px] font-black bg-blue-600 text-white leading-none tracking-wide">TODAY</span>
+          <span class="text-[10px] text-blue-700 dark:text-blue-400 font-bold uppercase tracking-wider">${day.short}</span>
+          <span class="px-1 py-0.2 rounded text-[8px] font-black bg-blue-600 dark:bg-blue-500 text-white leading-none tracking-wide">TODAY</span>
         </div>
       `;
     } else {
-      thDay.className = 'p-1 font-semibold text-slate-800 bg-slate-50/80 border-r border-slate-200 text-center w-24 select-none';
+      thDay.className = 'p-1 font-semibold text-slate-800 dark:text-slate-300 bg-slate-50/80 dark:bg-[#11141C] border-r border-slate-200 dark:border-white/5 text-center w-24 select-none';
       thDay.innerHTML = `
         <div class="text-xs font-bold leading-tight">${day.name}</div>
-        <div class="text-[10px] text-slate-400 font-normal uppercase tracking-wider">${day.short}</div>
+        <div class="text-[10px] text-slate-400 dark:text-slate-500 font-normal uppercase tracking-wider">${day.short}</div>
       `;
     }
     tr.appendChild(thDay);
 
     // Column 2: Morning Arrival Gap (08:00 - 08:30)
     const tdArrival = document.createElement('td');
-    tdArrival.className = 'border-r border-slate-200 bg-slate-50/50 p-1 text-center select-none align-middle';
+    tdArrival.className = 'border-r border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.015] p-1 text-center select-none align-middle';
     tdArrival.title = 'School Arrival & Doors Open (08:00 - 08:30)';
     tdArrival.innerHTML = `
-      <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-slate-100/60 border border-dashed border-slate-200 text-slate-400">
-        <span class="text-[10px]">🌅</span>
-        <span class="text-[8px] font-mono text-slate-400">08:00</span>
+      <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-slate-100/60 dark:bg-white/[0.03] border border-dashed border-slate-200 dark:border-white/10 text-slate-400 dark:text-slate-500">
+        <span class="text-[10px] opacity-70">🌅</span>
+        <span class="text-[8px] font-mono text-slate-400 dark:text-slate-500">08:00</span>
       </div>
     `;
     tr.appendChild(tdArrival);
@@ -1389,11 +1379,11 @@ function renderGrid() {
       const span = isStartOfMulti ? 3 : 1;
 
       const td = document.createElement('td');
-      td.className = 'timetable-cell border-r border-slate-200 align-top p-1';
+      td.className = 'timetable-cell border-r border-slate-200 dark:border-white/5 align-top p-1';
       if (period === 7) td.className = 'timetable-cell align-top p-1';
       if (span > 1) {
         td.colSpan = 3;
-        td.className += ' bg-amber-50/20';
+        td.className += ' bg-amber-50/20 dark:bg-white/[0.015]';
       }
 
       // Filter by search query
@@ -1448,7 +1438,7 @@ function renderGrid() {
           const endMin = getPeriodEndMinutes(endP);
 
           if (isCurrentLesson) {
-            liveBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-500 text-white shrink-0 ml-1 shadow-2xs animate-pulse"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>NOW</span>`;
+            liveBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 dark:bg-emerald-500/20 shrink-0 ml-1 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>LIVE</span>`;
 
             const cardProgress = Math.max(0, Math.min(1, (schedState.totalMinutes - startMin) / Math.max(1, endMin - startMin)));
             const cardPercent = (cardProgress * 100).toFixed(2);
@@ -1460,15 +1450,15 @@ function renderGrid() {
                   <div class="lesson-progress-pointer"></div>
                 </div>
               </div>
-              <div class="flex justify-between items-center text-[9px] text-slate-500 font-mono mt-0.5">
+              <div class="flex justify-between items-center text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 <span>${getPeriodStartTimeStr(startP)}</span>
-                <span class="lesson-time-left font-sans font-bold text-rose-600">${cardRemainingMin}m left</span>
+                <span class="lesson-time-left font-sans font-bold text-emerald-600 dark:text-emerald-400">${cardRemainingMin}m left</span>
                 <span>${getPeriodEndTimeStr(endP)}</span>
               </div>
             `;
           }
 
-          card.className = `lesson-card ${isCurrentLesson ? 'is-current-lesson' : ''} rounded-md border border-slate-200/90 bg-white cursor-pointer relative overflow-hidden h-full flex flex-col justify-center select-none shadow-2xs hover:shadow-xs transition`;
+          card.className = `lesson-card ${isCurrentLesson ? 'is-current-lesson' : ''} rounded-md border border-slate-200/90 dark:border-white/5 bg-white dark:bg-[#1C202B] cursor-pointer relative overflow-hidden h-full flex flex-col justify-center select-none shadow-2xs hover:shadow-xs transition`;
           card.dataset.startMin = startMin;
           card.dataset.endMin = endMin;
           card.dataset.startP = startP;
@@ -1477,7 +1467,7 @@ function renderGrid() {
             <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: ${bgColor}"></div>
             <div class="pl-1.5 min-w-0">
               <div class="flex items-center justify-between gap-0.5">
-                <div class="font-bold text-slate-900 truncate lesson-card-title flex items-center gap-1 min-w-0" title="${item.subject.name}">
+                <div class="font-bold text-slate-900 dark:text-[rgba(255,255,255,0.92)] truncate lesson-card-title flex items-center gap-1 min-w-0" title="${item.subject.name}">
                   <span class="truncate">${item.subject.name}</span>
                 </div>
                 <div class="flex items-center shrink-0">
@@ -1485,7 +1475,7 @@ function renderGrid() {
                   ${liveBadgeHtml}
                 </div>
               </div>
-              <div class="text-slate-500 truncate lesson-card-sub mt-0.5">${subText}</div>
+              <div class="text-slate-500 dark:text-slate-400 truncate lesson-card-sub mt-0.5">${subText}</div>
               ${progressHtml}
             </div>
           `;
@@ -1496,7 +1486,7 @@ function renderGrid() {
 
         td.appendChild(stack);
       } else {
-        td.innerHTML = `<div class="h-full min-h-[32px] flex items-center justify-center text-slate-200 text-xs font-mono select-none">—</div>`;
+        td.innerHTML = `<div class="h-full min-h-[32px] flex items-center justify-center text-slate-300 dark:text-white/15 text-xs font-mono select-none">—</div>`;
       }
 
       tr.appendChild(td);
@@ -1513,31 +1503,31 @@ function renderGrid() {
         const afterP = period - 1;
         if (afterP === 3) {
           // Morning Recess (10:55 - 11:25)
-          tdGap.className = 'border-r border-amber-200 bg-amber-50/40 p-1 text-center select-none align-middle';
+          tdGap.className = 'timetable-break-cell recess-cell border-r border-amber-200 dark:border-white/5 bg-amber-50/40 dark:bg-white/[0.02] p-1 text-center select-none align-middle';
           tdGap.title = 'Morning Recess (10:55 - 11:25)';
           tdGap.innerHTML = `
-            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 border border-amber-200/80 text-amber-800 text-[10px] font-bold shadow-2xs">
-              <span>☕</span>
-              <span class="text-[8px] font-semibold text-amber-700 leading-none mt-0.5">Recess</span>
+            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 dark:bg-white/[0.03] border border-amber-200/80 dark:border-white/10 text-amber-800 dark:text-amber-200/80 text-[10px] font-bold shadow-2xs">
+              <span class="opacity-80">☕</span>
+              <span class="text-[8px] font-semibold text-amber-700 dark:text-slate-300 leading-none mt-0.5">Recess</span>
             </div>
           `;
         } else if (afterP === 5) {
           // Lunch & Recreation (13:00 - 14:00)
-          tdGap.className = 'border-r border-amber-200 bg-amber-50/40 p-1 text-center select-none align-middle';
+          tdGap.className = 'timetable-break-cell lunch-cell border-r border-amber-200 dark:border-white/5 bg-amber-50/40 dark:bg-white/[0.02] p-1 text-center select-none align-middle';
           tdGap.title = 'Lunch & Recreation (13:00 - 14:00)';
           tdGap.innerHTML = `
-            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 border border-amber-200/80 text-amber-800 text-[10px] font-bold shadow-2xs">
-              <span>🍽️</span>
-              <span class="text-[8px] font-semibold text-amber-700 leading-none mt-0.5">Lunch</span>
+            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 dark:bg-white/[0.03] border border-amber-200/80 dark:border-white/10 text-amber-800 dark:text-amber-200/80 text-[10px] font-bold shadow-2xs">
+              <span class="opacity-80">🍽️</span>
+              <span class="text-[8px] font-semibold text-amber-700 dark:text-slate-300 leading-none mt-0.5">Lunch</span>
             </div>
           `;
         } else {
           // 5m passing break (1, 2, 4, 6)
-          tdGap.className = 'border-r border-slate-200/60 bg-slate-50/30 p-0 text-center select-none align-middle';
+          tdGap.className = 'border-r border-slate-200/60 dark:border-white/5 bg-slate-50/30 dark:bg-transparent p-0 text-center select-none align-middle';
           tdGap.title = 'Passing Break (5 min)';
           tdGap.innerHTML = `
             <div class="h-full min-h-[36px] flex items-center justify-center">
-              <div class="w-px h-5 bg-slate-200"></div>
+              <div class="w-px h-5 bg-slate-200 dark:bg-white/10"></div>
             </div>
           `;
         }
@@ -1731,9 +1721,9 @@ function updateSubstModeUI() {
 
   if (mode === 'classes') {
     if (btnClasses) btnClasses.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs';
-    if (btnTeachers) btnTeachers.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900';
+    if (btnTeachers) btnTeachers.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
   } else {
-    if (btnClasses) btnClasses.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900';
+    if (btnClasses) btnClasses.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
     if (btnTeachers) btnTeachers.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs';
   }
 }
