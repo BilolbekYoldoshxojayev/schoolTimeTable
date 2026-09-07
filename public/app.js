@@ -1003,6 +1003,96 @@ function switchTab(tabId) {
 // ============================================================================
 // Data Loading & Management
 // ============================================================================
+const CLASS_NAME_MAP = {
+  '5-Blue': { name: '5-01: Al-Xorazmiy', short: '5-01' },
+  '5-Green': { name: '5-02: Al-Xorazmiy', short: '5-02' },
+  '6-Blue': { name: "6-01: Mirzo Ulug'bek", short: '6-01' },
+  '6-Green': { name: "6-02: Mirzo Ulug'bek", short: '6-02' },
+  '7-Blue': { name: '7-01: Abu Ali ibn Sino', short: '7-01' },
+  '7-Green': { name: '7-02: Abu Ali ibn Sino', short: '7-02' },
+  '8-Blue': { name: "8-01: Ahmad al-Farg'oniy", short: '8-01' },
+  '8-Green': { name: "8-02: Ahmad al-Farg'oniy", short: '8-02' },
+  '9-Blue': { name: '9-01: Abu Rayhon Beruniy', short: '9-01' },
+  '9-Green': { name: '9-02: Abu Rayhon Beruniy', short: '9-02' },
+  '10-Blue': { name: '10-01: Abu Nasr Forobiy', short: '10-01' },
+  '10-Green': { name: '10-02: Abu Nasr Forobiy', short: '10-02' },
+  '11-Blue': { name: '11-01: Alisher Navoiy', short: '11-01' },
+  '11-Green': { name: '11-02: Alisher Navoiy', short: '11-02' }
+};
+
+function mapClassName(name, short) {
+  if (!name) return { name: name || '', short: short || '' };
+  const trimmed = name.trim();
+  if (CLASS_NAME_MAP[trimmed]) {
+    return { name: CLASS_NAME_MAP[trimmed].name, short: CLASS_NAME_MAP[trimmed].short };
+  }
+  const match = trimmed.match(/^(\d+)-(Blue|Green)$/i);
+  if (match) {
+    const grade = match[1];
+    const isBlue = match[2].toLowerCase() === 'blue';
+    const num = isBlue ? '01' : '02';
+    const names = {
+      '5': 'Al-Xorazmiy',
+      '6': "Mirzo Ulug'bek",
+      '7': 'Abu Ali ibn Sino',
+      '8': "Ahmad al-Farg'oniy",
+      '9': 'Abu Rayhon Beruniy',
+      '10': 'Abu Nasr Forobiy',
+      '11': 'Alisher Navoiy'
+    };
+    if (names[grade]) {
+      return {
+        name: `${grade}-${num}: ${names[grade]}`,
+        short: `${grade}-${num}`
+      };
+    }
+  }
+  return { name, short: short || name };
+}
+
+function normalizeTimetableData(data) {
+  if (!data) return data;
+  const mapClass = (c) => {
+    if (!c) return;
+    const mapped = mapClassName(c.name, c.short);
+    c.name = mapped.name;
+    c.short = mapped.short;
+  };
+
+  (data.classes || []).forEach(mapClass);
+
+  (data.teachers || []).forEach(t => {
+    if (t.homeroomClass) {
+      t.homeroomClass = mapClassName(t.homeroomClass).name;
+    }
+    if (Array.isArray(t.classes)) {
+      t.classes = t.classes.map(cn => mapClassName(cn).name);
+    }
+  });
+
+  const normalizeGrid = (grid) => {
+    if (!grid) return;
+    for (const entityId of Object.keys(grid)) {
+      const days = grid[entityId] || {};
+      for (const dayIdx of Object.keys(days)) {
+        const periods = days[dayIdx] || {};
+        for (const pIdx of Object.keys(periods)) {
+          const items = periods[pIdx] || [];
+          for (const item of items) {
+            (item.classes || []).forEach(mapClass);
+          }
+        }
+      }
+    }
+  };
+
+  normalizeGrid(data.classGrid);
+  normalizeGrid(data.teacherGrid);
+  normalizeGrid(data.classroomGrid);
+
+  return data;
+}
+
 async function loadTimetable(ttNum = '13') {
   showLoadingGrid();
 
@@ -1031,6 +1121,7 @@ async function loadTimetable(ttNum = '13') {
       throw new Error(`Could not load timetable data for version ${ttNum}`);
     }
 
+    data = normalizeTimetableData(data);
     state.timetableData = data;
     state.cachedTimetables[ttNum] = data;
 
@@ -2112,24 +2203,28 @@ function loadDailyScheduleClasses() {
   if (!select) return;
 
   const defaultClasses = [
-    { id: '-17', name: '5-Blue' },
-    { id: '-18', name: '5-Green' },
-    { id: '-15', name: '6-Blue' },
-    { id: '-16', name: '6-Green' },
-    { id: '-1', name: '7-Blue' },
-    { id: '-3', name: '7-Green' },
-    { id: '-2', name: '8-Blue' },
-    { id: '-4', name: '8-Green' },
-    { id: '-10', name: '9-Blue' },
-    { id: '-12', name: '9-Green' },
-    { id: '-11', name: '10-Blue' },
-    { id: '-13', name: '10-Green' },
-    { id: '-14', name: '11-Blue' },
-    { id: '-19', name: '11-Green' }
+    { id: '-17', name: '5-01: Al-Xorazmiy' },
+    { id: '-18', name: '5-02: Al-Xorazmiy' },
+    { id: '-15', name: "6-01: Mirzo Ulug'bek" },
+    { id: '-16', name: "6-02: Mirzo Ulug'bek" },
+    { id: '-1', name: '7-01: Abu Ali ibn Sino' },
+    { id: '-2', name: '7-02: Abu Ali ibn Sino' },
+    { id: '-3', name: "8-01: Ahmad al-Farg'oniy" },
+    { id: '-4', name: "8-02: Ahmad al-Farg'oniy" },
+    { id: '-5', name: '9-01: Abu Rayhon Beruniy' },
+    { id: '-6', name: '9-02: Abu Rayhon Beruniy' },
+    { id: '-7', name: '10-01: Abu Nasr Forobiy' },
+    { id: '-8', name: '10-02: Abu Nasr Forobiy' },
+    { id: '-9', name: '11-01: Alisher Navoiy' },
+    { id: '-10', name: '11-02: Alisher Navoiy' }
   ];
 
+  const classList = (state.timetableData?.classes && state.timetableData.classes.length > 0)
+    ? state.timetableData.classes
+    : defaultClasses;
+
   select.innerHTML = '';
-  defaultClasses.forEach(c => {
+  classList.forEach(c => {
     const opt = document.createElement('option');
     opt.value = c.id;
     opt.textContent = c.name;
@@ -2137,7 +2232,7 @@ function loadDailyScheduleClasses() {
   });
 
   const savedClass = state.dailyClassId || '-17';
-  if (defaultClasses.find(c => c.id === savedClass)) {
+  if (classList.find(c => c.id === savedClass)) {
     select.value = savedClass;
   }
 

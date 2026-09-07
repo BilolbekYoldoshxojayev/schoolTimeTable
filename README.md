@@ -233,8 +233,8 @@ curl "http://localhost:3333/api/timetable/13"
   "classes": [
     {
       "id": "-17",
-      "name": "5-Blue",
-      "short": "5-Blue",
+      "name": "5-01: Al-Xorazmiy",
+      "short": "5-01",
       "color": "#0046FF",
       "homeroomTeacherName": "Mr. Nozim",
       "weeklyLessons": 31
@@ -246,7 +246,7 @@ curl "http://localhost:3333/api/timetable/13"
       "name": "Ms. Oydina",
       "short": "Ms. Oydina",
       "color": "#FF0000",
-      "homeroomClass": "7-Blue",
+      "homeroomClass": "7-01: Abu Ali ibn Sino",
       "weeklyLessons": 24,
       "subjects": ["Native language", "Uzbek literature"]
     }
@@ -331,7 +331,7 @@ Queries the school's live daily schedule RPC (`curentttGetData`) for any specifi
 #### Parameters
 | Parameter | Type | Required | Default | Description |
 | :--- | :---: | :---: | :---: | :--- |
-| `classId` | String | No | `-17` (`5-Blue`) | Target class ID (e.g. `-17`, `-18`, `-15`, etc.) |
+| `classId` | String | No | `-17` (`5-01: Al-Xorazmiy`) | Target class ID (e.g. `-17`, `-18`, `-15`, etc.) |
 | `date` | String | No | Today | Target date (`YYYY-MM-DD`) |
 
 #### Request
@@ -413,7 +413,7 @@ from datetime import date
 
 API_BASE = "https://your-project.vercel.app/api"
 
-def get_class_schedule(class_name="5-Blue"):
+def get_class_schedule(class_name="5-01: Al-Xorazmiy"):
     # 1. Fetch full database
     res = requests.get(f"{API_BASE}/timetable/13").json()
     
@@ -442,7 +442,7 @@ def get_class_schedule(class_name="5-Blue"):
             
     return "\n".join(lines)
 
-print(get_class_schedule("5-Blue"))
+print(get_class_schedule("5-01: Al-Xorazmiy"))
 ```
 
 ---

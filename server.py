@@ -62,8 +62,51 @@ def parse_rss(xml):
         })
     return {"channelTitle": "Presidential School in Namangan", "items": items}
 
+CLASS_NAME_MAP = {
+    '5-Blue': {'name': '5-01: Al-Xorazmiy', 'short': '5-01'},
+    '5-Green': {'name': '5-02: Al-Xorazmiy', 'short': '5-02'},
+    '6-Blue': {'name': "6-01: Mirzo Ulug'bek", 'short': '6-01'},
+    '6-Green': {'name': "6-02: Mirzo Ulug'bek", 'short': '6-02'},
+    '7-Blue': {'name': '7-01: Abu Ali ibn Sino', 'short': '7-01'},
+    '7-Green': {'name': '7-02: Abu Ali ibn Sino', 'short': '7-02'},
+    '8-Blue': {'name': "8-01: Ahmad al-Farg'oniy", 'short': '8-01'},
+    '8-Green': {'name': "8-02: Ahmad al-Farg'oniy", 'short': '8-02'},
+    '9-Blue': {'name': '9-01: Abu Rayhon Beruniy', 'short': '9-01'},
+    '9-Green': {'name': '9-02: Abu Rayhon Beruniy', 'short': '9-02'},
+    '10-Blue': {'name': '10-01: Abu Nasr Forobiy', 'short': '10-01'},
+    '10-Green': {'name': '10-02: Abu Nasr Forobiy', 'short': '10-02'},
+    '11-Blue': {'name': '11-01: Alisher Navoiy', 'short': '11-01'},
+    '11-Green': {'name': '11-02: Alisher Navoiy', 'short': '11-02'}
+}
+
+def map_class_name(name, short=''):
+    if not name:
+        return name, short
+    trimmed = name.strip()
+    if trimmed in CLASS_NAME_MAP:
+        return CLASS_NAME_MAP[trimmed]['name'], CLASS_NAME_MAP[trimmed]['short']
+    m = re.match(r'^(\d+)-(Blue|Green)$', trimmed, re.IGNORECASE)
+    if m:
+        grade = m.group(1)
+        is_blue = m.group(2).lower() == 'blue'
+        num = '01' if is_blue else '02'
+        names = {
+            '5': 'Al-Xorazmiy',
+            '6': "Mirzo Ulug'bek",
+            '7': 'Abu Ali ibn Sino',
+            '8': "Ahmad al-Farg'oniy",
+            '9': 'Abu Rayhon Beruniy',
+            '10': 'Abu Nasr Forobiy',
+            '11': 'Alisher Navoiy'
+        }
+        if grade in names:
+            return f"{grade}-{num}: {names[grade]}", f"{grade}-{num}"
+    return name, (short or name)
+
 def transform_dbi(raw_dbi):
     tables = {t['id']: t.get('data_rows', []) for t in raw_dbi.get('tables', [])}
+    for c in tables.get('classes', []):
+        c['name'], c['short'] = map_class_name(c.get('name', ''), c.get('short', ''))
     classes_map = {c['id']: c for c in tables.get('classes', [])}
     teachers_map = {t['id']: t for t in tables.get('teachers', [])}
     subjects_map = {s['id']: s for s in tables.get('subjects', [])}

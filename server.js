@@ -138,6 +138,53 @@ function parseRssXml(xml) {
   };
 }
 
+const CLASS_NAME_MAP = {
+  '5-Blue': { name: '5-01: Al-Xorazmiy', short: '5-01' },
+  '5-Green': { name: '5-02: Al-Xorazmiy', short: '5-02' },
+  '6-Blue': { name: "6-01: Mirzo Ulug'bek", short: '6-01' },
+  '6-Green': { name: "6-02: Mirzo Ulug'bek", short: '6-02' },
+  '7-Blue': { name: '7-01: Abu Ali ibn Sino', short: '7-01' },
+  '7-Green': { name: '7-02: Abu Ali ibn Sino', short: '7-02' },
+  '8-Blue': { name: "8-01: Ahmad al-Farg'oniy", short: '8-01' },
+  '8-Green': { name: "8-02: Ahmad al-Farg'oniy", short: '8-02' },
+  '9-Blue': { name: '9-01: Abu Rayhon Beruniy', short: '9-01' },
+  '9-Green': { name: '9-02: Abu Rayhon Beruniy', short: '9-02' },
+  '10-Blue': { name: '10-01: Abu Nasr Forobiy', short: '10-01' },
+  '10-Green': { name: '10-02: Abu Nasr Forobiy', short: '10-02' },
+  '11-Blue': { name: '11-01: Alisher Navoiy', short: '11-01' },
+  '11-Green': { name: '11-02: Alisher Navoiy', short: '11-02' }
+};
+
+function mapClassName(name, short) {
+  if (!name) return { name: name || '', short: short || '' };
+  const trimmed = name.trim();
+  if (CLASS_NAME_MAP[trimmed]) {
+    return { name: CLASS_NAME_MAP[trimmed].name, short: CLASS_NAME_MAP[trimmed].short };
+  }
+  const match = trimmed.match(/^(\d+)-(Blue|Green)$/i);
+  if (match) {
+    const grade = match[1];
+    const isBlue = match[2].toLowerCase() === 'blue';
+    const num = isBlue ? '01' : '02';
+    const names = {
+      '5': 'Al-Xorazmiy',
+      '6': "Mirzo Ulug'bek",
+      '7': 'Abu Ali ibn Sino',
+      '8': "Ahmad al-Farg'oniy",
+      '9': 'Abu Rayhon Beruniy',
+      '10': 'Abu Nasr Forobiy',
+      '11': 'Alisher Navoiy'
+    };
+    if (names[grade]) {
+      return {
+        name: `${grade}-${num}: ${names[grade]}`,
+        short: `${grade}-${num}`
+      };
+    }
+  }
+  return { name, short: short || name };
+}
+
 /**
  * Transform raw EduPage dbiAccessorRes relational tables into structured models
  */
@@ -156,7 +203,12 @@ function transformTimetableData(rawDbi) {
   const daysMap = {};
   const lessonsMap = {};
 
-  (tables.classes || []).forEach(c => { classesMap[c.id] = c; });
+  (tables.classes || []).forEach(c => {
+    const mapped = mapClassName(c.name, c.short);
+    c.name = mapped.name;
+    c.short = mapped.short;
+    classesMap[c.id] = c;
+  });
   (tables.teachers || []).forEach(t => { teachersMap[t.id] = t; });
   (tables.subjects || []).forEach(s => { subjectsMap[s.id] = s; });
   (tables.classrooms || []).forEach(r => {
