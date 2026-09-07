@@ -42,14 +42,28 @@ const StorageManager = {
 };
 
 // Global Application State (hydrated from memory)
+const initialFilterMode = StorageManager.get('filterMode', 'class');
+const initialClassId = StorageManager.get('lastClassId', StorageManager.get('last_class', '-17'));
+const initialTeacherId = StorageManager.get('lastTeacherId', StorageManager.get('last_teacher', null));
+const initialRoomId = StorageManager.get('lastRoomId', StorageManager.get('last_classroom', null));
+
+let initialSelectedEntityId = null;
+if (initialFilterMode === 'class') {
+  initialSelectedEntityId = initialClassId;
+} else if (initialFilterMode === 'teacher') {
+  initialSelectedEntityId = initialTeacherId;
+} else if (initialFilterMode === 'classroom') {
+  initialSelectedEntityId = initialRoomId;
+}
+
 const state = {
   theme: StorageManager.get('theme', null), // null = auto (system preference), 'dark', or 'light'
   timetableData: null,
-  filterMode: StorageManager.get('filterMode', 'class'), // 'class', 'teacher', or 'classroom'
-  selectedEntityId: null,
-  lastClassId: StorageManager.get('lastClassId', '-17'),
-  lastTeacherId: StorageManager.get('lastTeacherId', null),
-  lastRoomId: StorageManager.get('lastRoomId', null),
+  filterMode: initialFilterMode, // 'class', 'teacher', or 'classroom'
+  selectedEntityId: initialSelectedEntityId,
+  lastClassId: initialClassId,
+  lastTeacherId: initialTeacherId,
+  lastRoomId: initialRoomId,
   activeDayFilter: StorageManager.get('dayFilter', 'all'),
   searchQuery: '',
   currentVersion: StorageManager.get('timetableVersion', '13'),
@@ -65,7 +79,7 @@ const state = {
   substDate: StorageManager.get('substDate', '2026-09-02'),
   directoryTab: StorageManager.get('directoryTab', 'teachers'),
   directorySearchQuery: '',
-  subjectCategoryFilter: 'all',
+  subjectCategoryFilter: StorageManager.get('subjectCategoryFilter', 'all'),
   currentTab: StorageManager.get('lastTab', 'timetable'),
   cachedTimetables: {},
   simulatedMinutes: null, // null for real time, or total minutes from 00:00 (e.g. 580 for 09:40)
@@ -245,25 +259,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (substDateInput) substDateInput.value = state.substDate;
 
   // Restore Day Filter UI
-  document.querySelectorAll('.day-filter-btn').forEach(btn => {
-    if (btn.getAttribute('data-day') === state.activeDayFilter) {
-      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-semibold bg-blue-600 text-white';
-    } else {
-      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700';
-    }
-  });
+  updateDayFilterUI();
 
   // Restore Mode Filter Button UI
-  const btnClass = document.getElementById('mode-btn-class');
-  const btnTeacher = document.getElementById('mode-btn-teacher');
-  const btnClassroom = document.getElementById('mode-btn-classroom');
-  [btnClass, btnTeacher, btnClassroom].forEach(b => {
-    if (b) b.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900';
-  });
-  const activeModeBtn = state.filterMode === 'class' ? btnClass : (state.filterMode === 'teacher' ? btnTeacher : btnClassroom);
-  if (activeModeBtn) {
-    activeModeBtn.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-2xs';
-  }
+  updateFilterModeUI();
 
   // Restore Substitution UI Mode
   updateSubstModeUI();
@@ -1082,6 +1081,8 @@ function switchTab(tabId) {
     updateCurrentTimeLine();
   } else if (tabId === 'substitution' && !state.substitutionData) {
     loadSubstitution();
+  } else if (tabId === 'daily' && !state.dailyData) {
+    fetchDailySchedule();
   }
 }
 
@@ -1250,13 +1251,20 @@ function setFilterMode(mode) {
 
   // Restore last selected entity for this mode if known
   if (mode === 'class') {
-    state.selectedEntityId = state.lastClassId || null;
+    state.selectedEntityId = state.lastClassId || '-17';
   } else if (mode === 'teacher') {
     state.selectedEntityId = state.lastTeacherId || null;
   } else if (mode === 'classroom') {
     state.selectedEntityId = state.lastRoomId || null;
   }
 
+  updateFilterModeUI();
+  populateEntityDropdown();
+  renderGrid();
+}
+
+function updateFilterModeUI() {
+  const mode = state.filterMode || 'class';
   const btnClass = document.getElementById('mode-btn-class');
   const btnTeacher = document.getElementById('mode-btn-teacher');
   const btnClassroom = document.getElementById('mode-btn-classroom');
@@ -1271,9 +1279,24 @@ function setFilterMode(mode) {
   if (activeBtn) {
     activeBtn.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-2xs transition';
   }
+}
 
-  populateEntityDropdown();
-  renderGrid();
+function saveCurrentEntityId(id) {
+  if (!id) return;
+  state.selectedEntityId = id;
+  if (state.filterMode === 'class') {
+    state.lastClassId = id;
+    StorageManager.set('lastClassId', id);
+    StorageManager.set('last_class', id);
+  } else if (state.filterMode === 'teacher') {
+    state.lastTeacherId = id;
+    StorageManager.set('lastTeacherId', id);
+    StorageManager.set('last_teacher', id);
+  } else if (state.filterMode === 'classroom') {
+    state.lastRoomId = id;
+    StorageManager.set('lastRoomId', id);
+    StorageManager.set('last_classroom', id);
+  }
 }
 
 function populateEntityDropdown() {
@@ -1301,34 +1324,46 @@ function populateEntityDropdown() {
     select.appendChild(opt);
   });
 
-  // Pick previous selection if still exists, or default to first
-  if (state.selectedEntityId && list.some(i => i.id === state.selectedEntityId)) {
-    select.value = state.selectedEntityId;
-  } else if (list.length > 0) {
-    state.selectedEntityId = list[0].id;
-    select.value = state.selectedEntityId;
+  // Pick target entity: state.selectedEntityId or last saved for current mode
+  let targetId = state.selectedEntityId;
+  if (!targetId) {
+    if (state.filterMode === 'class') targetId = state.lastClassId;
+    else if (state.filterMode === 'teacher') targetId = state.lastTeacherId;
+    else if (state.filterMode === 'classroom') targetId = state.lastRoomId;
+  }
+
+  // Validate existence in list, fallback to first item
+  if (!targetId || !list.some(i => i.id === targetId)) {
+    targetId = list.length > 0 ? list[0].id : null;
+  }
+
+  if (targetId) {
+    state.selectedEntityId = targetId;
+    select.value = targetId;
+    saveCurrentEntityId(targetId);
   }
 
   select.onchange = (e) => {
-    state.selectedEntityId = e.target.value;
-    if (state.filterMode === 'class') state.lastClassId = state.selectedEntityId;
-    if (state.filterMode === 'teacher') state.lastTeacherId = state.selectedEntityId;
-    if (state.filterMode === 'classroom') state.lastRoomId = state.selectedEntityId;
-    StorageManager.set(`last_${state.filterMode}`, state.selectedEntityId);
+    saveCurrentEntityId(e.target.value);
     renderGrid();
   };
 }
 
-function filterDay(day) {
-  state.activeDayFilter = day;
-  StorageManager.set('dayFilter', day);
+function updateDayFilterUI() {
+  const currentDay = state.activeDayFilter || 'all';
   document.querySelectorAll('.day-filter-btn').forEach(btn => {
-    if (btn.getAttribute('data-day') === day) {
+    if (btn.getAttribute('data-day') === currentDay) {
       btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-semibold bg-blue-600 text-white';
     } else {
       btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition';
     }
   });
+}
+
+function filterDay(day) {
+  state.activeDayFilter = day;
+  StorageManager.set('dayFilter', day);
+  updateDayFilterUI();
   renderGrid();
 }
 
@@ -1908,6 +1943,7 @@ function getOrganizedSubjects(data) {
 
 function filterSubjectCategory(catId) {
   state.subjectCategoryFilter = catId;
+  StorageManager.set('subjectCategoryFilter', catId);
   renderDirectory();
 }
 window.filterSubjectCategory = filterSubjectCategory;
@@ -1943,14 +1979,12 @@ function switchDirectoryTab(subTab) {
 function updateDirectorySubtabUI() {
   const subTab = state.directoryTab || 'teachers';
   document.querySelectorAll('.dirtab-btn').forEach(btn => {
-    btn.classList.remove('active', 'bg-white', 'text-blue-600', 'font-semibold', 'shadow-2xs');
-    btn.classList.add('text-slate-600');
+    btn.className = 'dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
   });
 
   const activeBtn = document.getElementById(`dirtab-${subTab}`);
   if (activeBtn) {
-    activeBtn.classList.add('active', 'bg-white', 'text-blue-600', 'font-semibold', 'shadow-2xs');
-    activeBtn.classList.remove('text-slate-600');
+    activeBtn.className = 'dirtab-btn active px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-2xs transition';
   }
 }
 
