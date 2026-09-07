@@ -156,9 +156,53 @@ function applyTheme(themeName) {
   }
 }
 
+function triggerScannerBeam() {
+  const existing = document.getElementById('scanner-beam');
+  if (existing) existing.remove();
+
+  const beam = document.createElement('div');
+  beam.id = 'scanner-beam';
+  beam.className = 'scanner-wavefront-beam';
+  document.body.appendChild(beam);
+
+  setTimeout(() => {
+    if (beam && beam.parentNode) {
+      beam.remove();
+    }
+  }, 500);
+}
+
 function toggleTheme() {
   const currentIsDark = document.documentElement.classList.contains('dark');
-  applyTheme(currentIsDark ? 'light' : 'dark');
+  const targetTheme = currentIsDark ? 'light' : 'dark';
+
+  // Icon spring spin animation
+  const icon = document.getElementById('theme-icon');
+  if (icon) {
+    icon.classList.remove('theme-icon-rotating');
+    void icon.offsetWidth; // force DOM reflow to restart animation
+    icon.classList.add('theme-icon-rotating');
+  }
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // View Transitions API: Horizontal Scanner / Curtain Wipe
+  if (typeof document.startViewTransition === 'function' && !prefersReduced) {
+    triggerScannerBeam();
+    document.startViewTransition(() => {
+      applyTheme(targetTheme);
+    });
+  } else if (!prefersReduced) {
+    // Graceful CSS transition fallback
+    document.documentElement.classList.add('theme-transitioning');
+    applyTheme(targetTheme);
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transitioning');
+    }, 350);
+  } else {
+    // Instant switch when reduced motion is preferred
+    applyTheme(targetTheme);
+  }
 }
 window.toggleTheme = toggleTheme;
 
