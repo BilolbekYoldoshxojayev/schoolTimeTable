@@ -573,7 +573,7 @@ html.dark, body.dark {
 .dark .current-period-col {
   background-color: rgba(59, 130, 246, 0.08) !important;
   color: #93c5fd !important;
-  box-shadow: inset 0 2px 0 var(--accent);
+  box-shadow: inset 0 2px 0 var(--accent-primary, #3b82f6);
 }
 
 /* Level 1: App Header, Controls Toolbar, Main Tab Containers, Footer */
@@ -747,33 +747,119 @@ html.dark, body.dark {
   color: var(--text-primary) !important;
 }
 
-/* Active / Current Lesson in Dark Mode */
+/* Active / Current / Focused Lesson in Dark Mode (Linear / Raycast Dark Aesthetic) */
 .dark .lesson-card.is-current-lesson {
-  border-color: rgba(59, 130, 246, 0.75) !important;
-  background-color: var(--surface-card) !important;
-  box-shadow: 0 0 0 1.5px rgba(59, 130, 246, 0.45), var(--shadow-card-hover) !important;
+  /* Rich deep navy-slate background: dark, comfortable for eyes, zero halation or glare */
+  background: linear-gradient(135deg, #1b2334 0%, #141824 100%) !important;
+  background-color: #161a26 !important;
+  border: 1.5px solid rgba(96, 165, 250, 0.75) !important;
+  box-shadow: 0 0 0 1.5px rgba(59, 130, 246, 0.3), 0 4px 16px -2px rgba(0, 0, 0, 0.65), 0 0 14px rgba(59, 130, 246, 0.18) !important;
+  transform: translateY(-1px);
+  z-index: 5;
   animation: dark-current-lesson-pulse 3s infinite ease-in-out;
+}
+
+.dark .lesson-card.is-current-lesson:hover {
+  background: linear-gradient(135deg, #212b40 0%, #171d2b 100%) !important;
+  border-color: rgba(147, 197, 253, 0.9) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.45), 0 8px 24px -2px rgba(0, 0, 0, 0.75), 0 0 18px rgba(59, 130, 246, 0.28) !important;
+  transform: translateY(-1.5px);
 }
 
 @keyframes dark-current-lesson-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 1.5px rgba(59, 130, 246, 0.45), 0 4px 16px rgba(0, 0, 0, 0.5);
-    border-color: rgba(59, 130, 246, 0.75) !important;
+    border-color: rgba(96, 165, 250, 0.75) !important;
+    box-shadow: 0 0 0 1.5px rgba(59, 130, 246, 0.3), 0 4px 16px -2px rgba(0, 0, 0, 0.65), 0 0 12px rgba(59, 130, 246, 0.18);
   }
   50% {
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.55), 0 4px 16px rgba(0, 0, 0, 0.5);
-    border-color: rgba(16, 185, 129, 0.8) !important;
+    border-color: rgba(52, 211, 153, 0.8) !important;
+    box-shadow: 0 0 0 1.5px rgba(16, 185, 129, 0.4), 0 6px 20px -2px rgba(0, 0, 0, 0.7), 0 0 18px rgba(16, 185, 129, 0.22);
   }
 }
 
-.dark .lesson-progress-wrap {
-  background: rgba(255, 255, 255, 0.08);
+/* Crystal-clear, comfortable typography inside dark focused session */
+.dark .lesson-card.is-current-lesson .lesson-card-title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
+.dark .lesson-card.is-current-lesson .lesson-card-sub {
+  color: rgba(226, 232, 240, 0.92) !important;
+  font-weight: 500;
+}
+
+.dark .lesson-card.is-current-lesson .lesson-card-sub .text-slate-800,
+.dark .lesson-card.is-current-lesson .lesson-card-sub .text-blue-700 {
+  color: #93c5fd !important;
+  font-weight: 600 !important;
+}
+
+/* Progress bar inside dark focused session */
+.dark .lesson-card.is-current-lesson .lesson-progress-wrap,
+.dark .lesson-progress-wrap {
+  background: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.dark .lesson-card.is-current-lesson .lesson-progress-fill,
+.dark .lesson-progress-fill {
+  background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%) !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.dark .lesson-card.is-current-lesson .lesson-progress-pointer,
 .dark .lesson-progress-pointer {
-  background: #10b981;
-  border-color: var(--surface-card);
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+  background: #34d399 !important;
+  border: 2px solid #0f172a !important;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.9) !important;
+}
+
+.dark .lesson-card.is-current-lesson .lesson-time-left {
+  color: #34d399 !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.35);
+}
+
+.dark .lesson-card.is-current-lesson .font-mono {
+  color: rgba(203, 213, 225, 0.75) !important;
+}
+
+/* LIVE badge inside dark focused session */
+.dark .lesson-card.is-current-lesson .bg-emerald-500\/15,
+.dark .lesson-card.is-current-lesson .dark\:bg-emerald-500\/20 {
+  background-color: rgba(16, 185, 129, 0.22) !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  color: #6ee7b7 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.25) !important;
+}
+
+/* 2P multi-period badge in dark mode */
+.dark .lesson-card span.bg-amber-100,
+.dark .lesson-card.is-current-lesson span.bg-amber-100 {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  color: #fcd34d !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+
+/* Left accent stripe inside dark focused session */
+.dark .lesson-card.is-current-lesson > div[style*="background-color"] {
+  width: 4px !important;
+  border-radius: 2px 0 0 2px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  opacity: 1 !important;
+}
+
+/* Keyboard accessibility outline */
+.lesson-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #2563eb, 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+}
+
+.dark .lesson-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #60a5fa, 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(96, 165, 250, 0.35) !important;
 }
 
 .dark .current-time-node {

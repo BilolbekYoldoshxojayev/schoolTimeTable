@@ -640,30 +640,30 @@ function updateCurrentTimeLine() {
   // 7. Update header status chip
   if (headerStatusEl && headerStatusText) {
     if (schedState.isWeekend) {
-      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200';
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs';
       headerStatusText.textContent = `🏖️ Weekend (${schedState.timeString})`;
     } else if (schedState.activePeriod) {
       const activeCardTitle = document.querySelector('.lesson-card.is-current-lesson .lesson-card-title');
       const subjectName = activeCardTitle ? (activeCardTitle.getAttribute('title') || activeCardTitle.textContent) : 'Lesson';
-      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs';
-      headerStatusText.innerHTML = `<span class="font-bold text-rose-800">Period ${schedState.activePeriod.id}:</span> ${subjectName} (${schedState.remainingMinutes}m left)`;
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 shadow-2xs';
+      headerStatusText.innerHTML = `<span class="font-bold text-rose-800 dark:text-rose-300">Period ${schedState.activePeriod.id}:</span> <span class="text-slate-800 dark:text-slate-100 font-semibold">${subjectName}</span> <span class="text-rose-600 dark:text-rose-300/80 font-medium">(${schedState.remainingMinutes}m left)</span>`;
     } else if (schedState.activeBreak) {
-      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs';
-      headerStatusText.innerHTML = `<span>☕ ${schedState.activeBreak.name}:</span> Period ${schedState.activeBreak.nextPeriod} in ${schedState.remainingMinutes}m`;
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 shadow-2xs';
+      headerStatusText.innerHTML = `<span class="font-semibold text-amber-800 dark:text-amber-300">☕ ${schedState.activeBreak.name}:</span> <span class="text-slate-700 dark:text-slate-200">Period ${schedState.activeBreak.nextPeriod} in ${schedState.remainingMinutes}m</span>`;
     } else if (schedState.isBeforeSchool) {
       const minsUntil = Math.max(0, 510 - Math.floor(schedState.totalMinutes));
       const h = Math.floor(minsUntil / 60);
       const m = minsUntil % 60;
       const waitStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs';
-      headerStatusText.innerHTML = `<span>🌅 Before School (${schedState.shortTimeString}):</span> Period 1 in ${waitStr}`;
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 shadow-2xs';
+      headerStatusText.innerHTML = `<span class="font-semibold text-blue-800 dark:text-blue-300">🌅 Before School (${schedState.shortTimeString}):</span> <span class="text-slate-700 dark:text-slate-200">Period 1 in ${waitStr}</span>`;
     } else if (schedState.isAfterSchool) {
       const minsSince = Math.floor(schedState.totalMinutes - 935);
       const h = Math.floor(minsSince / 60);
       const m = minsSince % 60;
       const agoStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200';
-      headerStatusText.innerHTML = `<span>🏁 Day Ended at 15:35</span> (${agoStr} ago • ${schedState.shortTimeString})`;
+      headerStatusEl.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs';
+      headerStatusText.innerHTML = `<span class="font-medium text-slate-600 dark:text-slate-300">🏁 Day Ended at 15:35 (${agoStr} ago • ${schedState.shortTimeString})</span>`;
     }
   }
 
@@ -1522,7 +1522,7 @@ function renderGrid() {
           const endMin = getPeriodEndMinutes(endP);
 
           if (isCurrentLesson) {
-            liveBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 dark:bg-emerald-500/20 shrink-0 ml-1 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>LIVE</span>`;
+            liveBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 dark:border-emerald-500/40 dark:bg-emerald-500/20 shrink-0 ml-1 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>LIVE</span>`;
 
             const cardProgress = Math.max(0, Math.min(1, (schedState.totalMinutes - startMin) / Math.max(1, endMin - startMin)));
             const cardPercent = (cardProgress * 100).toFixed(2);
@@ -1547,6 +1547,15 @@ function renderGrid() {
           card.dataset.endMin = endMin;
           card.dataset.startP = startP;
           card.dataset.endP = endP;
+          card.tabIndex = 0;
+          card.setAttribute('role', 'button');
+          card.setAttribute('aria-label', `${item.subject?.name || 'Lesson'}, Period ${startP}`);
+          card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openLessonModal(item, startP, day.name);
+            }
+          };
           card.innerHTML = `
             <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: ${bgColor}"></div>
             <div class="pl-1.5 min-w-0">
@@ -1680,7 +1689,38 @@ function openLessonModal(item, periodNumber, dayName) {
     timeStr = `${dayName}, Period ${startP} (${pTime})`;
   }
 
-  if (header) header.style.backgroundColor = item?.subject?.color || '#2563eb';
+  if (header) {
+    const bgCol = item?.subject?.color || '#2563eb';
+    header.style.backgroundColor = bgCol;
+    
+    // Luminance check for adaptive text contrast
+    let isLight = false;
+    if (bgCol.startsWith('#') && (bgCol.length === 7 || bgCol.length === 4)) {
+      const hex = bgCol.length === 4
+        ? `#${bgCol[1]}${bgCol[1]}${bgCol[2]}${bgCol[2]}${bgCol[3]}${bgCol[3]}`
+        : bgCol;
+      const r = parseInt(hex.substring(1, 3), 16);
+      const g = parseInt(hex.substring(3, 5), 16);
+      const b = parseInt(hex.substring(5, 7), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+      isLight = luminance > 160;
+    }
+    
+    const closeBtn = header.querySelector('button');
+    if (isLight) {
+      header.classList.remove('text-white');
+      header.classList.add('text-slate-900');
+      if (closeBtn) {
+        closeBtn.className = 'text-slate-800 hover:text-black p-1 rounded-lg hover:bg-black/10 transition';
+      }
+    } else {
+      header.classList.add('text-white');
+      header.classList.remove('text-slate-900');
+      if (closeBtn) {
+        closeBtn.className = 'text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition';
+      }
+    }
+  }
   if (subjectTag) {
     const doubleTag = dur > 1 ? ` • Double Period (${dur}x 45 min)` : '';
     subjectTag.textContent = `Course • ${item?.subject?.short || 'ID: ' + (item?.subject?.id || '')}${doubleTag}`;
