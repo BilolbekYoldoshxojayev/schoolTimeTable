@@ -1706,19 +1706,12 @@ function openLessonModal(item, periodNumber, dayName) {
       isLight = luminance > 160;
     }
     
-    const closeBtn = header.querySelector('button');
     if (isLight) {
       header.classList.remove('text-white');
       header.classList.add('text-slate-900');
-      if (closeBtn) {
-        closeBtn.className = 'text-slate-800 hover:text-black p-1 rounded-lg hover:bg-black/10 transition';
-      }
     } else {
       header.classList.add('text-white');
       header.classList.remove('text-slate-900');
-      if (closeBtn) {
-        closeBtn.className = 'text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition';
-      }
     }
   }
   if (subjectTag) {
@@ -1740,8 +1733,51 @@ function openLessonModal(item, periodNumber, dayName) {
 
 function closeLessonModal() {
   const modal = document.getElementById('lesson-modal');
-  if (modal) modal.close();
+  if (modal && modal.open) modal.close();
 }
+
+// Setup outside-click dismiss handler for the lesson details modal
+(function setupLessonModalOutsideClick() {
+  const modal = document.getElementById('lesson-modal');
+  if (!modal) return;
+
+  let pointerDownInside = false;
+
+  modal.addEventListener('pointerdown', (e) => {
+    const card = modal.querySelector('div');
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      pointerDownInside = (
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom
+      );
+    }
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (pointerDownInside) {
+      pointerDownInside = false;
+      return;
+    }
+    const card = modal.querySelector('div');
+    if (!card) {
+      closeLessonModal();
+      return;
+    }
+    const rect = card.getBoundingClientRect();
+    const isInCard = (
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom
+    );
+    if (!isInCard) {
+      closeLessonModal();
+    }
+  });
+})();
 
 // JSON Export
 function exportTimetableJson() {

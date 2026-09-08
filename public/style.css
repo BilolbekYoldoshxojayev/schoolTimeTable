@@ -206,12 +206,17 @@ pre.json-code {
 /* Native dialog styling */
 dialog {
   border: none;
+  outline: none;
   border-radius: 1rem;
   padding: 0;
   max-width: 90vw;
   width: 500px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   background: transparent;
+}
+dialog:focus,
+dialog:focus-visible {
+  outline: none;
 }
 dialog::backdrop,
 #lesson-modal::backdrop {

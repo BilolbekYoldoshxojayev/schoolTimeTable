@@ -835,14 +835,9 @@ Referer: https://nampm.edupage.org/timetable/
   <!-- Modal Dialog for Lesson Details -->
   <dialog id="lesson-modal" class="p-0 overflow-hidden bg-transparent backdrop:bg-slate-900/30 dark:backdrop:bg-slate-950/45">
     <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden max-w-md w-full m-4">
-      <div id="modal-header" class="p-4 text-white bg-blue-600 flex justify-between items-start">
-        <div>
-          <span id="modal-subject-tag" class="text-[10px] uppercase font-bold tracking-wider opacity-90">Subject</span>
-          <h3 id="modal-subject-name" class="text-lg font-extrabold mt-0.5 leading-tight">Mathematics</h3>
-        </div>
-        <button onclick="closeLessonModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
-          ✕
-        </button>
+      <div id="modal-header" class="p-4 text-white bg-blue-600">
+        <span id="modal-subject-tag" class="text-[10px] uppercase font-bold tracking-wider opacity-90">Subject</span>
+        <h3 id="modal-subject-name" class="text-lg font-extrabold mt-0.5 leading-tight">Mathematics</h3>
       </div>
 
       <div class="p-4 space-y-3 text-xs text-slate-700 dark:text-slate-300">
@@ -879,12 +874,6 @@ Referer: https://nampm.edupage.org/timetable/
           </div>
         </div>
       </div>
-
-      <div class="bg-slate-50 dark:bg-slate-800/90 px-4 py-2.5 border-t border-slate-100 dark:border-slate-800 text-right">
-        <button onclick="closeLessonModal()" class="px-3 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 text-xs font-semibold rounded-lg transition">
-          Close
-        </button>
-      </div>
     </div>
   </dialog>
 
@@ -908,6 +897,6 @@ Referer: https://nampm.edupage.org/timetable/
   </footer>
 
   <!-- Main JavaScript Controller -->
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
