@@ -213,9 +213,11 @@ dialog {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   background: transparent;
 }
-dialog::backdrop {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
+dialog::backdrop,
+#lesson-modal::backdrop {
+  background: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
 }
 
 /* Badge styling */
@@ -970,9 +972,11 @@ html.dark, body.dark {
   background-color: transparent !important;
 }
 
-.dark dialog::backdrop {
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+.dark dialog::backdrop,
+.dark #lesson-modal::backdrop {
+  background: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
 }
 
 .dark #lesson-modal > div {
