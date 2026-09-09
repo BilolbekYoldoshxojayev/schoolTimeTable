@@ -314,9 +314,67 @@ class EduPageHandler(http.server.SimpleHTTPRequestHandler):
                     cid = query.get("classId", ["-17"])[0]
                     date_str = query.get("date", ["2026-09-02"])[0]
                     year = int(date_str[:4]) if len(date_str) >= 4 else 2026
+                    tt_data = None
+                    snap_path = os.path.join(PUBLIC_DIR, "snapshot-13.json")
+                    if os.path.exists(snap_path):
+                        try:
+                            with open(snap_path, "r", encoding="utf-8") as f:
+                                tt_data = json.load(f)
+                        except Exception:
+                            pass
+                    subjects_map = {s["id"]: s for s in tt_data.get("subjects", [])} if tt_data else {}
+                    teachers_map = {t["id"]: t for t in tt_data.get("teachers", [])} if tt_data else {}
+                    rooms_map = {r["id"]: r for r in tt_data.get("classrooms", [])} if tt_data else {}
+
                     args = [None, {"year": year, "datefrom": date_str, "dateto": date_str, "table": "classes", "id": cid, "showColors": True, "showIgroupsInClasses": True, "showOrig": True}]
-                    res = edupage_rpc("/timetable/server/currenttt.js?__func=curentttGetData", args)
-                    self.send_json(res.get("r", {"ttitems": []}))
+                    ttitems = []
+                    try:
+                        res = edupage_rpc("/timetable/server/currenttt.js?__func=curentttGetData", args)
+                        ttitems = res.get("r", {}).get("ttitems", [])
+                    except Exception as rpc_err:
+                        print(f"EduPage daily schedule RPC failed for class {cid} on {date_str}: {rpc_err}")
+                        if tt_data and cid in tt_data.get("classGrid", {}):
+                            try:
+                                dt = datetime.date.fromisoformat(date_str)
+                                day_idx = str(dt.weekday()) if dt.weekday() < 5 else None
+                                if day_idx and day_idx in tt_data["classGrid"][cid]:
+                                    for p in sorted(tt_data["classGrid"][cid][day_idx].keys(), key=lambda x: int(x)):
+                                        for it in tt_data["classGrid"][cid][day_idx][p]:
+                                            p_info = next((pr for pr in tt_data.get("periods", []) if str(pr.get("id")) == str(p)), {})
+                                            ttitems.append({
+                                                "uniperiod": str(p),
+                                                "period": p,
+                                                "subject": it.get("subject", {}).get("name"),
+                                                "subjectid": it.get("subject", {}).get("id"),
+                                                "teacher": ", ".join(t.get("name") or t.get("short") for t in it.get("teachers", [])),
+                                                "teacherids": [t.get("id") for t in it.get("teachers", [])],
+                                                "classroom": ", ".join(r.get("short") or r.get("name") for r in it.get("classrooms", [])),
+                                                "classroomids": [r.get("id") for r in it.get("classrooms", [])],
+                                                "starttime": p_info.get("startTime", ""),
+                                                "endtime": p_info.get("endTime", ""),
+                                                "colors": [it.get("subject", {}).get("color", "#3b82f6")]
+                                            })
+                            except Exception:
+                                pass
+
+                    enriched = []
+                    for it in ttitems:
+                        p = it.get("period") or it.get("uniperiod") or "?"
+                        p_info = next((pr for pr in tt_data.get("periods", []) if str(pr.get("id")) == str(p)), {}) if tt_data else {}
+                        s_name = it.get("subject") or (subjects_map.get(it.get("subjectid"), {}).get("name") if it.get("subjectid") else "Lesson")
+                        t_names = it.get("teacher") or (", ".join(teachers_map.get(tid, {}).get("name") or teachers_map.get(tid, {}).get("short") or tid for tid in it.get("teacherids", [])) if it.get("teacherids") else "Faculty")
+                        r_names = it.get("classroom") or (", ".join(rooms_map.get(rid, {}).get("short") or rooms_map.get(rid, {}).get("name") or rid for rid in it.get("classroomids", [])) if it.get("classroomids") else "Room")
+                        enriched.append({
+                            **it,
+                            "period": p,
+                            "subject": s_name,
+                            "teacher": t_names,
+                            "classroom": r_names,
+                            "starttime": it.get("starttime") or p_info.get("startTime", ""),
+                            "endtime": it.get("endtime") or p_info.get("endTime", ""),
+                            "color": (it.get("colors") or [None])[0] or subjects_map.get(it.get("subjectid"), {}).get("color", "#3b82f6")
+                        })
+                    self.send_json({"ttitems": enriched})
                     return
                 elif path == "/api/substitution":
                     date_str = query.get("date", ["2026-09-02"])[0]

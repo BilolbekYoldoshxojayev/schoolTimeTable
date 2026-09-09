@@ -863,11 +863,10 @@
       "short": "Ms. Maftuna",
       "color": "#00FFFF",
       "homeroomClass": null,
-      "weeklyLessons": 8,
+      "weeklyLessons": 6,
       "subjects": [
         "Visual arts",
         "Drawing",
-        "Technology",
         "Visual arts / Technology"
       ],
       "classes": [
@@ -948,8 +947,8 @@
     },
     {
       "id": "*30",
-      "name": "Eco Vacancy",
-      "short": "Eco Vacancy",
+      "name": "Mr. Faxriddin",
+      "short": "Mr. Faxriddin",
       "color": "#FFFF00",
       "homeroomClass": null,
       "weeklyLessons": 6,
@@ -959,6 +958,24 @@
       "classes": [
         "11-01: Alisher Navoiy",
         "11-02: Alisher Navoiy"
+      ]
+    },
+    {
+      "id": "*49",
+      "name": "Ms. Nodira",
+      "short": "Ms. Nodira",
+      "color": "#CCFF33",
+      "homeroomClass": null,
+      "weeklyLessons": 4,
+      "subjects": [
+        "Technology",
+        "Visual arts / Technology"
+      ],
+      "classes": [
+        "6-01: Mirzo Ulug'bek",
+        "6-02: Mirzo Ulug'bek",
+        "5-01: Al-Xorazmiy",
+        "5-02: Al-Xorazmiy"
       ]
     }
   ],
@@ -1243,16 +1260,16 @@
       "name": "101",
       "short": "101",
       "color": "#80FF80",
-      "bookedSlots": 27,
-      "utilizationRate": 77
+      "bookedSlots": 26,
+      "utilizationRate": 74
     },
     {
       "id": "-2",
       "name": "102",
       "short": "102",
       "color": "#FFFFCC",
-      "bookedSlots": 26,
-      "utilizationRate": 74
+      "bookedSlots": 28,
+      "utilizationRate": 80
     },
     {
       "id": "-3",
@@ -1275,8 +1292,8 @@
       "name": "105",
       "short": "105",
       "color": "#00FFCC",
-      "bookedSlots": 25,
-      "utilizationRate": 71
+      "bookedSlots": 26,
+      "utilizationRate": 74
     },
     {
       "id": "-6",
@@ -1291,8 +1308,8 @@
       "name": "107",
       "short": "107",
       "color": "#33CCFF",
-      "bookedSlots": 31,
-      "utilizationRate": 89
+      "bookedSlots": 29,
+      "utilizationRate": 83
     },
     {
       "id": "-8",
@@ -1347,8 +1364,8 @@
       "name": "204",
       "short": "204",
       "color": "#FF6666",
-      "bookedSlots": 33,
-      "utilizationRate": 94
+      "bookedSlots": 32,
+      "utilizationRate": 91
     },
     {
       "id": "-15",
@@ -1363,8 +1380,8 @@
       "name": "206",
       "short": "206",
       "color": "#C0C000",
-      "bookedSlots": 31,
-      "utilizationRate": 89
+      "bookedSlots": 32,
+      "utilizationRate": 91
     },
     {
       "id": "-17",
@@ -1860,10 +1877,10 @@
             ],
             "classrooms": [
               {
-                "id": "-6",
-                "name": "106",
-                "short": "106",
-                "color": "#9900FF"
+                "id": "-5",
+                "name": "105",
+                "short": "105",
+                "color": "#00FFCC"
               }
             ]
           }
@@ -2564,8 +2581,8 @@
         ],
         "5": [
           {
-            "cardId": "*422",
-            "lessonId": "*210",
+            "cardId": "*40",
+            "lessonId": "*29",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -2575,17 +2592,17 @@
             "periodSpan": "5",
             "dayIndex": 3,
             "subject": {
-              "id": "-48",
-              "name": "Drawing",
-              "short": "Drawing",
-              "color": "#008080"
+              "id": "-1",
+              "name": "Native language",
+              "short": "NatLang",
+              "color": "#00FF00"
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "-13",
+                "name": "Ms. Oydina",
+                "short": "Ms. Oydina",
+                "color": "#FF0000"
               }
             ],
             "classes": [
@@ -2710,8 +2727,8 @@
       "4": {
         "1": [
           {
-            "cardId": "*40",
-            "lessonId": "*29",
+            "cardId": "*422",
+            "lessonId": "*210",
             "period": 1,
             "startPeriod": 1,
             "duration": 1,
@@ -2721,17 +2738,17 @@
             "periodSpan": "1",
             "dayIndex": 4,
             "subject": {
-              "id": "-1",
-              "name": "Native language",
-              "short": "NatLang",
-              "color": "#00FF00"
+              "id": "-48",
+              "name": "Drawing",
+              "short": "Drawing",
+              "color": "#008080"
             },
             "teachers": [
               {
-                "id": "-13",
-                "name": "Ms. Oydina",
-                "short": "Ms. Oydina",
-                "color": "#FF0000"
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
               }
             ],
             "classes": [
@@ -3212,10 +3229,10 @@
             ],
             "classrooms": [
               {
-                "id": "-2",
-                "name": "102",
-                "short": "102",
-                "color": "#FFFFCC"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -5149,8 +5166,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -5229,8 +5246,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -5311,8 +5328,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -5391,8 +5408,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -5925,8 +5942,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -6005,8 +6022,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -7726,10 +7743,10 @@
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
@@ -7842,8 +7859,8 @@
         ],
         "3": [
           {
-            "cardId": "*272",
-            "lessonId": "*158",
+            "cardId": "*419",
+            "lessonId": "*207",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -7853,17 +7870,17 @@
             "periodSpan": "3",
             "dayIndex": 4,
             "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
+              "id": "-47",
+              "name": "Visual arts",
+              "short": "VArt",
+              "color": "#FF99FF"
             },
             "teachers": [
               {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
               }
             ],
             "classes": [
@@ -7876,10 +7893,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-10",
+                "name": "110",
+                "short": "110",
+                "color": "#990000"
               }
             ]
           }
@@ -7930,8 +7947,8 @@
         ],
         "5": [
           {
-            "cardId": "*419",
-            "lessonId": "*207",
+            "cardId": "*212",
+            "lessonId": "*130",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -7939,50 +7956,6 @@
             "isDoublePeriod": false,
             "isContinuation": false,
             "periodSpan": "5",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-47",
-              "name": "Visual arts",
-              "short": "VArt",
-              "color": "#FF99FF"
-            },
-            "teachers": [
-              {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-15",
-                "name": "6-01: Mirzo Ulug'bek",
-                "short": "6-01",
-                "color": "#0046FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-10",
-                "name": "110",
-                "short": "110",
-                "color": "#990000"
-              }
-            ]
-          }
-        ],
-        "6": [
-          {
-            "cardId": "*212",
-            "lessonId": "*130",
-            "period": 6,
-            "startPeriod": 6,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "6",
             "dayIndex": 4,
             "subject": {
               "id": "-16",
@@ -8014,10 +7987,54 @@
             ],
             "classrooms": [
               {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
+                "id": "-15",
+                "name": "205",
+                "short": "205",
+                "color": "#008080"
+              }
+            ]
+          }
+        ],
+        "6": [
+          {
+            "cardId": "*272",
+            "lessonId": "*158",
+            "period": 6,
+            "startPeriod": 6,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "6",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
+            },
+            "teachers": [
+              {
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-15",
+                "name": "6-01: Mirzo Ulug'bek",
+                "short": "6-01",
+                "color": "#0046FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -8444,8 +8461,8 @@
         ],
         "3": [
           {
-            "cardId": "*136",
-            "lessonId": "*94",
+            "cardId": "*48",
+            "lessonId": "*34",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -8455,17 +8472,17 @@
             "periodSpan": "3",
             "dayIndex": 1,
             "subject": {
-              "id": "-15",
-              "name": "Geography",
-              "short": "Geo",
-              "color": "#6600FF"
+              "id": "-4",
+              "name": "Uzbek literature",
+              "short": "Uzb_Lit",
+              "color": "#339966"
             },
             "teachers": [
               {
-                "id": "-26",
-                "name": "Ms. Sevara",
-                "short": "Ms. Sevara",
-                "color": "#009933"
+                "id": "-13",
+                "name": "Ms. Oydina",
+                "short": "Ms. Oydina",
+                "color": "#FF0000"
               }
             ],
             "classes": [
@@ -8478,10 +8495,10 @@
             ],
             "classrooms": [
               {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
+                "id": "-6",
+                "name": "106",
+                "short": "106",
+                "color": "#9900FF"
               }
             ]
           }
@@ -9100,8 +9117,8 @@
         ],
         "3": [
           {
-            "cardId": "*421",
-            "lessonId": "*209",
+            "cardId": "*136",
+            "lessonId": "*94",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -9111,17 +9128,17 @@
             "periodSpan": "3",
             "dayIndex": 3,
             "subject": {
-              "id": "-48",
-              "name": "Drawing",
-              "short": "Drawing",
-              "color": "#008080"
+              "id": "-15",
+              "name": "Geography",
+              "short": "Geo",
+              "color": "#6600FF"
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "-26",
+                "name": "Ms. Sevara",
+                "short": "Ms. Sevara",
+                "color": "#009933"
               }
             ],
             "classes": [
@@ -9378,8 +9395,8 @@
         ],
         "2": [
           {
-            "cardId": "*48",
-            "lessonId": "*34",
+            "cardId": "*421",
+            "lessonId": "*209",
             "period": 2,
             "startPeriod": 2,
             "duration": 1,
@@ -9389,17 +9406,17 @@
             "periodSpan": "2",
             "dayIndex": 4,
             "subject": {
-              "id": "-4",
-              "name": "Uzbek literature",
-              "short": "Uzb_Lit",
-              "color": "#339966"
+              "id": "-48",
+              "name": "Drawing",
+              "short": "Drawing",
+              "color": "#008080"
             },
             "teachers": [
               {
-                "id": "-13",
-                "name": "Ms. Oydina",
-                "short": "Ms. Oydina",
-                "color": "#FF0000"
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
               }
             ],
             "classes": [
@@ -10146,10 +10163,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -10181,8 +10198,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -10261,8 +10278,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -10343,8 +10360,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -10423,8 +10440,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -10957,8 +10974,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -11037,8 +11054,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -11426,10 +11443,10 @@
             ],
             "classrooms": [
               {
-                "id": "-14",
-                "name": "204",
-                "short": "204",
-                "color": "#FF6666"
+                "id": "-16",
+                "name": "206",
+                "short": "206",
+                "color": "#C0C000"
               }
             ]
           }
@@ -12116,10 +12133,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -12816,8 +12833,8 @@
         ],
         "3": [
           {
-            "cardId": "*426",
-            "lessonId": "*214",
+            "cardId": "*182",
+            "lessonId": "*120",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -12827,17 +12844,17 @@
             "periodSpan": "3",
             "dayIndex": 4,
             "subject": {
-              "id": "-50",
-              "name": "Visual arts / Technology",
-              "short": "VArt/Tech",
-              "color": "#9966FF"
+              "id": "-3",
+              "name": "English languge",
+              "short": "English",
+              "color": "#FFFF66"
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "-6",
+                "name": "Ms. Feruza",
+                "short": "Ms. Feruza",
+                "color": "#CC6600"
               }
             ],
             "classes": [
@@ -12850,10 +12867,10 @@
             ],
             "classrooms": [
               {
-                "id": "-10",
-                "name": "110",
-                "short": "110",
-                "color": "#990000"
+                "id": "-8",
+                "name": "108",
+                "short": "108",
+                "color": "#FFCCCC"
               }
             ]
           }
@@ -12904,8 +12921,8 @@
         ],
         "5": [
           {
-            "cardId": "*182",
-            "lessonId": "*120",
+            "cardId": "*426",
+            "lessonId": "*214",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -12915,17 +12932,23 @@
             "periodSpan": "5",
             "dayIndex": 4,
             "subject": {
-              "id": "-3",
-              "name": "English languge",
-              "short": "English",
-              "color": "#FFFF66"
+              "id": "-50",
+              "name": "Visual arts / Technology",
+              "short": "VArt/Tech",
+              "color": "#9966FF"
             },
             "teachers": [
               {
-                "id": "-6",
-                "name": "Ms. Feruza",
-                "short": "Ms. Feruza",
-                "color": "#CC6600"
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
@@ -12938,10 +12961,10 @@
             ],
             "classrooms": [
               {
-                "id": "-8",
-                "name": "108",
-                "short": "108",
-                "color": "#FFCCCC"
+                "id": "-10",
+                "name": "110",
+                "short": "110",
+                "color": "#990000"
               }
             ]
           }
@@ -13895,50 +13918,6 @@
               }
             ]
           }
-        ],
-        "7": [
-          {
-            "cardId": "*175",
-            "lessonId": "*117",
-            "period": 7,
-            "startPeriod": 7,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "7",
-            "dayIndex": 2,
-            "subject": {
-              "id": "-1",
-              "name": "Native language",
-              "short": "NatLang",
-              "color": "#00FF00"
-            },
-            "teachers": [
-              {
-                "id": "-20",
-                "name": "Ms. Zumrad",
-                "short": "Ms. Zumrad",
-                "color": "#60FFC0"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-14",
-                "name": "204",
-                "short": "204",
-                "color": "#FF6666"
-              }
-            ]
-          }
         ]
       },
       "3": {
@@ -14205,6 +14184,50 @@
               }
             ]
           }
+        ],
+        "7": [
+          {
+            "cardId": "*424",
+            "lessonId": "*212",
+            "period": 7,
+            "startPeriod": 7,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "7",
+            "dayIndex": 3,
+            "subject": {
+              "id": "-49",
+              "name": "Technology",
+              "short": "Tech",
+              "color": "#669999"
+            },
+            "teachers": [
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-10",
+                "name": "110",
+                "short": "110",
+                "color": "#990000"
+              }
+            ]
+          }
         ]
       },
       "4": {
@@ -14254,8 +14277,8 @@
         ],
         "2": [
           {
-            "cardId": "*424",
-            "lessonId": "*212",
+            "cardId": "*209",
+            "lessonId": "*129",
             "period": 2,
             "startPeriod": 2,
             "duration": 1,
@@ -14265,17 +14288,23 @@
             "periodSpan": "2",
             "dayIndex": 4,
             "subject": {
-              "id": "-49",
-              "name": "Technology",
-              "short": "Tech",
-              "color": "#669999"
+              "id": "-16",
+              "name": "Global Perspectives",
+              "short": "GP",
+              "color": "#99FF99"
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "*6",
+                "name": "GP vakant ",
+                "short": "GP vakant ",
+                "color": "#FFCC66"
+              },
+              {
+                "id": "-50",
+                "name": "Mr. Nathan",
+                "short": "Mr. Nathan",
+                "color": "#C0C0C0"
               }
             ],
             "classes": [
@@ -14288,18 +14317,18 @@
             ],
             "classrooms": [
               {
-                "id": "-10",
-                "name": "110",
-                "short": "110",
-                "color": "#990000"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
         ],
         "3": [
           {
-            "cardId": "*190",
-            "lessonId": "*122",
+            "cardId": "*175",
+            "lessonId": "*117",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -14309,17 +14338,17 @@
             "periodSpan": "3",
             "dayIndex": 4,
             "subject": {
-              "id": "-3",
-              "name": "English languge",
-              "short": "English",
-              "color": "#FFFF66"
+              "id": "-1",
+              "name": "Native language",
+              "short": "NatLang",
+              "color": "#00FF00"
             },
             "teachers": [
               {
-                "id": "-6",
-                "name": "Ms. Feruza",
-                "short": "Ms. Feruza",
-                "color": "#CC6600"
+                "id": "-20",
+                "name": "Ms. Zumrad",
+                "short": "Ms. Zumrad",
+                "color": "#60FFC0"
               }
             ],
             "classes": [
@@ -14332,10 +14361,10 @@
             ],
             "classrooms": [
               {
-                "id": "-8",
-                "name": "108",
-                "short": "108",
-                "color": "#FFCCCC"
+                "id": "-14",
+                "name": "204",
+                "short": "204",
+                "color": "#FF6666"
               }
             ]
           }
@@ -14386,8 +14415,8 @@
         ],
         "5": [
           {
-            "cardId": "*209",
-            "lessonId": "*129",
+            "cardId": "*190",
+            "lessonId": "*122",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -14397,23 +14426,17 @@
             "periodSpan": "5",
             "dayIndex": 4,
             "subject": {
-              "id": "-16",
-              "name": "Global Perspectives",
-              "short": "GP",
-              "color": "#99FF99"
+              "id": "-3",
+              "name": "English languge",
+              "short": "English",
+              "color": "#FFFF66"
             },
             "teachers": [
               {
-                "id": "*6",
-                "name": "GP vakant ",
-                "short": "GP vakant ",
-                "color": "#FFCC66"
-              },
-              {
-                "id": "-50",
-                "name": "Mr. Nathan",
-                "short": "Mr. Nathan",
-                "color": "#C0C0C0"
+                "id": "-6",
+                "name": "Ms. Feruza",
+                "short": "Ms. Feruza",
+                "color": "#CC6600"
               }
             ],
             "classes": [
@@ -14426,10 +14449,10 @@
             ],
             "classrooms": [
               {
-                "id": "-15",
-                "name": "205",
-                "short": "205",
-                "color": "#008080"
+                "id": "-8",
+                "name": "108",
+                "short": "108",
+                "color": "#FFCCCC"
               }
             ]
           }
@@ -18294,10 +18317,10 @@
             ],
             "classrooms": [
               {
-                "id": "-2",
-                "name": "102",
-                "short": "102",
-                "color": "#FFFFCC"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -19508,10 +19531,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -20014,10 +20037,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -20336,10 +20359,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -20658,10 +20681,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -20734,6 +20757,12 @@
                 "name": "Ms. Maftuna",
                 "short": "Ms. Maftuna",
                 "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
@@ -21220,10 +21249,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -23028,10 +23057,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -23728,10 +23757,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -25094,6 +25123,50 @@
             ]
           }
         ],
+        "3": [
+          {
+            "cardId": "*48",
+            "lessonId": "*34",
+            "period": 3,
+            "startPeriod": 3,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "3",
+            "dayIndex": 1,
+            "subject": {
+              "id": "-4",
+              "name": "Uzbek literature",
+              "short": "Uzb_Lit",
+              "color": "#339966"
+            },
+            "teachers": [
+              {
+                "id": "-13",
+                "name": "Ms. Oydina",
+                "short": "Ms. Oydina",
+                "color": "#FF0000"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-1",
+                "name": "7-01: Abu Ali ibn Sino",
+                "short": "7-01",
+                "color": "#0080FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-6",
+                "name": "106",
+                "short": "106",
+                "color": "#9900FF"
+              }
+            ]
+          }
+        ],
         "4": [
           {
             "cardId": "*155",
@@ -25582,6 +25655,50 @@
             ]
           }
         ],
+        "5": [
+          {
+            "cardId": "*40",
+            "lessonId": "*29",
+            "period": 5,
+            "startPeriod": 5,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "5",
+            "dayIndex": 3,
+            "subject": {
+              "id": "-1",
+              "name": "Native language",
+              "short": "NatLang",
+              "color": "#00FF00"
+            },
+            "teachers": [
+              {
+                "id": "-13",
+                "name": "Ms. Oydina",
+                "short": "Ms. Oydina",
+                "color": "#FF0000"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-2",
+                "name": "7-02: Abu Ali ibn Sino",
+                "short": "7-02",
+                "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-6",
+                "name": "106",
+                "short": "106",
+                "color": "#9900FF"
+              }
+            ]
+          }
+        ],
         "6": [
           {
             "cardId": "*153",
@@ -25672,94 +25789,6 @@
         ]
       },
       "4": {
-        "1": [
-          {
-            "cardId": "*40",
-            "lessonId": "*29",
-            "period": 1,
-            "startPeriod": 1,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "1",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-1",
-              "name": "Native language",
-              "short": "NatLang",
-              "color": "#00FF00"
-            },
-            "teachers": [
-              {
-                "id": "-13",
-                "name": "Ms. Oydina",
-                "short": "Ms. Oydina",
-                "color": "#FF0000"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-2",
-                "name": "7-02: Abu Ali ibn Sino",
-                "short": "7-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-6",
-                "name": "106",
-                "short": "106",
-                "color": "#9900FF"
-              }
-            ]
-          }
-        ],
-        "2": [
-          {
-            "cardId": "*48",
-            "lessonId": "*34",
-            "period": 2,
-            "startPeriod": 2,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "2",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-4",
-              "name": "Uzbek literature",
-              "short": "Uzb_Lit",
-              "color": "#339966"
-            },
-            "teachers": [
-              {
-                "id": "-13",
-                "name": "Ms. Oydina",
-                "short": "Ms. Oydina",
-                "color": "#FF0000"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-1",
-                "name": "7-01: Abu Ali ibn Sino",
-                "short": "7-01",
-                "color": "#0080FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-6",
-                "name": "106",
-                "short": "106",
-                "color": "#9900FF"
-              }
-            ]
-          }
-        ],
         "5": [
           {
             "cardId": "*154",
@@ -26604,10 +26633,10 @@
             ],
             "classrooms": [
               {
-                "id": "-6",
-                "name": "106",
-                "short": "106",
-                "color": "#9900FF"
+                "id": "-5",
+                "name": "105",
+                "short": "105",
+                "color": "#00FFCC"
               }
             ]
           }
@@ -29645,50 +29674,6 @@
               }
             ]
           }
-        ],
-        "7": [
-          {
-            "cardId": "*175",
-            "lessonId": "*117",
-            "period": 7,
-            "startPeriod": 7,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "7",
-            "dayIndex": 2,
-            "subject": {
-              "id": "-1",
-              "name": "Native language",
-              "short": "NatLang",
-              "color": "#00FF00"
-            },
-            "teachers": [
-              {
-                "id": "-20",
-                "name": "Ms. Zumrad",
-                "short": "Ms. Zumrad",
-                "color": "#60FFC0"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-14",
-                "name": "204",
-                "short": "204",
-                "color": "#FF6666"
-              }
-            ]
-          }
         ]
       },
       "3": {
@@ -29946,6 +29931,50 @@
                 "name": "9-01: Abu Rayhon Beruniy",
                 "short": "9-01",
                 "color": "#0080FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-14",
+                "name": "204",
+                "short": "204",
+                "color": "#FF6666"
+              }
+            ]
+          }
+        ],
+        "3": [
+          {
+            "cardId": "*175",
+            "lessonId": "*117",
+            "period": 3,
+            "startPeriod": 3,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "3",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-1",
+              "name": "Native language",
+              "short": "NatLang",
+              "color": "#00FF00"
+            },
+            "teachers": [
+              {
+                "id": "-20",
+                "name": "Ms. Zumrad",
+                "short": "Ms. Zumrad",
+                "color": "#60FFC0"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
               }
             ],
             "classrooms": [
@@ -31600,10 +31629,10 @@
             ],
             "classrooms": [
               {
-                "id": "-14",
-                "name": "204",
-                "short": "204",
-                "color": "#FF6666"
+                "id": "-16",
+                "name": "206",
+                "short": "206",
+                "color": "#C0C000"
               }
             ]
           }
@@ -35644,6 +35673,56 @@
         ]
       },
       "4": {
+        "2": [
+          {
+            "cardId": "*209",
+            "lessonId": "*129",
+            "period": 2,
+            "startPeriod": 2,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "2",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-16",
+              "name": "Global Perspectives",
+              "short": "GP",
+              "color": "#99FF99"
+            },
+            "teachers": [
+              {
+                "id": "*6",
+                "name": "GP vakant ",
+                "short": "GP vakant ",
+                "color": "#FFCC66"
+              },
+              {
+                "id": "-50",
+                "name": "Mr. Nathan",
+                "short": "Mr. Nathan",
+                "color": "#C0C0C0"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
+              }
+            ]
+          }
+        ],
         "4": [
           {
             "cardId": "*219",
@@ -35696,8 +35775,8 @@
         ],
         "5": [
           {
-            "cardId": "*209",
-            "lessonId": "*129",
+            "cardId": "*212",
+            "lessonId": "*130",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -35705,56 +35784,6 @@
             "isDoublePeriod": false,
             "isContinuation": false,
             "periodSpan": "5",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-16",
-              "name": "Global Perspectives",
-              "short": "GP",
-              "color": "#99FF99"
-            },
-            "teachers": [
-              {
-                "id": "*6",
-                "name": "GP vakant ",
-                "short": "GP vakant ",
-                "color": "#FFCC66"
-              },
-              {
-                "id": "-50",
-                "name": "Mr. Nathan",
-                "short": "Mr. Nathan",
-                "color": "#C0C0C0"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-15",
-                "name": "205",
-                "short": "205",
-                "color": "#008080"
-              }
-            ]
-          }
-        ],
-        "6": [
-          {
-            "cardId": "*212",
-            "lessonId": "*130",
-            "period": 6,
-            "startPeriod": 6,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "6",
             "dayIndex": 4,
             "subject": {
               "id": "-16",
@@ -35786,10 +35815,10 @@
             ],
             "classrooms": [
               {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
+                "id": "-15",
+                "name": "205",
+                "short": "205",
+                "color": "#008080"
               }
             ]
           }
@@ -36706,6 +36735,56 @@
         ]
       },
       "4": {
+        "2": [
+          {
+            "cardId": "*209",
+            "lessonId": "*129",
+            "period": 2,
+            "startPeriod": 2,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "2",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-16",
+              "name": "Global Perspectives",
+              "short": "GP",
+              "color": "#99FF99"
+            },
+            "teachers": [
+              {
+                "id": "*6",
+                "name": "GP vakant ",
+                "short": "GP vakant ",
+                "color": "#FFCC66"
+              },
+              {
+                "id": "-50",
+                "name": "Mr. Nathan",
+                "short": "Mr. Nathan",
+                "color": "#C0C0C0"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
+              }
+            ]
+          }
+        ],
         "3": [
           {
             "cardId": "*368",
@@ -36808,8 +36887,8 @@
         ],
         "5": [
           {
-            "cardId": "*209",
-            "lessonId": "*129",
+            "cardId": "*212",
+            "lessonId": "*130",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -36817,56 +36896,6 @@
             "isDoublePeriod": false,
             "isContinuation": false,
             "periodSpan": "5",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-16",
-              "name": "Global Perspectives",
-              "short": "GP",
-              "color": "#99FF99"
-            },
-            "teachers": [
-              {
-                "id": "*6",
-                "name": "GP vakant ",
-                "short": "GP vakant ",
-                "color": "#FFCC66"
-              },
-              {
-                "id": "-50",
-                "name": "Mr. Nathan",
-                "short": "Mr. Nathan",
-                "color": "#C0C0C0"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-15",
-                "name": "205",
-                "short": "205",
-                "color": "#008080"
-              }
-            ]
-          }
-        ],
-        "6": [
-          {
-            "cardId": "*212",
-            "lessonId": "*130",
-            "period": 6,
-            "startPeriod": 6,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "6",
             "dayIndex": 4,
             "subject": {
               "id": "-16",
@@ -36898,10 +36927,10 @@
             ],
             "classrooms": [
               {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
+                "id": "-15",
+                "name": "205",
+                "short": "205",
+                "color": "#008080"
               }
             ]
           }
@@ -42277,8 +42306,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -42357,8 +42386,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -42439,8 +42468,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -42519,8 +42548,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -43081,8 +43110,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -43161,8 +43190,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -43804,10 +43833,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -44106,10 +44135,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -44208,10 +44237,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -44410,10 +44439,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -44662,10 +44691,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -45590,50 +45619,6 @@
         ]
       },
       "1": {
-        "3": [
-          {
-            "cardId": "*136",
-            "lessonId": "*94",
-            "period": 3,
-            "startPeriod": 3,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "3",
-            "dayIndex": 1,
-            "subject": {
-              "id": "-15",
-              "name": "Geography",
-              "short": "Geo",
-              "color": "#6600FF"
-            },
-            "teachers": [
-              {
-                "id": "-26",
-                "name": "Ms. Sevara",
-                "short": "Ms. Sevara",
-                "color": "#009933"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-1",
-                "name": "7-01: Abu Ali ibn Sino",
-                "short": "7-01",
-                "color": "#0080FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
-              }
-            ]
-          }
-        ],
         "7": [
           {
             "cardId": "*139",
@@ -45766,6 +45751,50 @@
                 "name": "108",
                 "short": "108",
                 "color": "#FFCCCC"
+              }
+            ]
+          }
+        ],
+        "3": [
+          {
+            "cardId": "*136",
+            "lessonId": "*94",
+            "period": 3,
+            "startPeriod": 3,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "3",
+            "dayIndex": 3,
+            "subject": {
+              "id": "-15",
+              "name": "Geography",
+              "short": "Geo",
+              "color": "#6600FF"
+            },
+            "teachers": [
+              {
+                "id": "-26",
+                "name": "Ms. Sevara",
+                "short": "Ms. Sevara",
+                "color": "#009933"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-1",
+                "name": "7-01: Abu Ali ibn Sino",
+                "short": "7-01",
+                "color": "#0080FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-7",
+                "name": "107",
+                "short": "107",
+                "color": "#33CCFF"
               }
             ]
           }
@@ -46493,8 +46522,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -46573,8 +46602,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -46655,8 +46684,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -46735,8 +46764,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -46917,8 +46946,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -46997,8 +47026,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -48101,8 +48130,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -48181,8 +48210,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -48263,8 +48292,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -48343,8 +48372,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -48525,8 +48554,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -48605,8 +48634,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -50664,8 +50693,8 @@
         ],
         "3": [
           {
-            "cardId": "*190",
-            "lessonId": "*122",
+            "cardId": "*182",
+            "lessonId": "*120",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -50690,10 +50719,10 @@
             ],
             "classes": [
               {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
+                "id": "-18",
+                "name": "5-02: Al-Xorazmiy",
+                "short": "5-02",
+                "color": "#00FF99"
               }
             ],
             "classrooms": [
@@ -50708,8 +50737,8 @@
         ],
         "5": [
           {
-            "cardId": "*182",
-            "lessonId": "*120",
+            "cardId": "*190",
+            "lessonId": "*122",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -50734,10 +50763,10 @@
             ],
             "classes": [
               {
-                "id": "-18",
-                "name": "5-02: Al-Xorazmiy",
-                "short": "5-02",
-                "color": "#00FF99"
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
               }
             ],
             "classrooms": [
@@ -52324,10 +52353,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -52936,10 +52965,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -52986,10 +53015,10 @@
             ],
             "classrooms": [
               {
-                "id": "-2",
-                "name": "102",
-                "short": "102",
-                "color": "#FFFFCC"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -53036,10 +53065,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -53238,10 +53267,10 @@
             ],
             "classrooms": [
               {
-                "id": "-2",
-                "name": "102",
-                "short": "102",
-                "color": "#FFFFCC"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -53340,10 +53369,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -54036,10 +54065,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -54188,10 +54217,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -54334,10 +54363,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -54480,10 +54509,10 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -54584,50 +54613,6 @@
             ]
           }
         ],
-        "3": [
-          {
-            "cardId": "*272",
-            "lessonId": "*158",
-            "period": 3,
-            "startPeriod": 3,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "3",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
-            },
-            "teachers": [
-              {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-15",
-                "name": "6-01: Mirzo Ulug'bek",
-                "short": "6-01",
-                "color": "#0046FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
-              }
-            ]
-          }
-        ],
         "4": [
           {
             "cardId": "*267",
@@ -54670,10 +54655,54 @@
             ],
             "classrooms": [
               {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
+              }
+            ]
+          }
+        ],
+        "6": [
+          {
+            "cardId": "*272",
+            "lessonId": "*158",
+            "period": 6,
+            "startPeriod": 6,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "6",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
+            },
+            "teachers": [
+              {
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-15",
+                "name": "6-01: Mirzo Ulug'bek",
+                "short": "6-01",
+                "color": "#0046FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
               }
             ]
           }
@@ -54774,10 +54803,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -54824,10 +54853,10 @@
             ],
             "classrooms": [
               {
-                "id": "-2",
-                "name": "102",
-                "short": "102",
-                "color": "#FFFFCC"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -54874,10 +54903,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -55026,10 +55055,10 @@
             ],
             "classrooms": [
               {
-                "id": "-2",
-                "name": "102",
-                "short": "102",
-                "color": "#FFFFCC"
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
               }
             ]
           }
@@ -55128,10 +55157,10 @@
             ],
             "classrooms": [
               {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
               }
             ]
           }
@@ -57741,8 +57770,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -57821,8 +57850,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -57903,8 +57932,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -57983,8 +58012,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -58065,8 +58094,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -58145,8 +58174,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -58201,63 +58230,19 @@
       }
     },
     "*21": {
-      "3": {
-        "3": [
-          {
-            "cardId": "*421",
-            "lessonId": "*209",
-            "period": 3,
-            "startPeriod": 3,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "3",
-            "dayIndex": 3,
-            "subject": {
-              "id": "-48",
-              "name": "Drawing",
-              "short": "Drawing",
-              "color": "#008080"
-            },
-            "teachers": [
-              {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-1",
-                "name": "7-01: Abu Ali ibn Sino",
-                "short": "7-01",
-                "color": "#0080FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
-              }
-            ]
-          }
-        ],
-        "5": [
+      "4": {
+        "1": [
           {
             "cardId": "*422",
             "lessonId": "*210",
-            "period": 5,
-            "startPeriod": 5,
+            "period": 1,
+            "startPeriod": 1,
             "duration": 1,
             "periodPart": 1,
             "isDoublePeriod": false,
             "isContinuation": false,
-            "periodSpan": "5",
-            "dayIndex": 3,
+            "periodSpan": "1",
+            "dayIndex": 4,
             "subject": {
               "id": "-48",
               "name": "Drawing",
@@ -58290,23 +58275,67 @@
             ]
           }
         ],
-        "6": [
+        "2": [
           {
-            "cardId": "*423",
-            "lessonId": "*211",
-            "period": 6,
-            "startPeriod": 6,
+            "cardId": "*421",
+            "lessonId": "*209",
+            "period": 2,
+            "startPeriod": 2,
             "duration": 1,
             "periodPart": 1,
             "isDoublePeriod": false,
             "isContinuation": false,
-            "periodSpan": "6",
-            "dayIndex": 3,
+            "periodSpan": "2",
+            "dayIndex": 4,
             "subject": {
-              "id": "-49",
-              "name": "Technology",
-              "short": "Tech",
-              "color": "#669999"
+              "id": "-48",
+              "name": "Drawing",
+              "short": "Drawing",
+              "color": "#008080"
+            },
+            "teachers": [
+              {
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-1",
+                "name": "7-01: Abu Ali ibn Sino",
+                "short": "7-01",
+                "color": "#0080FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-6",
+                "name": "106",
+                "short": "106",
+                "color": "#9900FF"
+              }
+            ]
+          }
+        ],
+        "3": [
+          {
+            "cardId": "*419",
+            "lessonId": "*207",
+            "period": 3,
+            "startPeriod": 3,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "3",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-47",
+              "name": "Visual arts",
+              "short": "VArt",
+              "color": "#FF99FF"
             },
             "teachers": [
               {
@@ -58322,96 +58351,6 @@
                 "name": "6-01: Mirzo Ulug'bek",
                 "short": "6-01",
                 "color": "#0046FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-10",
-                "name": "110",
-                "short": "110",
-                "color": "#990000"
-              }
-            ]
-          }
-        ]
-      },
-      "4": {
-        "2": [
-          {
-            "cardId": "*424",
-            "lessonId": "*212",
-            "period": 2,
-            "startPeriod": 2,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "2",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-49",
-              "name": "Technology",
-              "short": "Tech",
-              "color": "#669999"
-            },
-            "teachers": [
-              {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-10",
-                "name": "110",
-                "short": "110",
-                "color": "#990000"
-              }
-            ]
-          }
-        ],
-        "3": [
-          {
-            "cardId": "*426",
-            "lessonId": "*214",
-            "period": 3,
-            "startPeriod": 3,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "3",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-50",
-              "name": "Visual arts / Technology",
-              "short": "VArt/Tech",
-              "color": "#9966FF"
-            },
-            "teachers": [
-              {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-18",
-                "name": "5-02: Al-Xorazmiy",
-                "short": "5-02",
-                "color": "#00FF99"
               }
             ],
             "classrooms": [
@@ -58470,8 +58409,8 @@
         ],
         "5": [
           {
-            "cardId": "*419",
-            "lessonId": "*207",
+            "cardId": "*426",
+            "lessonId": "*214",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -58481,10 +58420,10 @@
             "periodSpan": "5",
             "dayIndex": 4,
             "subject": {
-              "id": "-47",
-              "name": "Visual arts",
-              "short": "VArt",
-              "color": "#FF99FF"
+              "id": "-50",
+              "name": "Visual arts / Technology",
+              "short": "VArt/Tech",
+              "color": "#9966FF"
             },
             "teachers": [
               {
@@ -58492,14 +58431,20 @@
                 "name": "Ms. Maftuna",
                 "short": "Ms. Maftuna",
                 "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
               {
-                "id": "-15",
-                "name": "6-01: Mirzo Ulug'bek",
-                "short": "6-01",
-                "color": "#0046FF"
+                "id": "-18",
+                "name": "5-02: Al-Xorazmiy",
+                "short": "5-02",
+                "color": "#00FF99"
               }
             ],
             "classrooms": [
@@ -58536,6 +58481,206 @@
                 "name": "Ms. Maftuna",
                 "short": "Ms. Maftuna",
                 "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-17",
+                "name": "5-01: Al-Xorazmiy",
+                "short": "5-01",
+                "color": "#0046FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-10",
+                "name": "110",
+                "short": "110",
+                "color": "#990000"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "*49": {
+      "3": {
+        "6": [
+          {
+            "cardId": "*423",
+            "lessonId": "*211",
+            "period": 6,
+            "startPeriod": 6,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "6",
+            "dayIndex": 3,
+            "subject": {
+              "id": "-49",
+              "name": "Technology",
+              "short": "Tech",
+              "color": "#669999"
+            },
+            "teachers": [
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-15",
+                "name": "6-01: Mirzo Ulug'bek",
+                "short": "6-01",
+                "color": "#0046FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-10",
+                "name": "110",
+                "short": "110",
+                "color": "#990000"
+              }
+            ]
+          }
+        ],
+        "7": [
+          {
+            "cardId": "*424",
+            "lessonId": "*212",
+            "period": 7,
+            "startPeriod": 7,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "7",
+            "dayIndex": 3,
+            "subject": {
+              "id": "-49",
+              "name": "Technology",
+              "short": "Tech",
+              "color": "#669999"
+            },
+            "teachers": [
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-10",
+                "name": "110",
+                "short": "110",
+                "color": "#990000"
+              }
+            ]
+          }
+        ]
+      },
+      "4": {
+        "5": [
+          {
+            "cardId": "*426",
+            "lessonId": "*214",
+            "period": 5,
+            "startPeriod": 5,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "5",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-50",
+              "name": "Visual arts / Technology",
+              "short": "VArt/Tech",
+              "color": "#9966FF"
+            },
+            "teachers": [
+              {
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-18",
+                "name": "5-02: Al-Xorazmiy",
+                "short": "5-02",
+                "color": "#00FF99"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-10",
+                "name": "110",
+                "short": "110",
+                "color": "#990000"
+              }
+            ]
+          }
+        ],
+        "6": [
+          {
+            "cardId": "*425",
+            "lessonId": "*213",
+            "period": 6,
+            "startPeriod": 6,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "6",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-50",
+              "name": "Visual arts / Technology",
+              "short": "VArt/Tech",
+              "color": "#9966FF"
+            },
+            "teachers": [
+              {
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
@@ -59234,8 +59379,8 @@
         ],
         "3": [
           {
-            "cardId": "*107",
-            "lessonId": "*76",
+            "cardId": "*48",
+            "lessonId": "*34",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -59245,25 +59390,25 @@
             "periodSpan": "3",
             "dayIndex": 1,
             "subject": {
-              "id": "-2",
-              "name": "Russian language",
-              "short": "Russian ",
-              "color": "#FF4200"
+              "id": "-4",
+              "name": "Uzbek literature",
+              "short": "Uzb_Lit",
+              "color": "#339966"
             },
             "teachers": [
               {
-                "id": "-18",
-                "name": "Ms. Zamira",
-                "short": "Ms. Zamira",
-                "color": "#FFCCFF"
+                "id": "-13",
+                "name": "Ms. Oydina",
+                "short": "Ms. Oydina",
+                "color": "#FF0000"
               }
             ],
             "classes": [
               {
-                "id": "-2",
-                "name": "7-02: Abu Ali ibn Sino",
-                "short": "7-02",
-                "color": "#00FF00"
+                "id": "-1",
+                "name": "7-01: Abu Ali ibn Sino",
+                "short": "7-01",
+                "color": "#0080FF"
               }
             ],
             "classrooms": [
@@ -59854,8 +59999,8 @@
         ],
         "5": [
           {
-            "cardId": "*422",
-            "lessonId": "*210",
+            "cardId": "*40",
+            "lessonId": "*29",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -59865,17 +60010,17 @@
             "periodSpan": "5",
             "dayIndex": 3,
             "subject": {
-              "id": "-48",
-              "name": "Drawing",
-              "short": "Drawing",
-              "color": "#008080"
+              "id": "-1",
+              "name": "Native language",
+              "short": "NatLang",
+              "color": "#00FF00"
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "-13",
+                "name": "Ms. Oydina",
+                "short": "Ms. Oydina",
+                "color": "#FF0000"
               }
             ],
             "classes": [
@@ -59988,8 +60133,8 @@
       "4": {
         "1": [
           {
-            "cardId": "*40",
-            "lessonId": "*29",
+            "cardId": "*422",
+            "lessonId": "*210",
             "period": 1,
             "startPeriod": 1,
             "duration": 1,
@@ -59999,17 +60144,17 @@
             "periodSpan": "1",
             "dayIndex": 4,
             "subject": {
-              "id": "-1",
-              "name": "Native language",
-              "short": "NatLang",
-              "color": "#00FF00"
+              "id": "-48",
+              "name": "Drawing",
+              "short": "Drawing",
+              "color": "#008080"
             },
             "teachers": [
               {
-                "id": "-13",
-                "name": "Ms. Oydina",
-                "short": "Ms. Oydina",
-                "color": "#FF0000"
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
               }
             ],
             "classes": [
@@ -60032,8 +60177,8 @@
         ],
         "2": [
           {
-            "cardId": "*48",
-            "lessonId": "*34",
+            "cardId": "*421",
+            "lessonId": "*209",
             "period": 2,
             "startPeriod": 2,
             "duration": 1,
@@ -60043,17 +60188,17 @@
             "periodSpan": "2",
             "dayIndex": 4,
             "subject": {
-              "id": "-4",
-              "name": "Uzbek literature",
-              "short": "Uzb_Lit",
-              "color": "#339966"
+              "id": "-48",
+              "name": "Drawing",
+              "short": "Drawing",
+              "color": "#008080"
             },
             "teachers": [
               {
-                "id": "-13",
-                "name": "Ms. Oydina",
-                "short": "Ms. Oydina",
-                "color": "#FF0000"
+                "id": "*21",
+                "name": "Ms. Maftuna",
+                "short": "Ms. Maftuna",
+                "color": "#00FFFF"
               }
             ],
             "classes": [
@@ -60350,8 +60495,8 @@
         ],
         "4": [
           {
-            "cardId": "*264",
-            "lessonId": "*157",
+            "cardId": "*292",
+            "lessonId": "*163",
             "period": 4,
             "startPeriod": 4,
             "duration": 1,
@@ -60361,31 +60506,31 @@
             "periodSpan": "4",
             "dayIndex": 0,
             "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
+              "id": "-6",
+              "name": "Mathematics",
+              "short": "Math",
+              "color": "#003399"
             },
             "teachers": [
               {
-                "id": "-31",
-                "name": "Mr. Jonathan",
-                "short": "Mr. Jonathan",
-                "color": "#FFCCCC"
+                "id": "-29",
+                "name": "Ms. Endra",
+                "short": "Ms. Endra",
+                "color": "#CC0066"
               },
               {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
+                "id": "-11",
+                "name": "Mr. Musoxon",
+                "short": "Mr. Musoxon",
+                "color": "#00FF80"
               }
             ],
             "classes": [
               {
-                "id": "-17",
-                "name": "5-01: Al-Xorazmiy",
-                "short": "5-01",
-                "color": "#0046FF"
+                "id": "-8",
+                "name": "10-02: Abu Nasr Forobiy",
+                "short": "10-02",
+                "color": "#00FF00"
               }
             ],
             "classrooms": [
@@ -60480,6 +60625,56 @@
                 "name": "6-02: Mirzo Ulug'bek",
                 "short": "6-02",
                 "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
+              }
+            ]
+          }
+        ],
+        "7": [
+          {
+            "cardId": "*289",
+            "lessonId": "*162",
+            "period": 7,
+            "startPeriod": 7,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "7",
+            "dayIndex": 0,
+            "subject": {
+              "id": "-6",
+              "name": "Mathematics",
+              "short": "Math",
+              "color": "#003399"
+            },
+            "teachers": [
+              {
+                "id": "-29",
+                "name": "Ms. Endra",
+                "short": "Ms. Endra",
+                "color": "#CC0066"
+              },
+              {
+                "id": "-11",
+                "name": "Mr. Musoxon",
+                "short": "Mr. Musoxon",
+                "color": "#00FF80"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-7",
+                "name": "10-01: Abu Nasr Forobiy",
+                "short": "10-01",
+                "color": "#0080FF"
               }
             ],
             "classrooms": [
@@ -60690,8 +60885,8 @@
         ],
         "5": [
           {
-            "cardId": "*262",
-            "lessonId": "*156",
+            "cardId": "*302",
+            "lessonId": "*165",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -60701,31 +60896,25 @@
             "periodSpan": "5",
             "dayIndex": 1,
             "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
+              "id": "-6",
+              "name": "Mathematics",
+              "short": "Math",
+              "color": "#003399"
             },
             "teachers": [
               {
-                "id": "-31",
-                "name": "Mr. Jonathan",
-                "short": "Mr. Jonathan",
-                "color": "#FFCCCC"
-              },
-              {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
+                "id": "-12",
+                "name": "Mr. Muhammadyusuf",
+                "short": "Mr. Muhammadyusuf",
+                "color": "#66FF66"
               }
             ],
             "classes": [
               {
-                "id": "-18",
-                "name": "5-02: Al-Xorazmiy",
-                "short": "5-02",
-                "color": "#00FF99"
+                "id": "-10",
+                "name": "11-02: Alisher Navoiy",
+                "short": "11-02",
+                "color": "#FFFF99"
               }
             ],
             "classrooms": [
@@ -60836,8 +61025,8 @@
         ],
         "2": [
           {
-            "cardId": "*266",
-            "lessonId": "*157",
+            "cardId": "*295",
+            "lessonId": "*163",
             "period": 2,
             "startPeriod": 2,
             "duration": 1,
@@ -60847,31 +61036,31 @@
             "periodSpan": "2",
             "dayIndex": 2,
             "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
+              "id": "-6",
+              "name": "Mathematics",
+              "short": "Math",
+              "color": "#003399"
             },
             "teachers": [
               {
-                "id": "-31",
-                "name": "Mr. Jonathan",
-                "short": "Mr. Jonathan",
-                "color": "#FFCCCC"
+                "id": "-29",
+                "name": "Ms. Endra",
+                "short": "Ms. Endra",
+                "color": "#CC0066"
               },
               {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
+                "id": "-11",
+                "name": "Mr. Musoxon",
+                "short": "Mr. Musoxon",
+                "color": "#00FF80"
               }
             ],
             "classes": [
               {
-                "id": "-17",
-                "name": "5-01: Al-Xorazmiy",
-                "short": "5-01",
-                "color": "#0046FF"
+                "id": "-8",
+                "name": "10-02: Abu Nasr Forobiy",
+                "short": "10-02",
+                "color": "#00FF00"
               }
             ],
             "classrooms": [
@@ -61212,56 +61401,6 @@
             ]
           }
         ],
-        "3": [
-          {
-            "cardId": "*268",
-            "lessonId": "*157",
-            "period": 3,
-            "startPeriod": 3,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "3",
-            "dayIndex": 3,
-            "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
-            },
-            "teachers": [
-              {
-                "id": "-31",
-                "name": "Mr. Jonathan",
-                "short": "Mr. Jonathan",
-                "color": "#FFCCCC"
-              },
-              {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-17",
-                "name": "5-01: Al-Xorazmiy",
-                "short": "5-01",
-                "color": "#0046FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
-              }
-            ]
-          }
-        ],
         "4": [
           {
             "cardId": "*125",
@@ -61452,6 +61591,56 @@
         ]
       },
       "4": {
+        "2": [
+          {
+            "cardId": "*209",
+            "lessonId": "*129",
+            "period": 2,
+            "startPeriod": 2,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "2",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-16",
+              "name": "Global Perspectives",
+              "short": "GP",
+              "color": "#99FF99"
+            },
+            "teachers": [
+              {
+                "id": "*6",
+                "name": "GP vakant ",
+                "short": "GP vakant ",
+                "color": "#FFCC66"
+              },
+              {
+                "id": "-50",
+                "name": "Mr. Nathan",
+                "short": "Mr. Nathan",
+                "color": "#C0C0C0"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-9",
+                "name": "109",
+                "short": "109",
+                "color": "#9900FF"
+              }
+            ]
+          }
+        ],
         "3": [
           {
             "cardId": "*252",
@@ -61484,56 +61673,6 @@
                 "name": "8-01: Ahmad al-Farg'oniy",
                 "short": "8-01",
                 "color": "#0080FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-9",
-                "name": "109",
-                "short": "109",
-                "color": "#9900FF"
-              }
-            ]
-          }
-        ],
-        "4": [
-          {
-            "cardId": "*267",
-            "lessonId": "*157",
-            "period": 4,
-            "startPeriod": 4,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "4",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
-            },
-            "teachers": [
-              {
-                "id": "-31",
-                "name": "Mr. Jonathan",
-                "short": "Mr. Jonathan",
-                "color": "#FFCCCC"
-              },
-              {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-17",
-                "name": "5-01: Al-Xorazmiy",
-                "short": "5-01",
-                "color": "#0046FF"
               }
             ],
             "classrooms": [
@@ -62187,8 +62326,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -62267,8 +62406,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -62349,8 +62488,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -62429,8 +62568,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -62799,8 +62938,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -62879,8 +63018,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -63218,8 +63357,8 @@
         ],
         "5": [
           {
-            "cardId": "*209",
-            "lessonId": "*129",
+            "cardId": "*212",
+            "lessonId": "*130",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -63250,10 +63389,10 @@
             ],
             "classes": [
               {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
+                "id": "-15",
+                "name": "6-01: Mirzo Ulug'bek",
+                "short": "6-01",
+                "color": "#0046FF"
               }
             ],
             "classrooms": [
@@ -63700,6 +63839,50 @@
                 "name": "8-01: Ahmad al-Farg'oniy",
                 "short": "8-01",
                 "color": "#0080FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-5",
+                "name": "105",
+                "short": "105",
+                "color": "#00FFCC"
+              }
+            ]
+          }
+        ],
+        "3": [
+          {
+            "cardId": "*107",
+            "lessonId": "*76",
+            "period": 3,
+            "startPeriod": 3,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "3",
+            "dayIndex": 1,
+            "subject": {
+              "id": "-2",
+              "name": "Russian language",
+              "short": "Russian ",
+              "color": "#FF4200"
+            },
+            "teachers": [
+              {
+                "id": "-18",
+                "name": "Ms. Zamira",
+                "short": "Ms. Zamira",
+                "color": "#FFCCFF"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-2",
+                "name": "7-02: Abu Ali ibn Sino",
+                "short": "7-02",
+                "color": "#00FF00"
               }
             ],
             "classrooms": [
@@ -67979,50 +68162,6 @@
               }
             ]
           }
-        ],
-        "7": [
-          {
-            "cardId": "*175",
-            "lessonId": "*117",
-            "period": 7,
-            "startPeriod": 7,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "7",
-            "dayIndex": 2,
-            "subject": {
-              "id": "-1",
-              "name": "Native language",
-              "short": "NatLang",
-              "color": "#00FF00"
-            },
-            "teachers": [
-              {
-                "id": "-20",
-                "name": "Ms. Zumrad",
-                "short": "Ms. Zumrad",
-                "color": "#60FFC0"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-14",
-                "name": "204",
-                "short": "204",
-                "color": "#FF6666"
-              }
-            ]
-          }
         ]
       },
       "3": {
@@ -68382,8 +68521,8 @@
         ],
         "3": [
           {
-            "cardId": "*52",
-            "lessonId": "*37",
+            "cardId": "*175",
+            "lessonId": "*117",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -68393,25 +68532,25 @@
             "periodSpan": "3",
             "dayIndex": 4,
             "subject": {
-              "id": "-4",
-              "name": "Uzbek literature",
-              "short": "Uzb_Lit",
-              "color": "#339966"
+              "id": "-1",
+              "name": "Native language",
+              "short": "NatLang",
+              "color": "#00FF00"
             },
             "teachers": [
               {
-                "id": "-21",
-                "name": "Ms. Xurshida",
-                "short": "Ms. Xurshida",
-                "color": "#800080"
+                "id": "-20",
+                "name": "Ms. Zumrad",
+                "short": "Ms. Zumrad",
+                "color": "#60FFC0"
               }
             ],
             "classes": [
               {
-                "id": "-10",
-                "name": "11-02: Alisher Navoiy",
-                "short": "11-02",
-                "color": "#FFFF99"
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
               }
             ],
             "classrooms": [
@@ -69832,6 +69971,50 @@
                 "name": "8-01: Ahmad al-Farg'oniy",
                 "short": "8-01",
                 "color": "#0080FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-16",
+                "name": "206",
+                "short": "206",
+                "color": "#C0C000"
+              }
+            ]
+          }
+        ],
+        "3": [
+          {
+            "cardId": "*52",
+            "lessonId": "*37",
+            "period": 3,
+            "startPeriod": 3,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "3",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-4",
+              "name": "Uzbek literature",
+              "short": "Uzb_Lit",
+              "color": "#339966"
+            },
+            "teachers": [
+              {
+                "id": "-21",
+                "name": "Ms. Xurshida",
+                "short": "Ms. Xurshida",
+                "color": "#800080"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-10",
+                "name": "11-02: Alisher Navoiy",
+                "short": "11-02",
+                "color": "#FFFF99"
               }
             ],
             "classrooms": [
@@ -71701,8 +71884,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -71781,8 +71964,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -71863,8 +72046,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -71943,8 +72126,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -72549,8 +72732,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -72629,8 +72812,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -77094,56 +77277,6 @@
             ]
           }
         ],
-        "5": [
-          {
-            "cardId": "*284",
-            "lessonId": "*161",
-            "period": 5,
-            "startPeriod": 5,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "5",
-            "dayIndex": 0,
-            "subject": {
-              "id": "-6",
-              "name": "Mathematics",
-              "short": "Math",
-              "color": "#003399"
-            },
-            "teachers": [
-              {
-                "id": "-29",
-                "name": "Ms. Endra",
-                "short": "Ms. Endra",
-                "color": "#CC0066"
-              },
-              {
-                "id": "-11",
-                "name": "Mr. Musoxon",
-                "short": "Mr. Musoxon",
-                "color": "#00FF80"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-6",
-                "name": "9-02: Abu Rayhon Beruniy",
-                "short": "9-02",
-                "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-2",
-                "name": "102",
-                "short": "102",
-                "color": "#FFFFCC"
-              }
-            ]
-          }
-        ],
         "6": [
           {
             "cardId": "*113",
@@ -77436,8 +77569,8 @@
         ],
         "5": [
           {
-            "cardId": "*279",
-            "lessonId": "*160",
+            "cardId": "*262",
+            "lessonId": "*156",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -77447,31 +77580,31 @@
             "periodSpan": "5",
             "dayIndex": 1,
             "subject": {
-              "id": "-6",
-              "name": "Mathematics",
-              "short": "Math",
-              "color": "#003399"
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
             },
             "teachers": [
               {
-                "id": "-29",
-                "name": "Ms. Endra",
-                "short": "Ms. Endra",
-                "color": "#CC0066"
+                "id": "-31",
+                "name": "Mr. Jonathan",
+                "short": "Mr. Jonathan",
+                "color": "#FFCCCC"
               },
               {
-                "id": "-11",
-                "name": "Mr. Musoxon",
-                "short": "Mr. Musoxon",
-                "color": "#00FF80"
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
               }
             ],
             "classes": [
               {
-                "id": "-5",
-                "name": "9-01: Abu Rayhon Beruniy",
-                "short": "9-01",
-                "color": "#0080FF"
+                "id": "-18",
+                "name": "5-02: Al-Xorazmiy",
+                "short": "5-02",
+                "color": "#00FF99"
               }
             ],
             "classrooms": [
@@ -77820,6 +77953,56 @@
             ]
           }
         ],
+        "3": [
+          {
+            "cardId": "*268",
+            "lessonId": "*157",
+            "period": 3,
+            "startPeriod": 3,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "3",
+            "dayIndex": 3,
+            "subject": {
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
+            },
+            "teachers": [
+              {
+                "id": "-31",
+                "name": "Mr. Jonathan",
+                "short": "Mr. Jonathan",
+                "color": "#FFCCCC"
+              },
+              {
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-17",
+                "name": "5-01: Al-Xorazmiy",
+                "short": "5-01",
+                "color": "#0046FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
+              }
+            ]
+          }
+        ],
         "4": [
           {
             "cardId": "*277",
@@ -78110,6 +78293,56 @@
             ]
           }
         ],
+        "4": [
+          {
+            "cardId": "*267",
+            "lessonId": "*157",
+            "period": 4,
+            "startPeriod": 4,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "4",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
+            },
+            "teachers": [
+              {
+                "id": "-31",
+                "name": "Mr. Jonathan",
+                "short": "Mr. Jonathan",
+                "color": "#FFCCCC"
+              },
+              {
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-17",
+                "name": "5-01: Al-Xorazmiy",
+                "short": "5-01",
+                "color": "#0046FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
+              }
+            ]
+          }
+        ],
         "5": [
           {
             "cardId": "*115",
@@ -78148,6 +78381,50 @@
                 "name": "7-02: Abu Ali ibn Sino",
                 "short": "7-02",
                 "color": "#00FF00"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-2",
+                "name": "102",
+                "short": "102",
+                "color": "#FFFFCC"
+              }
+            ]
+          }
+        ],
+        "6": [
+          {
+            "cardId": "*272",
+            "lessonId": "*158",
+            "period": 6,
+            "startPeriod": 6,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "6",
+            "dayIndex": 4,
+            "subject": {
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
+            },
+            "teachers": [
+              {
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-15",
+                "name": "6-01: Mirzo Ulug'bek",
+                "short": "6-01",
+                "color": "#0046FF"
               }
             ],
             "classrooms": [
@@ -78424,50 +78701,6 @@
                 "name": "7-02: Abu Ali ibn Sino",
                 "short": "7-02",
                 "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
-              }
-            ]
-          }
-        ],
-        "3": [
-          {
-            "cardId": "*136",
-            "lessonId": "*94",
-            "period": 3,
-            "startPeriod": 3,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "3",
-            "dayIndex": 1,
-            "subject": {
-              "id": "-15",
-              "name": "Geography",
-              "short": "Geo",
-              "color": "#6600FF"
-            },
-            "teachers": [
-              {
-                "id": "-26",
-                "name": "Ms. Sevara",
-                "short": "Ms. Sevara",
-                "color": "#009933"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-1",
-                "name": "7-01: Abu Ali ibn Sino",
-                "short": "7-01",
-                "color": "#0080FF"
               }
             ],
             "classrooms": [
@@ -79064,8 +79297,8 @@
         ],
         "3": [
           {
-            "cardId": "*421",
-            "lessonId": "*209",
+            "cardId": "*136",
+            "lessonId": "*94",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -79075,17 +79308,17 @@
             "periodSpan": "3",
             "dayIndex": 3,
             "subject": {
-              "id": "-48",
-              "name": "Drawing",
-              "short": "Drawing",
-              "color": "#008080"
+              "id": "-15",
+              "name": "Geography",
+              "short": "Geo",
+              "color": "#6600FF"
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "-26",
+                "name": "Ms. Sevara",
+                "short": "Ms. Sevara",
+                "color": "#009933"
               }
             ],
             "classes": [
@@ -79504,56 +79737,6 @@
                 "name": "8-02: Ahmad al-Farg'oniy",
                 "short": "8-02",
                 "color": "#00FF00"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-7",
-                "name": "107",
-                "short": "107",
-                "color": "#33CCFF"
-              }
-            ]
-          }
-        ],
-        "6": [
-          {
-            "cardId": "*212",
-            "lessonId": "*130",
-            "period": 6,
-            "startPeriod": 6,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "6",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-16",
-              "name": "Global Perspectives",
-              "short": "GP",
-              "color": "#99FF99"
-            },
-            "teachers": [
-              {
-                "id": "*6",
-                "name": "GP vakant ",
-                "short": "GP vakant ",
-                "color": "#FFCC66"
-              },
-              {
-                "id": "-50",
-                "name": "Mr. Nathan",
-                "short": "Mr. Nathan",
-                "color": "#C0C0C0"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-15",
-                "name": "6-01: Mirzo Ulug'bek",
-                "short": "6-01",
-                "color": "#0046FF"
               }
             ],
             "classrooms": [
@@ -80648,8 +80831,8 @@
         ],
         "3": [
           {
-            "cardId": "*190",
-            "lessonId": "*122",
+            "cardId": "*182",
+            "lessonId": "*120",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -80674,10 +80857,10 @@
             ],
             "classes": [
               {
-                "id": "-16",
-                "name": "6-02: Mirzo Ulug'bek",
-                "short": "6-02",
-                "color": "#00FF00"
+                "id": "-18",
+                "name": "5-02: Al-Xorazmiy",
+                "short": "5-02",
+                "color": "#00FF99"
               }
             ],
             "classrooms": [
@@ -80736,8 +80919,8 @@
         ],
         "5": [
           {
-            "cardId": "*182",
-            "lessonId": "*120",
+            "cardId": "*190",
+            "lessonId": "*122",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -80762,10 +80945,10 @@
             ],
             "classes": [
               {
-                "id": "-18",
-                "name": "5-02: Al-Xorazmiy",
-                "short": "5-02",
-                "color": "#00FF99"
+                "id": "-16",
+                "name": "6-02: Mirzo Ulug'bek",
+                "short": "6-02",
+                "color": "#00FF00"
               }
             ],
             "classrooms": [
@@ -81593,8 +81776,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -81673,8 +81856,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -81755,8 +81938,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -81835,8 +82018,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -82155,8 +82338,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -82235,8 +82418,8 @@
               },
               {
                 "id": "*30",
-                "name": "Eco Vacancy",
-                "short": "Eco Vacancy",
+                "name": "Mr. Faxriddin",
+                "short": "Mr. Faxriddin",
                 "color": "#FFFF00"
               },
               {
@@ -82856,8 +83039,8 @@
         ],
         "4": [
           {
-            "cardId": "*292",
-            "lessonId": "*163",
+            "cardId": "*264",
+            "lessonId": "*157",
             "period": 4,
             "startPeriod": 4,
             "duration": 1,
@@ -82865,6 +83048,56 @@
             "isDoublePeriod": false,
             "isContinuation": false,
             "periodSpan": "4",
+            "dayIndex": 0,
+            "subject": {
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
+            },
+            "teachers": [
+              {
+                "id": "-31",
+                "name": "Mr. Jonathan",
+                "short": "Mr. Jonathan",
+                "color": "#FFCCCC"
+              },
+              {
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
+              }
+            ],
+            "classes": [
+              {
+                "id": "-17",
+                "name": "5-01: Al-Xorazmiy",
+                "short": "5-01",
+                "color": "#0046FF"
+              }
+            ],
+            "classrooms": [
+              {
+                "id": "-1",
+                "name": "101",
+                "short": "101",
+                "color": "#80FF80"
+              }
+            ]
+          }
+        ],
+        "5": [
+          {
+            "cardId": "*284",
+            "lessonId": "*161",
+            "period": 5,
+            "startPeriod": 5,
+            "duration": 1,
+            "periodPart": 1,
+            "isDoublePeriod": false,
+            "isContinuation": false,
+            "periodSpan": "5",
             "dayIndex": 0,
             "subject": {
               "id": "-6",
@@ -82888,9 +83121,9 @@
             ],
             "classes": [
               {
-                "id": "-8",
-                "name": "10-02: Abu Nasr Forobiy",
-                "short": "10-02",
+                "id": "-6",
+                "name": "9-02: Abu Rayhon Beruniy",
+                "short": "9-02",
                 "color": "#00FF00"
               }
             ],
@@ -82936,56 +83169,6 @@
                 "name": "11-02: Alisher Navoiy",
                 "short": "11-02",
                 "color": "#FFFF99"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
-              }
-            ]
-          }
-        ],
-        "7": [
-          {
-            "cardId": "*289",
-            "lessonId": "*162",
-            "period": 7,
-            "startPeriod": 7,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "7",
-            "dayIndex": 0,
-            "subject": {
-              "id": "-6",
-              "name": "Mathematics",
-              "short": "Math",
-              "color": "#003399"
-            },
-            "teachers": [
-              {
-                "id": "-29",
-                "name": "Ms. Endra",
-                "short": "Ms. Endra",
-                "color": "#CC0066"
-              },
-              {
-                "id": "-11",
-                "name": "Mr. Musoxon",
-                "short": "Mr. Musoxon",
-                "color": "#00FF80"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-7",
-                "name": "10-01: Abu Nasr Forobiy",
-                "short": "10-01",
-                "color": "#0080FF"
               }
             ],
             "classrooms": [
@@ -83202,8 +83385,8 @@
         ],
         "5": [
           {
-            "cardId": "*302",
-            "lessonId": "*165",
+            "cardId": "*279",
+            "lessonId": "*160",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -83220,18 +83403,24 @@
             },
             "teachers": [
               {
-                "id": "-12",
-                "name": "Mr. Muhammadyusuf",
-                "short": "Mr. Muhammadyusuf",
-                "color": "#66FF66"
+                "id": "-29",
+                "name": "Ms. Endra",
+                "short": "Ms. Endra",
+                "color": "#CC0066"
+              },
+              {
+                "id": "-11",
+                "name": "Mr. Musoxon",
+                "short": "Mr. Musoxon",
+                "color": "#00FF80"
               }
             ],
             "classes": [
               {
-                "id": "-10",
-                "name": "11-02: Alisher Navoiy",
-                "short": "11-02",
-                "color": "#FFFF99"
+                "id": "-5",
+                "name": "9-01: Abu Rayhon Beruniy",
+                "short": "9-01",
+                "color": "#0080FF"
               }
             ],
             "classrooms": [
@@ -83298,8 +83487,8 @@
       "2": {
         "2": [
           {
-            "cardId": "*295",
-            "lessonId": "*163",
+            "cardId": "*266",
+            "lessonId": "*157",
             "period": 2,
             "startPeriod": 2,
             "duration": 1,
@@ -83309,31 +83498,31 @@
             "periodSpan": "2",
             "dayIndex": 2,
             "subject": {
-              "id": "-6",
-              "name": "Mathematics",
-              "short": "Math",
-              "color": "#003399"
+              "id": "-20",
+              "name": "Mathematics.",
+              "short": "Math.",
+              "color": "#993366"
             },
             "teachers": [
               {
-                "id": "-29",
-                "name": "Ms. Endra",
-                "short": "Ms. Endra",
-                "color": "#CC0066"
+                "id": "-31",
+                "name": "Mr. Jonathan",
+                "short": "Mr. Jonathan",
+                "color": "#FFCCCC"
               },
               {
-                "id": "-11",
-                "name": "Mr. Musoxon",
-                "short": "Mr. Musoxon",
-                "color": "#00FF80"
+                "id": "-41",
+                "name": "Mr. Nozim",
+                "short": "Mr. Nozim",
+                "color": "#66CCCC"
               }
             ],
             "classes": [
               {
-                "id": "-8",
-                "name": "10-02: Abu Nasr Forobiy",
-                "short": "10-02",
-                "color": "#00FF00"
+                "id": "-17",
+                "name": "5-01: Al-Xorazmiy",
+                "short": "5-01",
+                "color": "#0046FF"
               }
             ],
             "classrooms": [
@@ -83838,50 +84027,6 @@
             ]
           }
         ],
-        "3": [
-          {
-            "cardId": "*272",
-            "lessonId": "*158",
-            "period": 3,
-            "startPeriod": 3,
-            "duration": 1,
-            "periodPart": 1,
-            "isDoublePeriod": false,
-            "isContinuation": false,
-            "periodSpan": "3",
-            "dayIndex": 4,
-            "subject": {
-              "id": "-20",
-              "name": "Mathematics.",
-              "short": "Math.",
-              "color": "#993366"
-            },
-            "teachers": [
-              {
-                "id": "-41",
-                "name": "Mr. Nozim",
-                "short": "Mr. Nozim",
-                "color": "#66CCCC"
-              }
-            ],
-            "classes": [
-              {
-                "id": "-15",
-                "name": "6-01: Mirzo Ulug'bek",
-                "short": "6-01",
-                "color": "#0046FF"
-              }
-            ],
-            "classrooms": [
-              {
-                "id": "-1",
-                "name": "101",
-                "short": "101",
-                "color": "#80FF80"
-              }
-            ]
-          }
-        ],
         "4": [
           {
             "cardId": "*305",
@@ -84050,10 +84195,10 @@
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
@@ -84073,21 +84218,19 @@
               }
             ]
           }
-        ]
-      },
-      "4": {
-        "2": [
+        ],
+        "7": [
           {
             "cardId": "*424",
             "lessonId": "*212",
-            "period": 2,
-            "startPeriod": 2,
+            "period": 7,
+            "startPeriod": 7,
             "duration": 1,
             "periodPart": 1,
             "isDoublePeriod": false,
             "isContinuation": false,
-            "periodSpan": "2",
-            "dayIndex": 4,
+            "periodSpan": "7",
+            "dayIndex": 3,
             "subject": {
               "id": "-49",
               "name": "Technology",
@@ -84096,10 +84239,10 @@
             },
             "teachers": [
               {
-                "id": "*21",
-                "name": "Ms. Maftuna",
-                "short": "Ms. Maftuna",
-                "color": "#00FFFF"
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
@@ -84119,11 +84262,13 @@
               }
             ]
           }
-        ],
+        ]
+      },
+      "4": {
         "3": [
           {
-            "cardId": "*426",
-            "lessonId": "*214",
+            "cardId": "*419",
+            "lessonId": "*207",
             "period": 3,
             "startPeriod": 3,
             "duration": 1,
@@ -84133,10 +84278,10 @@
             "periodSpan": "3",
             "dayIndex": 4,
             "subject": {
-              "id": "-50",
-              "name": "Visual arts / Technology",
-              "short": "VArt/Tech",
-              "color": "#9966FF"
+              "id": "-47",
+              "name": "Visual arts",
+              "short": "VArt",
+              "color": "#FF99FF"
             },
             "teachers": [
               {
@@ -84148,10 +84293,10 @@
             ],
             "classes": [
               {
-                "id": "-18",
-                "name": "5-02: Al-Xorazmiy",
-                "short": "5-02",
-                "color": "#00FF99"
+                "id": "-15",
+                "name": "6-01: Mirzo Ulug'bek",
+                "short": "6-01",
+                "color": "#0046FF"
               }
             ],
             "classrooms": [
@@ -84210,8 +84355,8 @@
         ],
         "5": [
           {
-            "cardId": "*419",
-            "lessonId": "*207",
+            "cardId": "*426",
+            "lessonId": "*214",
             "period": 5,
             "startPeriod": 5,
             "duration": 1,
@@ -84221,10 +84366,10 @@
             "periodSpan": "5",
             "dayIndex": 4,
             "subject": {
-              "id": "-47",
-              "name": "Visual arts",
-              "short": "VArt",
-              "color": "#FF99FF"
+              "id": "-50",
+              "name": "Visual arts / Technology",
+              "short": "VArt/Tech",
+              "color": "#9966FF"
             },
             "teachers": [
               {
@@ -84232,14 +84377,20 @@
                 "name": "Ms. Maftuna",
                 "short": "Ms. Maftuna",
                 "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
               {
-                "id": "-15",
-                "name": "6-01: Mirzo Ulug'bek",
-                "short": "6-01",
-                "color": "#0046FF"
+                "id": "-18",
+                "name": "5-02: Al-Xorazmiy",
+                "short": "5-02",
+                "color": "#00FF99"
               }
             ],
             "classrooms": [
@@ -84276,6 +84427,12 @@
                 "name": "Ms. Maftuna",
                 "short": "Ms. Maftuna",
                 "color": "#00FFFF"
+              },
+              {
+                "id": "*49",
+                "name": "Ms. Nodira",
+                "short": "Ms. Nodira",
+                "color": "#CCFF33"
               }
             ],
             "classes": [
@@ -84301,7 +84458,7 @@
   },
   "stats": {
     "totalClasses": 14,
-    "totalTeachers": 36,
+    "totalTeachers": 37,
     "totalSubjects": 39,
     "totalClassrooms": 20,
     "totalLessons": 222,

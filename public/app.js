@@ -2456,34 +2456,112 @@ async function fetchDailySchedule() {
   resultsContainer.innerHTML = `<div class="p-6 text-center text-slate-400">Querying live schedule for ${dateStr}...</div>`;
 
   try {
-    const res = await fetch(`/api/daily?classId=${classId}&date=${dateStr}`);
-    const data = await res.json();
-    const items = data.ttitems || [];
+    let items = [];
+    let isFallback = false;
+
+    try {
+      const res = await fetch(`/api/daily?classId=${classId}&date=${dateStr}`);
+      if (res.ok) {
+        const data = await res.json();
+        items = data.ttitems || [];
+      }
+    } catch (netErr) {
+      console.warn('Live daily API request failed, trying timetable grid fallback...', netErr);
+    }
+
+    // Fallback to local timetableData grid if live API returned no items or failed
+    if ((!items || items.length === 0) && state.timetableData?.classGrid?.[classId]) {
+      const dateObj = new Date(dateStr + 'T00:00:00');
+      const dayOfWeek = dateObj.getDay();
+      const dayIdx = (dayOfWeek >= 1 && dayOfWeek <= 5) ? String(dayOfWeek - 1) : null;
+      if (dayIdx && state.timetableData.classGrid[classId][dayIdx]) {
+        const dayPeriods = state.timetableData.classGrid[classId][dayIdx];
+        const periodKeys = Object.keys(dayPeriods).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+        for (const p of periodKeys) {
+          for (const item of dayPeriods[p]) {
+            const pInfo = (state.timetableData.periods || []).find(pr => String(pr.id) === String(p));
+            items.push({
+              period: p,
+              uniperiod: p,
+              subject: item.subject?.name,
+              color: item.subject?.color,
+              teacher: (item.teachers || []).map(t => t.name || t.short).join(', '),
+              classroom: (item.classrooms || []).map(r => normalizeClassroomName(r.short || r.name)).join(', '),
+              starttime: pInfo ? pInfo.startTime : '',
+              endtime: pInfo ? pInfo.endTime : ''
+            });
+          }
+        }
+        if (items.length > 0) isFallback = true;
+      }
+    }
 
     if (items.length === 0) {
       resultsContainer.innerHTML = `
-        <div class="p-6 rounded-xl border border-dashed border-slate-300 text-center text-slate-500">
-          No scheduled lessons reported by the live server for this date.
+        <div class="p-6 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-center text-slate-500 dark:text-slate-400">
+          No scheduled lessons reported for this date.
         </div>
       `;
       return;
     }
 
+    // Resolve any missing names/rooms from timetableData dictionaries
+    const subjectsMap = {};
+    (state.timetableData?.subjects || []).forEach(s => { subjectsMap[s.id] = s; });
+    const teachersMap = {};
+    (state.timetableData?.teachers || []).forEach(t => { teachersMap[t.id] = t; });
+    const roomsMap = {};
+    (state.timetableData?.classrooms || []).forEach(r => { roomsMap[r.id] = r; });
+
     resultsContainer.innerHTML = `
+      ${isFallback ? `<div class="mb-2.5 px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-1.5">
+        <span>ℹ️</span> <span>Live EduPage RPC unavailable; displaying standard timetable schedule for this day.</span>
+      </div>` : ''}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        ${items.map(item => `
-          <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 shadow-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Period ${item.period || '?'}</span>
-              <span class="text-xs font-mono text-slate-400">${item.starttime || ''} - ${item.endtime || ''}</span>
+        ${items.map(item => {
+          const period = item.period || item.uniperiod || '?';
+          const pInfo = (state.timetableData?.periods || []).find(pr => String(pr.id) === String(period));
+          const starttime = item.starttime || (pInfo ? pInfo.startTime : '');
+          const endtime = item.endtime || (pInfo ? pInfo.endTime : '');
+          const timeDisplay = (starttime && endtime) ? `${starttime} - ${endtime}` : (starttime || endtime || '');
+          
+          let subject = item.subject;
+          if (!subject && item.subjectid && subjectsMap[item.subjectid]) {
+            subject = subjectsMap[item.subjectid].name;
+          }
+          subject = subject || 'Lesson';
+
+          let subjectColor = item.color || (item.colors && item.colors[0]) || (item.subjectid && subjectsMap[item.subjectid]?.color) || '#3b82f6';
+
+          let teacher = item.teacher;
+          if (!teacher && Array.isArray(item.teacherids)) {
+            teacher = item.teacherids.map(tid => teachersMap[tid]?.name || teachersMap[tid]?.short || tid).filter(Boolean).join(', ');
+          }
+          teacher = teacher || 'Faculty';
+
+          let classroom = item.classroom;
+          if (!classroom && Array.isArray(item.classroomids)) {
+            classroom = item.classroomids.map(rid => {
+              const r = roomsMap[rid];
+              return r ? normalizeClassroomName(r.short || r.name) : rid;
+            }).filter(Boolean).join(', ');
+          }
+          classroom = classroom || 'Room';
+
+          return `
+            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/90 space-y-1.5 shadow-2xs hover:shadow-xs transition" style="border-left: 4px solid ${subjectColor};">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/70 border border-blue-100 dark:border-blue-900/50 px-2 py-0.5 rounded">Period ${period}</span>
+                ${timeDisplay ? `<span class="text-xs font-mono text-slate-500 dark:text-slate-400">${timeDisplay}</span>` : ''}
+              </div>
+              <div class="font-bold text-slate-900 dark:text-white text-sm">${subject}</div>
+              <div class="text-xs text-slate-600 dark:text-slate-400 flex justify-between gap-2">
+                <span class="truncate" title="${teacher}">👨‍🏫 ${teacher}</span>
+                <span class="truncate shrink-0 font-medium text-slate-700 dark:text-slate-300" title="${classroom}">🚪 ${classroom}</span>
+              </div>
             </div>
-            <div class="font-bold text-slate-900 text-sm">${item.subject || 'Lesson'}</div>
-            <div class="text-xs text-slate-600 flex justify-between">
-              <span>👨‍🏫 ${item.teacher || 'Faculty'}</span>
-              <span>🚪 ${item.classroom || 'Room'}</span>
-            </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     `;
   } catch (err) {

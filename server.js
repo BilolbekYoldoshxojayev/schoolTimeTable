@@ -518,23 +518,93 @@ async function handleRequest(req, res) {
         const dateStr = parsedUrl.query.date || new Date().toISOString().slice(0, 10);
         const year = parseInt(dateStr.slice(0, 4), 10) || 2026;
 
-        const args = [
-          null,
-          {
-            year: year,
-            datefrom: dateStr,
-            dateto: dateStr,
-            table: 'classes',
-            id: classId,
-            showColors: true,
-            showIgroupsInClasses: true,
-            showOrig: true
+        let ttData = getCached('timetable_13');
+        if (!ttData) {
+          const snapshotPath = path.join(PUBLIC_DIR, 'snapshot-13.json');
+          if (fs.existsSync(snapshotPath)) {
+            try { ttData = JSON.parse(fs.readFileSync(snapshotPath, 'utf8')); } catch (e) {}
           }
-        ];
+        }
 
-        const rpcRes = await edupageRpc('/timetable/server/currenttt.js?__func=curentttGetData', args);
+        const subjectsMap = {};
+        (ttData?.subjects || []).forEach(s => { subjectsMap[s.id] = s; });
+        const teachersMap = {};
+        (ttData?.teachers || []).forEach(t => { teachersMap[t.id] = t; });
+        const roomsMap = {};
+        (ttData?.classrooms || []).forEach(r => { roomsMap[r.id] = r; });
+
+        let ttitems = [];
+        try {
+          const args = [
+            null,
+            {
+              year: year,
+              datefrom: dateStr,
+              dateto: dateStr,
+              table: 'classes',
+              id: classId,
+              showColors: true,
+              showIgroupsInClasses: true,
+              showOrig: true
+            }
+          ];
+
+          const rpcRes = await edupageRpc('/timetable/server/currenttt.js?__func=curentttGetData', args);
+          ttitems = (rpcRes && rpcRes.r && rpcRes.r.ttitems) || [];
+        } catch (rpcErr) {
+          console.warn(`EduPage daily schedule RPC failed for class ${classId} on ${dateStr}:`, rpcErr.message);
+          if (ttData?.classGrid?.[classId]) {
+            const dateObj = new Date(dateStr + 'T00:00:00');
+            const dayOfWeek = dateObj.getDay();
+            const dayIdx = (dayOfWeek >= 1 && dayOfWeek <= 5) ? String(dayOfWeek - 1) : null;
+            if (dayIdx && ttData.classGrid[classId][dayIdx]) {
+              const periodsMap = ttData.classGrid[classId][dayIdx];
+              for (const p of Object.keys(periodsMap).sort((a, b) => parseInt(a, 10) - parseInt(b, 10))) {
+                for (const item of periodsMap[p]) {
+                  const pInfo = (ttData.periods || []).find(pr => String(pr.id) === String(p));
+                  ttitems.push({
+                    uniperiod: String(p),
+                    period: p,
+                    subject: item.subject?.name,
+                    subjectid: item.subject?.id,
+                    teacher: (item.teachers || []).map(t => t.name || t.short).join(', '),
+                    teacherids: (item.teachers || []).map(t => t.id),
+                    classroom: (item.classrooms || []).map(r => r.short || r.name).join(', '),
+                    classroomids: (item.classrooms || []).map(r => r.id),
+                    starttime: pInfo ? pInfo.startTime : '',
+                    endtime: pInfo ? pInfo.endTime : '',
+                    colors: [item.subject?.color || '#3b82f6']
+                  });
+                }
+              }
+            }
+          }
+        }
+
+        const enrichedItems = ttitems.map(item => {
+          const period = item.period || parseInt(item.uniperiod, 10) || item.uniperiod || '?';
+          const periodInfo = ttData?.periods?.find(pr => String(pr.id) === String(period));
+          const subject = item.subject || (item.subjectid && subjectsMap[item.subjectid]?.name) || 'Lesson';
+          const teacher = item.teacher || (item.teacherids || []).map(tid => teachersMap[tid]?.name || teachersMap[tid]?.short || tid).filter(Boolean).join(', ') || 'Faculty';
+          const classroom = item.classroom || (item.classroomids || []).map(rid => roomsMap[rid]?.short || roomsMap[rid]?.name || rid).filter(Boolean).join(', ') || 'Room';
+          const starttime = item.starttime || periodInfo?.startTime || '';
+          const endtime = item.endtime || periodInfo?.endTime || '';
+          const color = (item.colors && item.colors[0]) || (item.subjectid && subjectsMap[item.subjectid]?.color) || '#3b82f6';
+
+          return {
+            ...item,
+            period,
+            subject,
+            teacher,
+            classroom,
+            starttime,
+            endtime,
+            color
+          };
+        });
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(rpcRes.r || { ttitems: [] }));
+        res.end(JSON.stringify({ ttitems: enrichedItems }));
         return;
       }
 
