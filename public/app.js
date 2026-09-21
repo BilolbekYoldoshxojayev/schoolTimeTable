@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderDirectory();
 
   // Switch to saved tab
-  if (!window.location.hash) window.location.hash = "/" + state.currentTab; else handleRouteChange();
+  switchTab(state.currentTab);
 });
 
 // ============================================================================
@@ -1056,10 +1056,6 @@ function setupEventListeners() {
 // ============================================================================
 // Navigation Tabs
 // ============================================================================
-
-// ============================================================================
-// SPA ROUTER
-// ============================================================================
 function switchTab(tabId) {
   window.location.hash = '/' + tabId;
 }
@@ -1074,7 +1070,6 @@ async function handleRouteChange() {
   state.currentTab = tabId;
   StorageManager.set('lastTab', tabId);
   
-  // Update Buttons
   document.querySelectorAll('.tab-btn').forEach(el => {
     el.classList.remove('active', 'bg-white', 'text-blue-600', 'shadow-2xs');
     el.classList.add('text-slate-600');
@@ -1090,42 +1085,1335 @@ async function handleRouteChange() {
   const timetableSection = document.getElementById('tab-content-timetable');
   
   if (tabId === 'timetable') {
-    routerView.classList.add('hidden');
-    routerView.innerHTML = ''; // clear memory
+    if (routerView) routerView.classList.add('hidden');
     if (timetableSection) timetableSection.classList.remove('hidden');
     updateCurrentTimeLine();
     return;
   }
   
-  // Hide timetable
   if (timetableSection) timetableSection.classList.add('hidden');
-  routerView.classList.remove('hidden');
-  routerView.innerHTML = '<div class="p-8 text-center text-slate-400">Loading ' + tabId + '...</div>';
-  
-  try {
-    const res = await fetch('/pages/' + tabId + '.html');
-    if (!res.ok) throw new Error('Page not found');
-    const html = await res.text();
-    routerView.innerHTML = html;
+  if (routerView) {
+    routerView.classList.remove('hidden');
+    routerView.innerHTML = '<div class="p-8 text-center text-slate-400 font-mono text-sm">Loading ' + tabId + '...</div>';
     
-    // Trigger specific logic after load
-    if (tabId === 'directory') renderDirectory();
-    if (tabId === 'substitution' && !state.substitutionData) loadSubstitution();
-    if (tabId === 'daily' && !state.dailyData) {
-      fetchDailySchedule();
-    } else if (tabId === 'daily') {
-      loadDailyScheduleClasses();
-      renderDailySchedule();
+    try {
+      const res = await fetch('/pages/' + tabId + '.html');
+      if (!res.ok) throw new Error('Not found');
+      routerView.innerHTML = await res.text();
+      
+      // Post-load logic
+      if (tabId === 'directory') {
+        renderDirectory();
+      } else if (tabId === 'substitution' && !state.substitutionData) {
+        loadSubstitution();
+      } else if (tabId === 'daily') {
+        if (!state.dailyData) fetchDailySchedule();
+        else { loadDailyScheduleClasses(); renderDailySchedule(); }
+      }
+    } catch (err) {
+      console.error(err);
+      routerView.innerHTML = '<div class="p-8 text-center text-rose-500 font-mono text-sm">Error loading page</div>';
     }
-  } catch (err) {
-    console.error(err);
-    routerView.innerHTML = '<div class="p-8 text-center text-red-500">Failed to load ' + tabId + '</div>';
   }
 }
 
-// Intercept the initial load tab state from StorageManager
-// Find where switchTab(state.currentTab) is called on startup.
+// ============================================================================
+// Data Loading & Management
+// ============================================================================
+const CLASS_NAME_MAP = {
+  '5-Blue': { name: '5-01: Al-Xorazmiy', short: '5-01' },
+  '5-Green': { name: '5-02: Al-Xorazmiy', short: '5-02' },
+  '6-Blue': { name: "6-01: Mirzo Ulug'bek", short: '6-01' },
+  '6-Green': { name: "6-02: Mirzo Ulug'bek", short: '6-02' },
+  '7-Blue': { name: '7-01: Abu Ali ibn Sino', short: '7-01' },
+  '7-Green': { name: '7-02: Abu Ali ibn Sino', short: '7-02' },
+  '8-Blue': { name: "8-01: Ahmad al-Farg'oniy", short: '8-01' },
+  '8-Green': { name: "8-02: Ahmad al-Farg'oniy", short: '8-02' },
+  '9-Blue': { name: '9-01: Abu Rayhon Beruniy', short: '9-01' },
+  '9-Green': { name: '9-02: Abu Rayhon Beruniy', short: '9-02' },
+  '10-Blue': { name: '10-01: Abu Nasr Forobiy', short: '10-01' },
+  '10-Green': { name: '10-02: Abu Nasr Forobiy', short: '10-02' },
+  '11-Blue': { name: '11-01: Alisher Navoiy', short: '11-01' },
+  '11-Green': { name: '11-02: Alisher Navoiy', short: '11-02' }
+};
 
+function mapClassName(name, short) {
+  if (!name) return { name: name || '', short: short || '' };
+  const trimmed = name.trim();
+  if (CLASS_NAME_MAP[trimmed]) {
+    return { name: CLASS_NAME_MAP[trimmed].name, short: CLASS_NAME_MAP[trimmed].short };
+  }
+  const match = trimmed.match(/^(\d+)-(Blue|Green)$/i);
+  if (match) {
+    const grade = match[1];
+    const isBlue = match[2].toLowerCase() === 'blue';
+    const num = isBlue ? '01' : '02';
+    const names = {
+      '5': 'Al-Xorazmiy',
+      '6': "Mirzo Ulug'bek",
+      '7': 'Abu Ali ibn Sino',
+      '8': "Ahmad al-Farg'oniy",
+      '9': 'Abu Rayhon Beruniy',
+      '10': 'Abu Nasr Forobiy',
+      '11': 'Alisher Navoiy'
+    };
+    if (names[grade]) {
+      return {
+        name: `${grade}-${num}: ${names[grade]}`,
+        short: `${grade}-${num}`
+      };
+    }
+  }
+  return { name, short: short || name };
+}
+
+function normalizeTimetableData(data) {
+  if (!data) return data;
+  const mapClass = (c) => {
+    if (!c) return;
+    const mapped = mapClassName(c.name, c.short);
+    c.name = mapped.name;
+    c.short = mapped.short;
+  };
+
+  (data.classes || []).forEach(mapClass);
+
+  (data.teachers || []).forEach(t => {
+    if (t.homeroomClass) {
+      t.homeroomClass = mapClassName(t.homeroomClass).name;
+    }
+    if (Array.isArray(t.classes)) {
+      t.classes = t.classes.map(cn => mapClassName(cn).name);
+    }
+  });
+
+  const normalizeGrid = (grid) => {
+    if (!grid) return;
+    for (const entityId of Object.keys(grid)) {
+      const days = grid[entityId] || {};
+      for (const dayIdx of Object.keys(days)) {
+        const periods = days[dayIdx] || {};
+        for (const pIdx of Object.keys(periods)) {
+          const items = periods[pIdx] || [];
+          for (const item of items) {
+            (item.classes || []).forEach(mapClass);
+          }
+        }
+      }
+    }
+  };
+
+  normalizeGrid(data.classGrid);
+  normalizeGrid(data.teacherGrid);
+  normalizeGrid(data.classroomGrid);
+
+  return data;
+}
+
+async function loadTimetable(ttNum = '13') {
+  showLoadingGrid();
+
+  try {
+    let data = null;
+
+    // Try live server API first
+    try {
+      const res = await fetch(`/api/timetable/${ttNum}`);
+      if (res.ok) {
+        data = await res.json();
+      }
+    } catch (netErr) {
+      console.warn('Live API request failed, checking snapshot fallback...', netErr);
+    }
+
+    // Fallback to static snapshot if running on file:// or server offline
+    if (!data && ttNum === '13') {
+      const fallbackRes = await fetch('snapshot-13.json?v=2');
+      if (fallbackRes.ok) {
+        data = await fallbackRes.json();
+      }
+    }
+
+    if (!data) {
+      throw new Error(`Could not load timetable data for version ${ttNum}`);
+    }
+
+    data = normalizeTimetableData(data);
+    state.timetableData = data;
+    state.cachedTimetables[ttNum] = data;
+
+    updateKPIs(data.stats);
+    updateDirectoryTabBadges();
+    populateEntityDropdown();
+    renderGrid();
+    renderDirectory();
+  } catch (err) {
+    console.error('Error loading timetable:', err);
+    showErrorGrid(`Failed to load timetable: ${err.message}`);
+  }
+}
+
+// Update Top KPI Metrics
+function updateKPIs(stats = {}) {
+  if (!stats) return;
+  const classesEl = document.getElementById('stat-classes');
+  const teachersEl = document.getElementById('stat-teachers');
+  const subjectsEl = document.getElementById('stat-subjects');
+  const roomsEl = document.getElementById('stat-rooms');
+  const lessonsEl = document.getElementById('stat-lessons');
+  const cardsEl = document.getElementById('stat-cards');
+
+  const uniqueSubs = state.timetableData ? getOrganizedSubjects(state.timetableData).length : 32;
+
+  if (classesEl) classesEl.textContent = stats.totalClasses || 14;
+  if (teachersEl) teachersEl.textContent = stats.totalTeachers || 36;
+  if (subjectsEl) subjectsEl.textContent = uniqueSubs;
+  if (roomsEl) roomsEl.textContent = stats.totalClassrooms || 20;
+  if (lessonsEl) lessonsEl.textContent = stats.totalLessons || 222;
+  if (cardsEl) cardsEl.textContent = stats.totalCards || 434;
+}
+
+// ============================================================================
+// Timetable Filtering & Rendering (Class, Teacher, Classroom)
+// ============================================================================
+function setFilterMode(mode) {
+  state.filterMode = mode;
+  StorageManager.set('filterMode', mode);
+
+  // Restore last selected entity for this mode if known
+  if (mode === 'class') {
+    state.selectedEntityId = state.lastClassId || '-17';
+  } else if (mode === 'teacher') {
+    state.selectedEntityId = state.lastTeacherId || null;
+  } else if (mode === 'classroom') {
+    state.selectedEntityId = state.lastRoomId || null;
+  }
+
+  updateFilterModeUI();
+  populateEntityDropdown();
+  renderGrid();
+}
+
+function updateFilterModeUI() {
+  const mode = state.filterMode || 'class';
+  const btnClass = document.getElementById('mode-btn-class');
+  const btnTeacher = document.getElementById('mode-btn-teacher');
+  const btnClassroom = document.getElementById('mode-btn-classroom');
+
+  [btnClass, btnTeacher, btnClassroom].forEach(b => {
+    if (b) {
+      b.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+    }
+  });
+
+  const activeBtn = mode === 'class' ? btnClass : (mode === 'teacher' ? btnTeacher : btnClassroom);
+  if (activeBtn) {
+    activeBtn.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-2xs transition';
+  }
+}
+
+function saveCurrentEntityId(id) {
+  if (!id) return;
+  state.selectedEntityId = id;
+  if (state.filterMode === 'class') {
+    state.lastClassId = id;
+    StorageManager.set('lastClassId', id);
+    StorageManager.set('last_class', id);
+  } else if (state.filterMode === 'teacher') {
+    state.lastTeacherId = id;
+    StorageManager.set('lastTeacherId', id);
+    StorageManager.set('last_teacher', id);
+  } else if (state.filterMode === 'classroom') {
+    state.lastRoomId = id;
+    StorageManager.set('lastRoomId', id);
+    StorageManager.set('last_classroom', id);
+  }
+}
+
+function populateEntityDropdown() {
+  const select = document.getElementById('entity-select');
+  if (!select || !state.timetableData) return;
+
+  const data = state.timetableData;
+  select.innerHTML = '';
+
+  let list = [];
+  if (state.filterMode === 'class') {
+    list = (data.classes || []).map(c => ({ id: c.id, label: `Class ${c.name}`, sort: c.name }));
+  } else if (state.filterMode === 'teacher') {
+    list = (data.teachers || []).map(t => ({ id: t.id, label: t.name || t.short, sort: t.name || t.short }));
+  } else if (state.filterMode === 'classroom') {
+    list = (data.classrooms || []).map(r => ({ id: r.id, label: `Room ${normalizeClassroomName(r.short || r.name)}`, sort: r.short || r.name }));
+  }
+
+  list.sort((a, b) => a.sort.localeCompare(b.sort, undefined, { numeric: true }));
+
+  list.forEach(item => {
+    const opt = document.createElement('option');
+    opt.value = item.id;
+    opt.textContent = item.label;
+    select.appendChild(opt);
+  });
+
+  // Pick target entity: state.selectedEntityId or last saved for current mode
+  let targetId = state.selectedEntityId;
+  if (!targetId) {
+    if (state.filterMode === 'class') targetId = state.lastClassId;
+    else if (state.filterMode === 'teacher') targetId = state.lastTeacherId;
+    else if (state.filterMode === 'classroom') targetId = state.lastRoomId;
+  }
+
+  // Validate existence in list, fallback to first item
+  if (!targetId || !list.some(i => i.id === targetId)) {
+    targetId = list.length > 0 ? list[0].id : null;
+  }
+
+  if (targetId) {
+    state.selectedEntityId = targetId;
+    select.value = targetId;
+    saveCurrentEntityId(targetId);
+  }
+
+  select.onchange = (e) => {
+    saveCurrentEntityId(e.target.value);
+    renderGrid();
+  };
+}
+
+function updateDayFilterUI() {
+  const currentDay = state.activeDayFilter || 'all';
+  document.querySelectorAll('.day-filter-btn').forEach(btn => {
+    if (btn.getAttribute('data-day') === currentDay) {
+      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-semibold bg-blue-600 text-white';
+    } else {
+      btn.className = 'day-filter-btn px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition';
+    }
+  });
+}
+
+function filterDay(day) {
+  state.activeDayFilter = day;
+  StorageManager.set('dayFilter', day);
+  updateDayFilterUI();
+  renderGrid();
+}
+
+function renderGrid() {
+  const tbody = document.getElementById('timetable-grid-body');
+  const titleEl = document.getElementById('grid-header-title');
+  const subtitleEl = document.getElementById('grid-header-subtitle');
+
+  if (!tbody || !state.timetableData) return;
+
+  const data = state.timetableData;
+  const days = data.days || [
+    { id: '0', name: 'Monday', short: 'Mo' },
+    { id: '1', name: 'Tuesday', short: 'Tu' },
+    { id: '2', name: 'Wednesday', short: 'We' },
+    { id: '3', name: 'Thursday', short: 'Th' },
+    { id: '4', name: 'Friday', short: 'Fr' }
+  ];
+
+  let gridData = {};
+  let currentEntity = null;
+
+  if (state.filterMode === 'class') {
+    gridData = data.classGrid?.[state.selectedEntityId] || {};
+    currentEntity = (data.classes || []).find(c => c.id === state.selectedEntityId);
+    if (titleEl) titleEl.textContent = `Schedule for Class ${currentEntity?.name || ''}`;
+    if (subtitleEl) subtitleEl.textContent = `Homeroom: ${currentEntity?.homeroomTeacherName || 'Unassigned'} • ${currentEntity?.weeklyLessons || 0} lessons/week`;
+  } else if (state.filterMode === 'teacher') {
+    gridData = data.teacherGrid?.[state.selectedEntityId] || {};
+    currentEntity = (data.teachers || []).find(t => t.id === state.selectedEntityId);
+    if (titleEl) titleEl.textContent = `Schedule for ${currentEntity?.name || currentEntity?.short || 'Teacher'}`;
+    const hrText = currentEntity?.homeroomClass ? ` • Class Teacher of ${currentEntity.homeroomClass}` : '';
+    if (subtitleEl) subtitleEl.textContent = `Faculty: ${currentEntity?.weeklyLessons || 0} periods/week${hrText}`;
+  } else if (state.filterMode === 'classroom') {
+    gridData = data.classroomGrid?.[state.selectedEntityId] || {};
+    currentEntity = (data.classrooms || []).find(r => r.id === state.selectedEntityId);
+    if (titleEl) titleEl.textContent = `Schedule for Room ${normalizeClassroomName(currentEntity?.name || '')}`;
+    if (subtitleEl) subtitleEl.textContent = `Occupancy: ${currentEntity?.bookedSlots || 0}/35 slots (${currentEntity?.utilizationRate || 0}% utilization)`;
+  }
+
+  tbody.innerHTML = '';
+
+  const schedState = getCurrentScheduleState();
+
+  const daysToRender = state.activeDayFilter === 'all'
+    ? days
+    : days.filter(d => d.id === state.activeDayFilter);
+
+  daysToRender.forEach(day => {
+    const isToday = day.id === schedState.currentDayId && !schedState.isWeekend;
+
+    const tr = document.createElement('tr');
+    tr.className = `timetable-day-row ${isToday ? 'timetable-current-day-row bg-blue-50/20' : 'hover:bg-slate-50/50 dark:hover:bg-white/[0.02]'} transition border-b border-slate-200/80 dark:border-white/5`;
+
+    // Day label cell
+    const thDay = document.createElement('th');
+    if (isToday) {
+      thDay.className = 'p-1 font-semibold text-slate-800 dark:text-blue-200 bg-blue-100/60 dark:bg-blue-950/30 border-r-2 border-r-blue-500 text-center w-24 select-none';
+      thDay.innerHTML = `
+        <div class="text-xs font-bold leading-tight flex items-center justify-center gap-1 text-blue-950 dark:text-blue-200">
+          ${day.name}
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" title="Today"></span>
+        </div>
+        <div class="flex items-center justify-center gap-1 mt-0.5">
+          <span class="text-[10px] text-blue-700 dark:text-blue-400 font-bold uppercase tracking-wider">${day.short}</span>
+          <span class="px-1 py-0.2 rounded text-[8px] font-black bg-blue-600 dark:bg-blue-500 text-white leading-none tracking-wide">TODAY</span>
+        </div>
+      `;
+    } else {
+      thDay.className = 'p-1 font-semibold text-slate-800 dark:text-slate-300 bg-slate-50/80 dark:bg-[#11141C] border-r border-slate-200 dark:border-white/5 text-center w-24 select-none';
+      thDay.innerHTML = `
+        <div class="text-xs font-bold leading-tight">${day.name}</div>
+        <div class="text-[10px] text-slate-400 dark:text-slate-500 font-normal uppercase tracking-wider">${day.short}</div>
+      `;
+    }
+    tr.appendChild(thDay);
+
+    // Column 2: Morning Arrival Gap (08:00 - 08:30)
+    const tdArrival = document.createElement('td');
+    tdArrival.className = 'border-r border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.015] p-1 text-center select-none align-middle';
+    tdArrival.title = 'School Arrival & Doors Open (08:00 - 08:30)';
+    tdArrival.innerHTML = `
+      <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-slate-100/60 dark:bg-white/[0.03] border border-dashed border-slate-200 dark:border-white/10 text-slate-400 dark:text-slate-500">
+        <span class="text-[10px] opacity-70">🌅</span>
+        <span class="text-[8px] font-mono text-slate-400 dark:text-slate-500">08:00</span>
+      </div>
+    `;
+    tr.appendChild(tdArrival);
+
+    // Periods 1 through 7 with multi-period span and gap support
+    let period = 1;
+    while (period <= 7) {
+      const currentPeriod = period;
+      const items = gridData[day.id]?.[period] || [];
+      const primaryItem = items[0];
+      const isStartOfMulti = primaryItem && primaryItem.startPeriod === period && primaryItem.duration > 1;
+      const span = isStartOfMulti ? 3 : 1;
+
+      const td = document.createElement('td');
+      td.className = 'timetable-cell border-r border-slate-200 dark:border-white/5 align-top p-1';
+      if (period === 7) td.className = 'timetable-cell align-top p-1';
+      if (span > 1) {
+        td.colSpan = 3;
+        td.className += ' bg-amber-50/20 dark:bg-white/[0.015]';
+      }
+
+      // Filter by search query
+      const filteredItems = items.filter(item => {
+        if (!state.searchQuery) return true;
+        const q = state.searchQuery.toLowerCase();
+        const sName = (item.subject?.name || '').toLowerCase();
+        const tNames = (item.teachers || []).map(t => t.name.toLowerCase()).join(' ');
+        const cNames = (item.classes || []).map(c => c.name.toLowerCase()).join(' ');
+        const rNames = (item.classrooms || []).map(r => r.name.toLowerCase()).join(' ');
+        return sName.includes(q) || tNames.includes(q) || cNames.includes(q) || rNames.includes(q);
+      });
+
+      if (filteredItems.length > 0) {
+        const stack = document.createElement('div');
+        stack.className = 'h-full flex flex-col justify-center space-y-1';
+
+        filteredItems.forEach(item => {
+          const card = document.createElement('div');
+          const bgColor = item.subject?.color || '#3b82f6';
+
+          let subText = '';
+          if (state.filterMode === 'class') {
+            const tNames = item.teachers.map(t => t.short).join(', ') || 'Staff';
+            const rNames = item.classrooms.map(r => normalizeClassroomName(r.short || r.name)).join(', ') || 'TBD';
+            subText = `${tNames} • <span class="font-bold text-slate-800">${rNames}</span>`;
+          } else if (state.filterMode === 'teacher') {
+            const cNames = item.classes.map(c => c.short).join(', ') || 'Class';
+            const rNames = item.classrooms.map(r => normalizeClassroomName(r.short || r.name)).join(', ') || 'TBD';
+            subText = `<span class="font-bold text-blue-700">${cNames}</span> • ${rNames}`;
+          } else if (state.filterMode === 'classroom') {
+            const cNames = item.classes.map(c => c.short).join(', ') || 'Class';
+            const tNames = item.teachers.map(t => t.short).join(', ') || 'Staff';
+            subText = `<span class="font-bold text-blue-700">${cNames}</span> • ${tNames}`;
+          }
+
+          let badgeHtml = '';
+          if (item.duration > 1) {
+            badgeHtml = `<span class="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shrink-0 ml-0.5">2P</span>`;
+          }
+
+          // Check if this card represents the current active lesson
+          const startP = Number(item.startPeriod || item.period || currentPeriod);
+          const dur = Number(item.duration || 1);
+          const endP = startP + dur - 1;
+          const isCurrentLesson = isToday && schedState.activePeriod && (schedState.activePeriod.id >= startP && schedState.activePeriod.id <= endP);
+
+          let liveBadgeHtml = '';
+          let progressHtml = '';
+
+          const startMin = getPeriodStartMinutes(startP);
+          const endMin = getPeriodEndMinutes(endP);
+
+          if (isCurrentLesson) {
+            liveBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 dark:border-emerald-500/40 dark:bg-emerald-500/20 shrink-0 ml-1 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>LIVE</span>`;
+
+            const cardProgress = Math.max(0, Math.min(1, (schedState.totalMinutes - startMin) / Math.max(1, endMin - startMin)));
+            const cardPercent = (cardProgress * 100).toFixed(2);
+            const cardRemainingMin = Math.max(0, Math.ceil(endMin - schedState.totalMinutes));
+
+            progressHtml = `
+              <div class="lesson-progress-wrap mt-1" title="${Math.round(cardProgress * 100)}% elapsed • ${cardRemainingMin}m remaining">
+                <div class="lesson-progress-fill" style="width: ${cardPercent}%;">
+                  <div class="lesson-progress-pointer"></div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                <span>${getPeriodStartTimeStr(startP)}</span>
+                <span class="lesson-time-left font-sans font-bold text-emerald-600 dark:text-emerald-400">${cardRemainingMin}m left</span>
+                <span>${getPeriodEndTimeStr(endP)}</span>
+              </div>
+            `;
+          }
+
+          card.className = `lesson-card ${isCurrentLesson ? 'is-current-lesson' : ''} rounded-md border border-slate-200/90 dark:border-white/5 bg-white dark:bg-[#1C202B] cursor-pointer relative overflow-hidden h-full flex flex-col justify-center select-none shadow-2xs hover:shadow-xs transition`;
+          card.dataset.startMin = startMin;
+          card.dataset.endMin = endMin;
+          card.dataset.startP = startP;
+          card.dataset.endP = endP;
+          card.tabIndex = 0;
+          card.setAttribute('role', 'button');
+          card.setAttribute('aria-label', `${item.subject?.name || 'Lesson'}, Period ${startP}`);
+          card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openLessonModal(item, startP, day.name);
+            }
+          };
+          card.innerHTML = `
+            <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: ${bgColor}"></div>
+            <div class="pl-1.5 min-w-0">
+              <div class="flex items-center justify-between gap-0.5">
+                <div class="font-bold text-slate-900 dark:text-[rgba(255,255,255,0.92)] truncate lesson-card-title flex items-center gap-1 min-w-0" title="${item.subject.name}">
+                  <span class="truncate">${item.subject.name}</span>
+                </div>
+                <div class="flex items-center shrink-0">
+                  ${badgeHtml}
+                  ${liveBadgeHtml}
+                </div>
+              </div>
+              <div class="text-slate-500 dark:text-slate-400 truncate lesson-card-sub mt-0.5">${subText}</div>
+              ${progressHtml}
+            </div>
+          `;
+
+          card.onclick = () => openLessonModal(item, startP, day.name);
+          stack.appendChild(card);
+        });
+
+        td.appendChild(stack);
+      } else {
+        td.innerHTML = `<div class="h-full min-h-[32px] flex items-center justify-center text-slate-300 dark:text-white/15 text-xs font-mono select-none">—</div>`;
+      }
+
+      tr.appendChild(td);
+
+      if (isStartOfMulti) {
+        period += 2;
+      } else {
+        period += 1;
+      }
+
+      if (period <= 7) {
+        // Gap after (period - 1)
+        const tdGap = document.createElement('td');
+        const afterP = period - 1;
+        if (afterP === 3) {
+          // Morning Recess (10:55 - 11:25)
+          tdGap.className = 'timetable-break-cell recess-cell border-r border-amber-200 dark:border-white/5 bg-amber-50/40 dark:bg-white/[0.02] p-1 text-center select-none align-middle';
+          tdGap.title = 'Morning Recess (10:55 - 11:25)';
+          tdGap.innerHTML = `
+            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 dark:bg-white/[0.03] border border-amber-200/80 dark:border-white/10 text-amber-800 dark:text-amber-200/80 text-[10px] font-bold shadow-2xs">
+              <span class="opacity-80">☕</span>
+              <span class="text-[8px] font-semibold text-amber-700 dark:text-slate-300 leading-none mt-0.5">Recess</span>
+            </div>
+          `;
+        } else if (afterP === 5) {
+          // Lunch & Recreation (13:00 - 14:00)
+          tdGap.className = 'timetable-break-cell lunch-cell border-r border-amber-200 dark:border-white/5 bg-amber-50/40 dark:bg-white/[0.02] p-1 text-center select-none align-middle';
+          tdGap.title = 'Lunch & Recreation (13:00 - 14:00)';
+          tdGap.innerHTML = `
+            <div class="h-full min-h-[36px] flex flex-col items-center justify-center rounded bg-amber-100/70 dark:bg-white/[0.03] border border-amber-200/80 dark:border-white/10 text-amber-800 dark:text-amber-200/80 text-[10px] font-bold shadow-2xs">
+              <span class="opacity-80">🍽️</span>
+              <span class="text-[8px] font-semibold text-amber-700 dark:text-slate-300 leading-none mt-0.5">Lunch</span>
+            </div>
+          `;
+        } else {
+          // 5m passing break (1, 2, 4, 6)
+          tdGap.className = 'border-r border-slate-200/60 dark:border-white/5 bg-slate-50/30 dark:bg-transparent p-0 text-center select-none align-middle';
+          tdGap.title = 'Passing Break (5 min)';
+          tdGap.innerHTML = `
+            <div class="h-full min-h-[36px] flex items-center justify-center">
+              <div class="w-px h-5 bg-slate-200 dark:bg-white/10"></div>
+            </div>
+          `;
+        }
+        tr.appendChild(tdGap);
+      }
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  // Position vertical time line immediately after DOM render
+  updateCurrentTimeLine();
+}
+
+function showLoadingGrid() {
+  const tbody = document.getElementById('timetable-grid-body');
+  if (tbody) {
+    tbody.innerHTML = `<tr><td colspan="15" class="p-8 text-center text-slate-400">Loading schedule data...</td></tr>`;
+  }
+}
+
+function showErrorGrid(msg) {
+  const tbody = document.getElementById('timetable-grid-body');
+  if (tbody) {
+    tbody.innerHTML = `<tr><td colspan="15" class="p-8 text-center text-rose-500 font-medium">${msg}</td></tr>`;
+  }
+}
+
+// Modal Inspector for Scheduled Lessons
+function openLessonModal(item, periodNumber, dayName) {
+  const modal = document.getElementById('lesson-modal');
+  if (!modal) return;
+
+  const header = document.getElementById('modal-header');
+  const subjectTag = document.getElementById('modal-subject-tag');
+  const subjectName = document.getElementById('modal-subject-name');
+  const teacherVal = document.getElementById('modal-teacher');
+  const classroomVal = document.getElementById('modal-classroom');
+  const classVal = document.getElementById('modal-class');
+  const timeVal = document.getElementById('modal-time');
+  const lessonIdVal = document.getElementById('modal-lesson-id');
+  const cardIdVal = document.getElementById('modal-card-id');
+
+  const periodMap = {
+    1: '08:30 – 09:15',
+    2: '09:20 – 10:05',
+    3: '10:10 – 10:55',
+    4: '11:25 – 12:10',
+    5: '12:15 – 13:00',
+    6: '14:00 – 14:45',
+    7: '14:50 – 15:35'
+  };
+
+  const startP = Number(item?.startPeriod || item?.period || periodNumber || 1);
+  const dur = Number(item?.duration || 1);
+  const endP = startP + dur - 1;
+
+  const sTime = (periodMap[startP] ? periodMap[startP].split('–')[0].trim() : getPeriodStartTimeStr(startP));
+  const eTime = (periodMap[endP] ? periodMap[endP].split('–')[1].trim() : getPeriodEndTimeStr(endP));
+
+  let timeStr = '';
+  if (dur > 1) {
+    timeStr = `${dayName}, Periods ${startP}–${endP} (${sTime} – ${eTime}) • Double Period (${dur * 45} mins)`;
+  } else {
+    const pTime = periodMap[startP] || `${sTime} – ${eTime}`;
+    timeStr = `${dayName}, Period ${startP} (${pTime})`;
+  }
+
+  if (header) {
+    const bgCol = item?.subject?.color || '#2563eb';
+    header.style.backgroundColor = bgCol;
+    
+    // Luminance check for adaptive text contrast
+    let isLight = false;
+    if (bgCol.startsWith('#') && (bgCol.length === 7 || bgCol.length === 4)) {
+      const hex = bgCol.length === 4
+        ? `#${bgCol[1]}${bgCol[1]}${bgCol[2]}${bgCol[2]}${bgCol[3]}${bgCol[3]}`
+        : bgCol;
+      const r = parseInt(hex.substring(1, 3), 16);
+      const g = parseInt(hex.substring(3, 5), 16);
+      const b = parseInt(hex.substring(5, 7), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+      isLight = luminance > 160;
+    }
+    
+    if (isLight) {
+      header.classList.remove('text-white');
+      header.classList.add('text-slate-900');
+    } else {
+      header.classList.add('text-white');
+      header.classList.remove('text-slate-900');
+    }
+  }
+  if (subjectTag) {
+    const doubleTag = dur > 1 ? ` • Double Period (${dur}x 45 min)` : '';
+    subjectTag.textContent = `Course • ${item?.subject?.short || 'ID: ' + (item?.subject?.id || '')}${doubleTag}`;
+  }
+  if (subjectName) subjectName.textContent = item?.subject?.name || 'Untitled Lesson';
+
+  if (teacherVal) teacherVal.textContent = (item?.teachers || []).map(t => t.name || t.short).join(', ') || 'Not Assigned';
+  if (classroomVal) classroomVal.textContent = (item?.classrooms || []).map(r => normalizeClassroomName(r.name || r.short)).join(', ') || 'General Classroom';
+  if (classVal) classVal.textContent = (item?.classes || []).map(c => c.name).join(', ') || 'All Groups';
+  if (timeVal) timeVal.textContent = timeStr;
+
+  if (lessonIdVal) lessonIdVal.textContent = item?.lessonId || 'N/A';
+  if (cardIdVal) cardIdVal.textContent = item?.cardId || 'N/A';
+
+  modal.showModal();
+}
+
+function closeLessonModal() {
+  const modal = document.getElementById('lesson-modal');
+  if (modal && modal.open) modal.close();
+}
+
+// Setup outside-click dismiss handler for the lesson details modal
+(function setupLessonModalOutsideClick() {
+  const modal = document.getElementById('lesson-modal');
+  if (!modal) return;
+
+  let pointerDownInside = false;
+
+  modal.addEventListener('pointerdown', (e) => {
+    const card = modal.querySelector('div');
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      pointerDownInside = (
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom
+      );
+    }
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (pointerDownInside) {
+      pointerDownInside = false;
+      return;
+    }
+    const card = modal.querySelector('div');
+    if (!card) {
+      closeLessonModal();
+      return;
+    }
+    const rect = card.getBoundingClientRect();
+    const isInCard = (
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom
+    );
+    if (!isInCard) {
+      closeLessonModal();
+    }
+  });
+})();
+
+// JSON Export
+function exportTimetableJson() {
+  if (!state.timetableData) return;
+  const blob = new Blob([JSON.stringify(state.timetableData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `nampm_timetable_v${state.currentVersion}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================================
+// TAB 2: LIVE SUBSTITUTION MODULE (/substitution/)
+// ============================================================================
+async function loadSubstitution() {
+  const container = document.getElementById('subst-render-container');
+  const dateInput = document.getElementById('subst-date-input');
+  if (!container) return;
+
+  const targetDate = dateInput ? dateInput.value : state.substDate;
+  state.substDate = targetDate;
+  const mode = state.substMode || 'classes';
+
+  container.innerHTML = `
+    <div class="flex flex-col items-center justify-center text-center p-8 space-y-2">
+      <div class="animate-spin text-2xl">⏳</div>
+      <div class="text-sm font-semibold text-slate-700">Querying EduPage Substitution API for ${targetDate}...</div>
+      <div class="text-xs text-slate-400">Endpoint: /substitution/server/viewer.js?__func=getSubstViewerDayDataHtml</div>
+    </div>
+  `;
+
+  try {
+    let substHtml = null;
+    let hasSubst = false;
+
+    try {
+      const res = await fetch(`/api/substitution?date=${targetDate}&mode=${mode}`);
+      if (res.ok) {
+        const json = await res.json();
+        substHtml = json.html;
+        hasSubst = json.hasSubstitution;
+        state.substitutionData = json;
+      }
+    } catch (apiErr) {
+      console.warn('API substitution request failed, attempting direct format...', apiErr);
+    }
+
+    if (!substHtml) {
+      substHtml = `
+        <div class="section">
+          <div class="rows">
+            <div class="row nosubst">
+              <span class="text-emerald-700">✓ There is no substitution defined for ${targetDate}.</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Report Date:</span>
+            <span class="font-mono text-sm font-bold text-slate-900">${targetDate}</span>
+            <span class="text-xs px-2 py-0.5 rounded-full ${hasSubst ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800 font-semibold'}">
+              ${hasSubst ? '⚠️ Substitutions Scheduled' : '✓ Normal Schedule (No Substitutions)'}
+            </span>
+          </div>
+          <span class="text-xs text-slate-400">Grouping: ${mode === 'classes' ? 'By Classes' : 'By Teachers'}</span>
+        </div>
+        <div class="subst-report-body overflow-x-auto">
+          ${substHtml}
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    container.innerHTML = `
+      <div class="p-6 text-center text-rose-600 space-y-2">
+        <div class="text-xl">⚠️</div>
+        <div class="font-bold text-sm">Failed to load substitution report</div>
+        <div class="text-xs text-slate-500">${err.message}</div>
+      </div>
+    `;
+  }
+}
+
+function setSubstMode(mode) {
+  state.substMode = mode;
+  StorageManager.set('substMode', mode);
+  updateSubstModeUI();
+  loadSubstitution();
+}
+
+function updateSubstModeUI() {
+  const mode = state.substMode || 'classes';
+  const btnClasses = document.getElementById('subst-mode-classes');
+  const btnTeachers = document.getElementById('subst-mode-teachers');
+
+  if (mode === 'classes') {
+    if (btnClasses) btnClasses.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs';
+    if (btnTeachers) btnTeachers.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+  } else {
+    if (btnClasses) btnClasses.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+    if (btnTeachers) btnTeachers.className = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs';
+  }
+}
+
+function setSubstDateToday() {
+  const dateInput = document.getElementById('subst-date-input');
+  const today = '2026-09-02';
+  if (dateInput) dateInput.value = today;
+  state.substDate = today;
+  StorageManager.set('substDate', today);
+  loadSubstitution();
+}
+
+function setSubstDateRelative(deltaDays) {
+  const dateInput = document.getElementById('subst-date-input');
+  if (!dateInput) return;
+  const cur = new Date(dateInput.value || '2026-09-02');
+  cur.setDate(cur.getDate() + deltaDays);
+  const nextDateStr = cur.toISOString().slice(0, 10);
+  dateInput.value = nextDateStr;
+  state.substDate = nextDateStr;
+  StorageManager.set('substDate', nextDateStr);
+  loadSubstitution();
+}
+
+// ============================================================================
+// Classroom & Subject Normalization Helpers
+// ============================================================================
+function normalizeClassroomName(name) {
+  if (!name) return '';
+  const trimmed = name.trim();
+  if (trimmed.toLowerCase() === 's-zal') return 'Sport Zal';
+  return trimmed;
+}
+
+function normalizeSubjectName(rawName) {
+  if (!rawName) return 'Untitled Subject';
+  let clean = rawName.trim().replace(/\.+$/, '').trim();
+  if (clean.toLowerCase() === 'english languge') {
+    clean = 'English Language';
+  }
+  return clean;
+}
+
+function getSubjectCategory(name) {
+  const n = (name || '').toLowerCase();
+  if (/physical|sport|military|music|art|drawing|tech/i.test(n)) {
+    return { id: 'arts', name: 'Arts, Sports & Tech', icon: '🎨', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' };
+  }
+  if (/math|science|physics|chem|bio|comput/i.test(n)) {
+    return { id: 'stem', name: 'STEM & Computing', icon: '📐', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' };
+  }
+  if (/english|language|literature|russian/i.test(n)) {
+    return { id: 'languages', name: 'Languages & Literature', icon: '📖', bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' };
+  }
+  if (/history|geography|law|global|education/i.test(n)) {
+    return { id: 'social', name: 'Social Sciences & Humanities', icon: '🌍', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' };
+  }
+  if (/kelajak|a10|b10|a11|b11/i.test(n)) {
+    return { id: 'specialized', name: 'Specialized & Form Time', icon: '⭐', bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' };
+  }
+  return { id: 'other', name: 'General Studies', icon: '📚', bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200' };
+}
+
+function getOrganizedSubjects(data) {
+  if (!data) return [];
+  const subjectsMap = new Map();
+
+  // 1. Initialize grouped subjects from data.subjects
+  (data.subjects || []).forEach(s => {
+    const normName = normalizeSubjectName(s.name);
+    const key = normName.toLowerCase();
+
+    if (!subjectsMap.has(key)) {
+      const cat = getSubjectCategory(normName);
+      subjectsMap.set(key, {
+        name: normName,
+        short: (s.short || '').trim().replace(/\.+$/, '').trim() || normName.substring(0, 4).toUpperCase(),
+        color: s.color || '#3b82f6',
+        category: cat,
+        rawIds: [s.id],
+        totalLessons: s.totalLessons || 0,
+        mergedCount: 1,
+        teachers: new Set(),
+        classes: new Set()
+      });
+    } else {
+      const existing = subjectsMap.get(key);
+      existing.rawIds.push(s.id);
+      existing.totalLessons += (s.totalLessons || 0);
+      existing.mergedCount += 1;
+      if (s.color && s.color !== '#999999' && existing.color === '#999999') {
+        existing.color = s.color;
+      }
+    }
+  });
+
+  // 2. Scan classGrid to associate teachers and classes to each subject accurately
+  if (data.classGrid) {
+    for (const [classId, dayObj] of Object.entries(data.classGrid)) {
+      const targetClass = (data.classes || []).find(c => c.id === classId);
+      const className = targetClass ? (targetClass.name || targetClass.short) : classId;
+
+      for (const daySlots of Object.values(dayObj)) {
+        for (const items of Object.values(daySlots)) {
+          for (const item of items) {
+            if (item.isContinuation) continue;
+            const normName = normalizeSubjectName(item.subject?.name);
+            const key = normName.toLowerCase();
+            const record = subjectsMap.get(key);
+            if (record) {
+              if (className) record.classes.add(className);
+              (item.teachers || []).forEach(t => {
+                const tName = t.name || t.short;
+                if (tName) record.teachers.add(tName);
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 3. Convert teachers and classes sets to sorted arrays
+  const result = Array.from(subjectsMap.values()).map(sub => ({
+    ...sub,
+    teachersList: Array.from(sub.teachers).sort((a, b) => a.localeCompare(b)),
+    classesList: Array.from(sub.classes).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  }));
+
+  return result;
+}
+
+function filterSubjectCategory(catId) {
+  state.subjectCategoryFilter = catId;
+  StorageManager.set('subjectCategoryFilter', catId);
+  renderDirectory();
+}
+window.filterSubjectCategory = filterSubjectCategory;
+
+function updateDirectoryTabBadges() {
+  if (!state.timetableData) return;
+  const facultyCount = (state.timetableData.teachers || []).length;
+  const classCount = (state.timetableData.classes || []).length;
+  const roomCount = (state.timetableData.classrooms || []).length;
+  const subjectCount = getOrganizedSubjects(state.timetableData).length;
+
+  const bFaculty = document.getElementById('dirtab-teachers');
+  const bClasses = document.getElementById('dirtab-classes');
+  const bRooms = document.getElementById('dirtab-classrooms');
+  const bSubjects = document.getElementById('dirtab-subjects');
+
+  if (bFaculty) bFaculty.innerHTML = `👨‍🏫 Faculty (${facultyCount})`;
+  if (bClasses) bClasses.innerHTML = `🏫 Classes (${classCount})`;
+  if (bRooms) bRooms.innerHTML = `🚪 Rooms (${roomCount})`;
+  if (bSubjects) bSubjects.innerHTML = `📚 Subjects (${subjectCount})`;
+}
+
+// ============================================================================
+// TAB 3: SCHOOL DIRECTORY & ENTITY EXPLORER
+// ============================================================================
+function switchDirectoryTab(subTab) {
+  state.directoryTab = subTab;
+  StorageManager.set('directoryTab', subTab);
+  updateDirectorySubtabUI();
+  renderDirectory();
+}
+
+function updateDirectorySubtabUI() {
+  const subTab = state.directoryTab || 'teachers';
+  document.querySelectorAll('.dirtab-btn').forEach(btn => {
+    btn.className = 'dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+  });
+
+  const activeBtn = document.getElementById(`dirtab-${subTab}`);
+  if (activeBtn) {
+    activeBtn.className = 'dirtab-btn active px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-2xs transition';
+  }
+}
+
+function renderDirectory() {
+  const container = document.getElementById('directory-content-container');
+  if (!container || !state.timetableData) return;
+
+  const q = (state.directorySearchQuery || '').toLowerCase();
+  const subTab = state.directoryTab || 'teachers';
+
+  if (subTab === 'teachers') {
+    const teachers = (state.timetableData.teachers || []).filter(t => {
+      const name = (t.name || t.short || '').toLowerCase();
+      const subs = (t.subjects || []).join(' ').toLowerCase();
+      const cls = (t.classes || []).join(' ').toLowerCase();
+      return name.includes(q) || subs.includes(q) || cls.includes(q);
+    });
+
+    teachers.sort((a, b) => (a.name || a.short).localeCompare(b.name || b.short));
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        ${teachers.map(t => {
+          const hrBadge = t.homeroomClass
+            ? `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Class Teacher: ${t.homeroomClass}</span>`
+            : '';
+          const subjects = (t.subjects || []).slice(0, 4).map(s => `
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-1.5 py-0.5 rounded">${s}</span>
+          `).join('');
+
+          return `
+            <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-sm transition flex flex-col justify-between space-y-3">
+              <div class="space-y-1.5">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${t.color || '#3b82f6'}"></span>
+                    <h3 class="font-bold text-slate-900 text-sm leading-tight">${t.name || t.short}</h3>
+                  </div>
+                  ${hrBadge}
+                </div>
+                <div class="text-xs text-slate-500 font-medium">Workload: <strong class="text-slate-800">${t.weeklyLessons || 0}</strong> periods / week</div>
+                <div class="flex flex-wrap gap-1 pt-1">${subjects}</div>
+              </div>
+              <button onclick="viewEntitySchedule('teacher', '${t.id}')" class="w-full py-1.5 px-3 bg-slate-50 hover:bg-blue-50 text-blue-600 hover:text-blue-700 text-xs font-semibold rounded-lg border border-slate-200 transition text-center">
+                View Weekly Schedule ↗
+              </button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else if (subTab === 'classes') {
+    const classes = (state.timetableData.classes || []).filter(c => {
+      return (c.name || '').toLowerCase().includes(q) || (c.homeroomTeacherName || '').toLowerCase().includes(q);
+    });
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        ${classes.map(c => `
+          <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-sm transition flex flex-col justify-between space-y-3">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="w-3 h-3 rounded-full" style="background-color: ${c.color || '#3b82f6'}"></span>
+                  <h3 class="font-bold text-slate-900 text-base">Class ${c.name}</h3>
+                </div>
+                <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">${c.weeklyLessons || 0} hrs/wk</span>
+              </div>
+              <div class="text-xs text-slate-600">
+                <span class="text-slate-400">Homeroom Teacher:</span> <strong class="text-slate-800">${c.homeroomTeacherName || 'Unassigned'}</strong>
+              </div>
+            </div>
+            <button onclick="viewEntitySchedule('class', '${c.id}')" class="w-full py-1.5 px-3 bg-slate-50 hover:bg-blue-50 text-blue-600 hover:text-blue-700 text-xs font-semibold rounded-lg border border-slate-200 transition text-center">
+              View Class Timetable ↗
+            </button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else if (subTab === 'classrooms') {
+    const rooms = (state.timetableData.classrooms || []).filter(r => {
+      const roomName = normalizeClassroomName(r.name);
+      return roomName.toLowerCase().includes(q) || (r.short || '').toLowerCase().includes(q);
+    });
+
+    rooms.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        ${rooms.map(r => {
+          const roomName = normalizeClassroomName(r.name);
+          const util = r.utilizationRate || 0;
+          let utilColor = 'bg-emerald-500';
+          if (util > 75) utilColor = 'bg-rose-500';
+          else if (util > 50) utilColor = 'bg-amber-500';
+
+          return `
+            <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-purple-300 hover:shadow-sm transition flex flex-col justify-between space-y-3">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full" style="background-color: ${r.color || '#a855f7'}"></span>
+                    <h3 class="font-bold text-slate-900 text-base">Room ${roomName}</h3>
+                  </div>
+                  <span class="text-xs font-mono text-slate-500 font-semibold">${r.bookedSlots || 0}/35</span>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[11px] text-slate-500">
+                    <span>Weekly Utilization</span>
+                    <span class="font-bold text-slate-700">${util}%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="${utilColor} h-1.5 rounded-full" style="width: ${Math.min(util, 100)}%"></div>
+                  </div>
+                </div>
+              </div>
+              <button onclick="viewEntitySchedule('classroom', '${r.id}')" class="w-full py-1.5 px-3 bg-slate-50 hover:bg-purple-50 text-purple-600 hover:text-purple-700 text-xs font-semibold rounded-lg border border-slate-200 transition text-center">
+                View Room Schedule ↗
+              </button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else if (subTab === 'subjects') {
+    const allOrganized = getOrganizedSubjects(state.timetableData);
+
+    const categories = [
+      { id: 'all', name: 'All Disciplines', icon: '📚' },
+      { id: 'stem', name: 'STEM & Computing', icon: '📐' },
+      { id: 'languages', name: 'Languages & Literature', icon: '📖' },
+      { id: 'social', name: 'Social Sciences & Humanities', icon: '🌍' },
+      { id: 'arts', name: 'Arts, Sports & Tech', icon: '🎨' },
+      { id: 'specialized', name: 'Specialized & Form Time', icon: '⭐' }
+    ];
+
+    const categoryCounts = {
+      all: allOrganized.length,
+      stem: allOrganized.filter(s => s.category.id === 'stem').length,
+      languages: allOrganized.filter(s => s.category.id === 'languages').length,
+      social: allOrganized.filter(s => s.category.id === 'social').length,
+      arts: allOrganized.filter(s => s.category.id === 'arts').length,
+      specialized: allOrganized.filter(s => s.category.id === 'specialized').length
+    };
+
+    const activeCat = state.subjectCategoryFilter || 'all';
+
+    let filtered = allOrganized;
+    if (activeCat !== 'all') {
+      filtered = filtered.filter(s => s.category.id === activeCat);
+    }
+    if (q) {
+      filtered = filtered.filter(s => {
+        const matchName = s.name.toLowerCase().includes(q);
+        const matchShort = s.short.toLowerCase().includes(q);
+        const matchCat = s.category.name.toLowerCase().includes(q);
+        const matchTeachers = s.teachersList.some(t => t.toLowerCase().includes(q));
+        const matchClasses = s.classesList.some(c => c.toLowerCase().includes(q));
+        return matchName || matchShort || matchCat || matchTeachers || matchClasses;
+      });
+    }
+
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+    const totalCurriculumPeriods = allOrganized.reduce((acc, s) => acc + (s.totalLessons || 0), 0);
+    const totalTeachersCount = new Set(allOrganized.flatMap(s => s.teachersList)).size;
+
+    container.innerHTML = `
+      <div class="space-y-4">
+        <!-- Subjects Top Controls & Department Category Filter Pills -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold shadow-2xs">📚</span>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm leading-tight">Academic Curriculum & Disciplines</h3>
+                <p class="text-[11px] text-slate-500">Organized by academic departments • Consolidated and deduplicated from raw EduPage schedule entries</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-100 text-[11px]">
+                ${allOrganized.length} Disciplines
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-medium border border-slate-200 text-[11px]">
+                ${totalCurriculumPeriods} Periods / Week
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-100 text-[11px]">
+                ${totalTeachersCount} Faculty
+              </span>
+            </div>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+            ${categories.map(c => {
+              const count = categoryCounts[c.id] || 0;
+              const isActive = activeCat === c.id;
+              const btnClass = isActive
+                ? 'bg-blue-600 text-white font-bold shadow-2xs border-blue-600'
+                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border-slate-200';
+              return `
+                <button onclick="filterSubjectCategory('${c.id}')" class="px-2.5 py-1 rounded-lg text-xs border transition flex items-center gap-1.5 ${btnClass}">
+                  <span>${c.icon}</span>
+                  <span>${c.name}</span>
+                  <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'} font-mono font-bold">${count}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Subjects Grid -->
+        ${filtered.length > 0 ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            ${filtered.map(s => {
+              const teachersPreview = s.teachersList.length > 0
+                ? s.teachersList.slice(0, 3).join(', ') + (s.teachersList.length > 3 ? ` +${s.teachersList.length - 3}` : '')
+                : 'General Faculty';
+              const classesPreview = s.classesList.length > 0
+                ? `${s.classesList.length} Classes (${s.classesList[0]}–${s.classesList[s.classesList.length - 1]})`
+                : 'All Classes';
+              const dedupBadge = s.mergedCount > 1
+                ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shrink-0" title="Consolidated ${s.mergedCount} EduPage entries into a single academic discipline">Deduplicated (${s.mergedCount} entries)</span>`
+                : '';
+
+              return `
+                <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:shadow-xs transition flex flex-col justify-between space-y-3 relative overflow-hidden group">
+                  <div class="absolute top-0 left-0 bottom-0 w-1" style="background-color: ${s.color || '#3b82f6'}"></div>
+                  <div class="pl-1">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs" style="background-color: ${s.color || '#3b82f6'}"></span>
+                          <h4 class="font-bold text-slate-900 text-sm truncate leading-tight group-hover:text-blue-600 transition" title="${s.name}">${s.name}</h4>
+                        </div>
+                        <div class="flex items-center flex-wrap gap-1.5 mt-1">
+                          <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.2 rounded uppercase">${s.short}</span>
+                          <span class="text-[10px] font-medium px-2 py-0.2 rounded-full ${s.category.bg} ${s.category.text} border ${s.category.border}">${s.category.name}</span>
+                        </div>
+                      </div>
+                      <div class="flex flex-col items-end shrink-0">
+                        <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 shadow-2xs">
+                          ${s.totalLessons} periods
+                        </span>
+                        <div class="mt-1">${dedupBadge}</div>
+                      </div>
+                    </div>
+
+                    <div class="mt-3 pt-2.5 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-slate-400 font-medium">Faculty (${s.teachersList.length}):</span>
+                        <span class="font-semibold text-slate-800 truncate max-w-[65%]" title="${s.teachersList.join(', ')}">${teachersPreview}</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-slate-400 font-medium">Class Cohort:</span>
+                        <span class="font-semibold text-slate-700 truncate max-w-[65%]" title="${s.classesList.join(', ')}">${classesPreview}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        ` : `
+          <div class="p-12 text-center bg-white rounded-2xl border border-slate-200 text-slate-400 space-y-2">
+            <div class="text-3xl">🔍</div>
+            <div class="font-bold text-slate-700">No subjects found matching current filter</div>
+            <p class="text-xs text-slate-400">Try changing department filter or clearing your search term</p>
+            <button onclick="filterSubjectCategory('all'); const inp = document.getElementById('directory-search-input'); if(inp){ inp.value=''; state.directorySearchQuery=''; } renderDirectory();" class="mt-2 px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold text-xs rounded-lg transition border border-blue-100">
+              Reset Filters
+            </button>
+          </div>
+        `}
+      </div>
+    `;
+  } else if (subTab === 'bells') {
+    const bells = [
+      { p: 'Period 1', time: '08:30 – 09:15', breakAfter: '5 min break (09:15 – 09:20)' },
+      { p: 'Period 2', time: '09:20 – 10:05', breakAfter: '5 min break (10:05 – 10:10)' },
+      { p: 'Period 3', time: '10:10 – 10:55', breakAfter: '30 min Morning Recess (10:55 – 11:25)', isLongBreak: true },
+      { p: 'Period 4', time: '11:25 – 12:10', breakAfter: '5 min break (12:10 – 12:15)' },
+      { p: 'Period 5', time: '12:15 – 13:00', breakAfter: '60 min Lunch & Recreation (13:00 – 14:00)', isLunch: true },
+      { p: 'Period 6', time: '14:00 – 14:45', breakAfter: '5 min break (14:45 – 14:50)' },
+      { p: 'Period 7', time: '14:50 – 15:35', breakAfter: 'End of Academic Day' }
+    ];
+
+    container.innerHTML = `
+      <div class="max-w-3xl mx-auto space-y-3">
+        ${bells.map(b => `
+          <div class="p-4 rounded-xl border border-slate-200 bg-white flex flex-wrap items-center justify-between gap-3 shadow-xs">
+            <div class="flex items-center space-x-3">
+              <span class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-sm">
+                ${b.p.replace('Period ', '')}
+              </span>
+              <div>
+                <div class="font-bold text-slate-900 text-sm">${b.p}</div>
+                <div class="text-xs font-mono text-slate-500">${b.time}</div>
+              </div>
+            </div>
+            <div class="text-xs font-medium ${b.isLunch ? 'bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full' : (b.isLongBreak ? 'bg-blue-100 text-blue-900 font-bold px-3 py-1 rounded-full' : 'text-slate-500')}">
+              ${b.breakAfter}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+}
+
+function viewEntitySchedule(mode, id) {
+  switchTab('timetable');
+  setFilterMode(mode);
+  state.selectedEntityId = id;
+  saveCurrentEntityId(id);
+  const select = document.getElementById('entity-select');
+  if (select) select.value = id;
+  renderGrid();
+}
+
+// ============================================================================
+// TAB 4: DAILY SCHEDULE (curentttGetData)
+// ============================================================================
 function loadDailyScheduleClasses() {
   const select = document.getElementById('daily-class-select');
   if (!select) return;
