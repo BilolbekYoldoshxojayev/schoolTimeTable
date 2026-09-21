@@ -743,7 +743,16 @@ async function handleRequest(req, res) {
 
   // Static File Serving
   let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
-  const extname = path.extname(filePath).toLowerCase();
+  let extname = path.extname(filePath).toLowerCase();
+
+  // Support clean URLs locally (e.g. /dashboard -> /dashboard.html)
+  if (!extname && !filePath.endsWith('/')) {
+    if (fs.existsSync(filePath + '.html')) {
+      filePath += '.html';
+      extname = '.html';
+    }
+  }
+
   const contentType = MIME_TYPES[extname] || 'application/octet-stream';
 
   fs.readFile(filePath, (err, content) => {

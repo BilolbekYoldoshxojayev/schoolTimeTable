@@ -88,7 +88,6 @@
     </div>
     <div class="flex items-center space-x-3">
       <span id="live-clock" class="font-mono text-slate-400 text-[11px]">Tashkent Time: --:--:--</span>
-      <a href="/dashboard.html" class="text-purple-400 hover:text-purple-300 underline font-medium">Live Analytics</a>
       <a href="https://nampm.edupage.org" target="_blank" rel="noopener noreferrer" class="text-brand-400 hover:text-brand-300 underline font-medium hidden sm:inline">Official Portal ↗</a>
     </div>
   </div>
@@ -137,6 +136,11 @@
         <button onclick="switchTab('docs')" id="tab-btn-docs" class="tab-btn px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1">
           <span>📖</span> <span class="hidden lg:inline">Docs</span>
         </button>
+        <!-- Highly visible Analytics button -->
+        <a href="/dashboard" class="ml-1 px-3 py-1 rounded-md text-xs font-bold text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 shadow-sm transition flex items-center gap-1.5 border border-purple-400/20">
+          <span class="w-2 h-2 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]"></span> 
+          <span class="hidden sm:inline">Analytics</span>
+        </a>
       </nav>
 
       <!-- Zoom & Viewport Toolbar -->
