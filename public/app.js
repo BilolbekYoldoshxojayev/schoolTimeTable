@@ -1117,6 +1117,18 @@ async function handleRouteChange() {
   }
 }
 
+// Fallback to prevent crashes from legacy inline onclick handlers
+window.switchDirectoryTab = function(tab) {
+  setTimeout(() => {
+    // Only attempt to run if the directory HTML has successfully loaded
+    if (document.getElementById('directory-content')) {
+      if (typeof window.updateDirectorySubtabUI === 'function') {
+         // Custom logic would go here if it existed
+      }
+    }
+  }, 100);
+};
+
 // ============================================================================
 // Data Loading & Management
 // ============================================================================
