@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "headers": [
     {
       "source": "/(.*)",
@@ -13,6 +12,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
