@@ -1,0 +1,42 @@
+<section id="tab-content-login" class="tab-pane flex-1 min-h-0 h-full scroll-pane p-4 flex flex-col items-center justify-center">
+      <div class="max-w-md w-full bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-5 my-auto transition-colors">
+        <div class="text-center space-y-1.5">
+          <img src="logo.png" alt="Logo" class="w-14 h-14 object-contain mx-auto">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Sign in to Presidential School</h2>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Authentication portal on <code class="font-mono text-blue-600 dark:text-blue-400">nampm.edupage.org/login/</code></p>
+        </div>
+
+        <div class="space-y-2.5 pt-1">
+          <a href="https://nampm.edupage.org/login/?cmd=MainLogin&cl=1" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center space-x-2 shadow-2xs transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+            <span>Sign in with EduPage account</span>
+          </a>
+
+          <div class="text-center">
+            <a href="https://nampm.edupage.org/portal/?cmd=LostPassword" target="_blank" rel="noopener noreferrer" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+              I do not know the login name or password
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=googlesignin" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center justify-center space-x-2 transition">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+              <span>Google</span>
+            </a>
+            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=microsoftsignin" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center justify-center space-x-2 transition">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 23 23"><path fill="#f35325" d="M1 1h10v10H1z"/><path fill="#81bc06" d="M12 1h10v10H12z"/><path fill="#05a6f0" d="M1 12h10v10H1z"/><path fill="#ffba08" d="M12 12h10v10H12z"/></svg>
+              <span>Microsoft</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="bg-blue-50/80 dark:bg-blue-950/40 p-3 rounded-xl border border-blue-200/80 dark:border-blue-900/60 text-[11px] text-blue-900 dark:text-blue-300 space-y-1">
+          <div class="font-bold flex items-center gap-1.5 text-blue-950 dark:text-blue-200">
+            <span>🛡</span> EduPage Guest Hash Security Model
+          </div>
+          <p class="leading-relaxed">
+            Public endpoints operate anonymously with <code class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700">"__gsh": "00000000"</code>.
+          </p>
+        </div>
+      </div>
+    </section>

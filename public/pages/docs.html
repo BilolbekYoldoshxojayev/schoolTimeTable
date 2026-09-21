@@ -1,0 +1,65 @@
+<section id="tab-content-docs" class="tab-pane flex-1 min-h-0 h-full scroll-pane p-4 sm:p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-5 text-sm text-slate-700 dark:text-slate-300 leading-relaxed transition-colors">
+      <div>
+        <div class="flex items-center space-x-2.5 mb-1.5">
+          <img src="logo.png" alt="Logo" class="w-7 h-7 object-contain">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white">EduPage Architecture & API Specification for nampm.edupage.org</h2>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          Proprietary RPC protocol and database schema used by <strong>aSc EduPage</strong> for the <strong>Presidential School in Namangan</strong> (<code class="font-mono text-blue-600 dark:text-blue-400">nampm.edupage.org</code>).
+        </p>
+      </div>
+
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-2 text-xs">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white">1. RPC Protocol & Payload Structure</h3>
+        <p>
+          EduPage executes actions through HTTP POST requests to service modules where the function name is declared via the <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">__func</code> query parameter:
+        </p>
+        <pre class="json-code p-3 rounded-lg text-xs">
+POST https://nampm.edupage.org/{module_path}?__func={functionName}
+Content-Type: application/json; charset=utf-8
+Referer: https://nampm.edupage.org/timetable/
+
+{
+  "__args": [null, ...parameters],
+  "__gsh": "00000000",
+  "__client_redirect": null
+}</pre>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+          The first element of <code class="font-mono">__args</code> is always <code class="font-mono">null</code>. <code class="font-mono">__gsh</code> is the guest security hash (<code class="font-mono">"00000000"</code> for anonymous public read queries). Responses are wrapped in <code class="font-mono">{"r": ...}</code>.
+        </p>
+      </div>
+
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-3 text-xs">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white">2. Discovered Public Endpoints</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">getTTViewerData</code>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-400">Discovers published terms, years, and active timetable ID.</p>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">regularttGetData</code>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-400">Returns the full relational database: classes, teachers, subjects, rooms, lessons, cards.</p>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">getSubstViewerDayDataHtml</code>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-400">Retrieves daily teacher substitution duties and class room adjustments.</p>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
+              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">curentttGetData</code>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-400">Retrieves dynamic daily cards for any class and date.</p>
+          </div>
+        </div>
+      </div>
+    </section>

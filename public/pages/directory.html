@@ -1,0 +1,44 @@
+<section id="tab-content-directory" class="tab-pane flex-1 min-h-0 h-full flex flex-col space-y-2">
+      <div class="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2 transition-colors">
+        <div class="flex flex-wrap justify-between items-center gap-3 shrink-0">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Presidential School Master Directory</h2>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Relational entities from <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400">regularttGetData</code>
+            </p>
+          </div>
+
+          <!-- Directory Sub-Tabs -->
+          <div class="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium">
+            <button onclick="switchDirectoryTab('teachers')" id="dirtab-teachers" class="dirtab-btn active px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-2xs">
+              👨‍🏫 Faculty (36)
+            </button>
+            <button onclick="switchDirectoryTab('classes')" id="dirtab-classes" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              🏫 Classes (14)
+            </button>
+            <button onclick="switchDirectoryTab('classrooms')" id="dirtab-classrooms" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              🚪 Rooms (20)
+            </button>
+            <button onclick="switchDirectoryTab('subjects')" id="dirtab-subjects" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              📚 Subjects (32)
+            </button>
+            <button onclick="switchDirectoryTab('bells')" id="dirtab-bells" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              🔔 Bells (7)
+            </button>
+          </div>
+
+          <!-- Directory Search Bar -->
+          <div class="relative w-44 sm:w-56">
+            <input type="text" id="directory-search-input" placeholder="Search directory..." class="w-full pl-7 pr-2 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Directory Render Container (Scrollable internally) -->
+        <div id="directory-content-container" class="flex-1 min-h-0 scroll-pane p-2">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>

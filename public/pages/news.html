@@ -1,0 +1,21 @@
+<section id="tab-content-news" class="tab-pane flex-1 min-h-0 h-full flex flex-col space-y-2">
+      <div class="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2 transition-colors">
+        <div class="flex items-center justify-between shrink-0">
+          <div class="flex items-center space-x-2.5">
+            <img src="rss.png" alt="RSS Icon" class="w-6 h-6 object-contain">
+            <div>
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Official News & Announcements</h2>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Live feed from Presidential School via <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400">/rss/news</code></p>
+            </div>
+          </div>
+          <button onclick="loadNewsFeed()" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 flex items-center gap-1 transition">
+            🔄 Refresh
+          </button>
+        </div>
+
+        <!-- News Cards Container (Scrollable internally) -->
+        <div id="news-cards-container" class="flex-1 min-h-0 scroll-pane p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- News cards populated dynamically -->
+        </div>
+      </div>
+    </section>

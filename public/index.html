@@ -456,385 +456,92 @@
     <!-- ================================================================= -->
     <!-- TAB 2: LIVE SUBSTITUTION MODULE (/substitution/)                 -->
     <!-- ================================================================= -->
-    <section id="tab-content-substitution" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
-      <div class="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2 transition-colors">
-        <div class="flex flex-wrap justify-between items-center gap-3 shrink-0">
-          <div>
-            <div class="flex items-center space-x-2">
-              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Live Substitution & Duty Viewer</h2>
-              <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-                Official EduPage Module
-              </span>
-            </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-              Real-time daily substitutions from <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400">/substitution/server/viewer.js?__func=getSubstViewerDayDataHtml</code>
-            </p>
-          </div>
-
-          <!-- Quick Date Jump Buttons -->
-          <div class="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
-            <button onclick="setSubstDateRelative(-1)" class="px-2 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-700 rounded shadow-2xs">◀ Prev</button>
-            <button onclick="setSubstDateToday()" class="px-2 py-0.5 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-700 rounded shadow-2xs">Today</button>
-            <button onclick="setSubstDateRelative(1)" class="px-2 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-700 rounded shadow-2xs">Next ▶</button>
-          </div>
-        </div>
-
-        <!-- Controls Toolbar -->
-        <div class="flex flex-wrap items-center justify-between gap-3 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-800 shrink-0">
-          <div class="flex flex-wrap items-center gap-3">
-            <!-- Date Input -->
-            <div class="flex items-center space-x-1.5">
-              <label for="subst-date-input" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Date:</label>
-              <input type="date" id="subst-date-input" value="2026-09-02" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs rounded-lg p-1.5 font-medium">
-            </div>
-
-            <!-- View Mode Switch -->
-            <div class="flex items-center space-x-1.5">
-              <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Grouping:</span>
-              <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 bg-white dark:bg-slate-800">
-                <button onclick="setSubstMode('classes')" id="subst-mode-classes" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white shadow-2xs">
-                  Classes
-                </button>
-                <button onclick="setSubstMode('teachers')" id="subst-mode-teachers" class="px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-                  Teachers
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Refresh Button -->
-          <button onclick="loadSubstitution()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-2xs transition flex items-center gap-1.5">
-            <span>🔄</span> Fetch Live Substitution
-          </button>
-        </div>
-
-        <!-- Substitution Content Render Container (Scrollable internally) -->
-        <div id="subst-render-container" class="flex-1 min-h-0 scroll-pane p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
-          <div class="flex flex-col items-center justify-center text-center p-8 space-y-2">
-            <span class="text-3xl">⏳</span>
-            <div class="text-sm font-semibold text-slate-700 dark:text-slate-300">Loading substitution report...</div>
-          </div>
-        </div>
-      </div>
-    </section>
+    
 
     <!-- ================================================================= -->
     <!-- TAB 3: SCHOOL DIRECTORY & METRICS                                 -->
     <!-- ================================================================= -->
-    <section id="tab-content-directory" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
-      <div class="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2 transition-colors">
-        <div class="flex flex-wrap justify-between items-center gap-3 shrink-0">
-          <div>
-            <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Presidential School Master Directory</h2>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">
-              Relational entities from <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400">regularttGetData</code>
-            </p>
-          </div>
-
-          <!-- Directory Sub-Tabs -->
-          <div class="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium">
-            <button onclick="switchDirectoryTab('teachers')" id="dirtab-teachers" class="dirtab-btn active px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-2xs">
-              👨‍🏫 Faculty (36)
-            </button>
-            <button onclick="switchDirectoryTab('classes')" id="dirtab-classes" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-              🏫 Classes (14)
-            </button>
-            <button onclick="switchDirectoryTab('classrooms')" id="dirtab-classrooms" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-              🚪 Rooms (20)
-            </button>
-            <button onclick="switchDirectoryTab('subjects')" id="dirtab-subjects" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-              📚 Subjects (32)
-            </button>
-            <button onclick="switchDirectoryTab('bells')" id="dirtab-bells" class="dirtab-btn px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-              🔔 Bells (7)
-            </button>
-          </div>
-
-          <!-- Directory Search Bar -->
-          <div class="relative w-44 sm:w-56">
-            <input type="text" id="directory-search-input" placeholder="Search directory..." class="w-full pl-7 pr-2 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500">
-            <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-        </div>
-
-        <!-- Directory Render Container (Scrollable internally) -->
-        <div id="directory-content-container" class="flex-1 min-h-0 scroll-pane p-2">
-          <!-- Dynamically populated -->
-        </div>
-      </div>
-    </section>
+    
 
     <!-- ================================================================= -->
     <!-- TAB 4: DAILY LIVE VIEW (curentttGetData API)                      -->
     <!-- ================================================================= -->
-    <section id="tab-content-daily" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
-      <div class="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2 transition-colors">
-        <div class="shrink-0">
-          <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Live Dynamic Daily Schedule</h2>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">
-            Live EduPage RPC: <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400">curentttGetData</code> on <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-700 dark:text-slate-300">/timetable/server/currenttt.js</code>
-          </p>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 shrink-0">
-          <div>
-            <label for="daily-class-select" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">Select Class:</label>
-            <select id="daily-class-select" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs rounded-lg py-1 px-2 font-medium">
-              <!-- Dynamically populated -->
-            </select>
-          </div>
-          <div>
-            <label for="daily-date-input" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">Target Date:</label>
-            <input type="date" id="daily-date-input" value="2026-09-02" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs rounded-lg py-1 px-2 font-medium">
-          </div>
-          <div class="self-end">
-            <button onclick="fetchDailySchedule()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-2xs transition flex items-center gap-1.5">
-              <span>🔄</span> Query Live API
-            </button>
-          </div>
-        </div>
-
-        <!-- Daily Results Container (Scrollable internally) -->
-        <div id="daily-results-container" class="flex-1 min-h-0 scroll-pane p-2">
-          <!-- Daily items rendered here -->
-        </div>
-      </div>
-    </section>
+    
 
     <!-- ================================================================= -->
     <!-- TAB 5: SCHOOL NEWS FEED (/rss/news)                              -->
     <!-- ================================================================= -->
-    <section id="tab-content-news" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col space-y-2">
-      <div class="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2 transition-colors">
-        <div class="flex items-center justify-between shrink-0">
-          <div class="flex items-center space-x-2.5">
-            <img src="rss.png" alt="RSS Icon" class="w-6 h-6 object-contain">
-            <div>
-              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Official News & Announcements</h2>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Live feed from Presidential School via <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400">/rss/news</code></p>
-            </div>
-          </div>
-          <button onclick="loadNewsFeed()" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 flex items-center gap-1 transition">
-            🔄 Refresh
-          </button>
-        </div>
-
-        <!-- News Cards Container (Scrollable internally) -->
-        <div id="news-cards-container" class="flex-1 min-h-0 scroll-pane p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <!-- News cards populated dynamically -->
-        </div>
-      </div>
-    </section>
+    
 
     <!-- ================================================================= -->
     <!-- TAB 6: PORTAL LOGIN & SSO SIMULATION                             -->
     <!-- ================================================================= -->
-    <section id="tab-content-login" class="tab-pane hidden flex-1 min-h-0 h-full scroll-pane p-4 flex flex-col items-center justify-center">
-      <div class="max-w-md w-full bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-5 my-auto transition-colors">
-        <div class="text-center space-y-1.5">
-          <img src="logo.png" alt="Logo" class="w-14 h-14 object-contain mx-auto">
-          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Sign in to Presidential School</h2>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">Authentication portal on <code class="font-mono text-blue-600 dark:text-blue-400">nampm.edupage.org/login/</code></p>
-        </div>
-
-        <div class="space-y-2.5 pt-1">
-          <a href="https://nampm.edupage.org/login/?cmd=MainLogin&cl=1" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center space-x-2 shadow-2xs transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
-            <span>Sign in with EduPage account</span>
-          </a>
-
-          <div class="text-center">
-            <a href="https://nampm.edupage.org/portal/?cmd=LostPassword" target="_blank" rel="noopener noreferrer" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
-              I do not know the login name or password
-            </a>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=googlesignin" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center justify-center space-x-2 transition">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-              <span>Google</span>
-            </a>
-            <a href="https://nampm.edupage.org/login/?cmd=oauthLogin&a=microsoftsignin" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center justify-center space-x-2 transition">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 23 23"><path fill="#f35325" d="M1 1h10v10H1z"/><path fill="#81bc06" d="M12 1h10v10H12z"/><path fill="#05a6f0" d="M1 12h10v10H1z"/><path fill="#ffba08" d="M12 12h10v10H12z"/></svg>
-              <span>Microsoft</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="bg-blue-50/80 dark:bg-blue-950/40 p-3 rounded-xl border border-blue-200/80 dark:border-blue-900/60 text-[11px] text-blue-900 dark:text-blue-300 space-y-1">
-          <div class="font-bold flex items-center gap-1.5 text-blue-950 dark:text-blue-200">
-            <span>🛡</span> EduPage Guest Hash Security Model
-          </div>
-          <p class="leading-relaxed">
-            Public endpoints operate anonymously with <code class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700">"__gsh": "00000000"</code>.
-          </p>
-        </div>
-      </div>
-    </section>
+    
 
     <!-- ================================================================= -->
     <!-- TAB 7: API PLAYGROUND & CONSOLE                                   -->
     <!-- ================================================================= -->
-    <section id="tab-content-api" class="tab-pane hidden flex-1 min-h-0 h-full flex flex-col overflow-hidden space-y-2">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1 min-h-0 h-full">
-        <!-- Request Builder (Left Column) -->
-        <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex flex-col min-h-0 h-full space-y-2.5 transition-colors">
-          <div class="flex items-center justify-between shrink-0">
-            <h2 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">RPC Request Console</h2>
-            <span class="text-[10px] bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-semibold px-2 py-0.5 rounded border border-purple-200 dark:border-purple-800">POST RPC</span>
-          </div>
-
-          <div class="flex-1 min-h-0 scroll-pane space-y-2 pr-1">
-            <!-- Presets -->
-            <div>
-              <label class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">API Presets:</label>
-              <div class="grid grid-cols-2 gap-1">
-                <button onclick="loadPreset('versions')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
-                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">1. TT Discovery</span>
-                  <code class="text-[9px] text-slate-400 dark:text-slate-500">getTTViewerData</code>
-                </button>
-                <button onclick="loadPreset('regular')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
-                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">2. Full Database</span>
-                  <code class="text-[9px] text-slate-400 dark:text-slate-500">regularttGetData</code>
-                </button>
-                <button onclick="loadPreset('current')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
-                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">3. Daily Dynamic</span>
-                  <code class="text-[9px] text-slate-400 dark:text-slate-500">curentttGetData</code>
-                </button>
-                <button onclick="loadPreset('substitution')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
-                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">4. Substitution</span>
-                  <code class="text-[9px] text-slate-400 dark:text-slate-500">getSubstViewer</code>
-                </button>
-                <button onclick="loadPreset('news')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
-                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">5. RSS News</span>
-                  <code class="text-[9px] text-slate-400 dark:text-slate-500">/rss/news</code>
-                </button>
-                <button onclick="loadPreset('info')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
-                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">6. School Info</span>
-                  <code class="text-[9px] text-slate-400 dark:text-slate-500">/api/info</code>
-                </button>
-              </div>
-            </div>
-
-            <!-- Endpoint URL Input -->
-            <div>
-              <label for="api-endpoint" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">Target Endpoint:</label>
-              <input type="text" id="api-endpoint" value="/timetable/server/ttviewer.js?__func=getTTViewerData" class="w-full font-mono text-xs p-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg">
-            </div>
-
-            <!-- Arguments JSON Payload -->
-            <div>
-              <label for="api-payload" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">RPC Arguments (__args):</label>
-              <textarea id="api-payload" rows="3" class="w-full font-mono text-xs p-2 bg-slate-900 dark:bg-slate-950 text-slate-100 rounded-lg border border-slate-700">[null, 2026]</textarea>
-            </div>
-
-            <!-- Action Button -->
-            <button onclick="executeApiPlayground()" id="api-send-btn" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-2xs transition flex items-center justify-center gap-1.5">
-              <span>🚀</span> Send Live RPC Request
-            </button>
-
-            <!-- Generated Code Snippets -->
-            <div class="pt-1.5 border-t border-slate-100 dark:border-slate-800 space-y-1">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Curl Snippet:</span>
-                <button onclick="copySnippet('curl')" class="text-[11px] text-blue-600 dark:text-blue-400 hover:underline">Copy</button>
-              </div>
-              <pre id="snippet-curl" class="json-code p-2 rounded-lg text-[10px] overflow-x-auto max-h-20">curl -X POST "https://nampm.edupage.org/timetable/server/ttviewer.js?__func=getTTViewerData" -H "Content-Type: application/json" -d '{"__args":[null,2026],"__gsh":"00000000"}'</pre>
-            </div>
-          </div>
-        </div>
-
-        <!-- Response Viewer (Right Column) -->
-        <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex flex-col min-h-0 h-full space-y-2 transition-colors">
-          <div class="flex items-center justify-between shrink-0">
-            <div class="flex items-center space-x-2">
-              <h2 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Live API Response</h2>
-              <span id="response-status-pill" class="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-semibold px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">Ready</span>
-              <span id="response-time-pill" class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">-- ms</span>
-            </div>
-            <button onclick="copyResponseJson()" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium flex items-center gap-1">
-              📋 Copy JSON
-            </button>
-          </div>
-
-          <div class="relative flex-1 min-h-0 h-full">
-            <pre id="api-response-viewer" class="json-code p-3 rounded-xl text-xs overflow-auto absolute inset-0 font-mono">Click "Send Live RPC Request" to query nampm.edupage.org...</pre>
-          </div>
-        </div>
-      </div>
-    </section>
+    
 
     <!-- ================================================================= -->
     <!-- TAB 8: API ARCHITECTURE & SPECIFICATIONS                          -->
     <!-- ================================================================= -->
-    <section id="tab-content-docs" class="tab-pane hidden flex-1 min-h-0 h-full scroll-pane p-4 sm:p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-5 text-sm text-slate-700 dark:text-slate-300 leading-relaxed transition-colors">
-      <div>
-        <div class="flex items-center space-x-2.5 mb-1.5">
-          <img src="logo.png" alt="Logo" class="w-7 h-7 object-contain">
-          <h2 class="text-lg font-bold text-slate-900 dark:text-white">EduPage Architecture & API Specification for nampm.edupage.org</h2>
+    
+
+      <div id="router-view" class="flex-1 min-h-0 h-full flex flex-col"></div>
+  </main>
+
+  <!-- Modal Dialog for Lesson Details -->
+  <dialog id="lesson-modal" class="p-0 overflow-hidden bg-transparent backdrop:bg-slate-900/30 dark:backdrop:bg-slate-950/45">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden max-w-md w-full m-4">
+      <div id="modal-header" class="p-4 text-white bg-blue-600">
+        <span id="modal-subject-tag" class="text-[10px] uppercase font-bold tracking-wider opacity-90">Subject</span>
+        <h3 id="modal-subject-name" class="text-lg font-extrabold mt-0.5 leading-tight">Mathematics</h3>
+      </div>
+
+      <div class="p-4 space-y-3 text-xs text-slate-700 dark:text-slate-300">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/80">
+            <span class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block mb-0.5">Teacher</span>
+            <span id="modal-teacher" class="font-semibold text-slate-900 dark:text-slate-100 block">--</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/80">
+            <span class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block mb-0.5">Classroom</span>
+            <span id="modal-classroom" class="font-semibold text-slate-900 dark:text-slate-100 block">--</span>
+          </div>
         </div>
-        <p class="text-xs text-slate-600 dark:text-slate-400">
-          Proprietary RPC protocol and database schema used by <strong>aSc EduPage</strong> for the <strong>Presidential School in Namangan</strong> (<code class="font-mono text-blue-600 dark:text-blue-400">nampm.edupage.org</code>).
-        </p>
-      </div>
 
-      <div class="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-2 text-xs">
-        <h3 class="text-sm font-bold text-slate-900 dark:text-white">1. RPC Protocol & Payload Structure</h3>
-        <p>
-          EduPage executes actions through HTTP POST requests to service modules where the function name is declared via the <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">__func</code> query parameter:
-        </p>
-        <pre class="json-code p-3 rounded-lg text-xs">
-POST https://nampm.edupage.org/{module_path}?__func={functionName}
-Content-Type: application/json; charset=utf-8
-Referer: https://nampm.edupage.org/timetable/
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/80">
+            <span class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block mb-0.5">Class / Grade</span>
+            <span id="modal-class" class="font-semibold text-slate-900 dark:text-slate-100 block">--</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/80">
+            <span class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block mb-0.5">Time Period</span>
+            <span id="modal-time" class="font-semibold text-slate-900 dark:text-slate-100 block">--</span>
+          </div>
+        </div>
 
-{
-  "__args": [null, ...parameters],
-  "__gsh": "00000000",
-  "__client_redirect": null
-}</pre>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">
-          The first element of <code class="font-mono">__args</code> is always <code class="font-mono">null</code>. <code class="font-mono">__gsh</code> is the guest security hash (<code class="font-mono">"00000000"</code> for anonymous public read queries). Responses are wrapped in <code class="font-mono">{"r": ...}</code>.
-        </p>
-      </div>
-
-      <div class="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-3 text-xs">
-        <h3 class="text-sm font-bold text-slate-900 dark:text-white">2. Discovered Public Endpoints</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
-            <div class="flex items-center space-x-1.5">
-              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
-              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">getTTViewerData</code>
-            </div>
-            <p class="text-[11px] text-slate-600 dark:text-slate-400">Discovers published terms, years, and active timetable ID.</p>
+        <div class="bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/80 font-mono text-[11px] text-slate-600 dark:text-slate-400 space-y-1">
+          <div class="flex justify-between">
+            <span class="text-slate-400 dark:text-slate-500">Lesson ID:</span>
+            <span id="modal-lesson-id">--</span>
           </div>
-          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
-            <div class="flex items-center space-x-1.5">
-              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
-              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">regularttGetData</code>
-            </div>
-            <p class="text-[11px] text-slate-600 dark:text-slate-400">Returns the full relational database: classes, teachers, subjects, rooms, lessons, cards.</p>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
-            <div class="flex items-center space-x-1.5">
-              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
-              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">getSubstViewerDayDataHtml</code>
-            </div>
-            <p class="text-[11px] text-slate-600 dark:text-slate-400">Retrieves daily teacher substitution duties and class room adjustments.</p>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-1">
-            <div class="flex items-center space-x-1.5">
-              <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
-              <code class="font-mono text-xs text-slate-900 dark:text-slate-100 font-semibold">curentttGetData</code>
-            </div>
-            <p class="text-[11px] text-slate-600 dark:text-slate-400">Retrieves dynamic daily cards for any class and date.</p>
+          <div class="flex justify-between">
+            <span class="text-slate-400 dark:text-slate-500">Card ID:</span>
+            <span id="modal-card-id">--</span>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </dialog>
 
+  <!-- Slim Single-Page App Footer -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-1 px-3 sm:px-4 text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap justify-between items-center shrink-0 z-10 no-print select-none transition-colors">
+    <div class="flex items-center space-x-2">
+      <img src="logo.png" alt="Logo" class="w-4 h-4 object-contain">
+      <span class="font-bold text-slate-700 dark:text-slate-300">Presidential School in Namangan</span>
+      <span class="text-slate-300 dark:text-slate-600">•</span>
   </main>
 
   <!-- Modal Dialog for Lesson Details -->
@@ -893,10 +600,12 @@ Referer: https://nampm.edupage.org/timetable/
       <span>UTC+5</span>
     </div>
     <div class="flex items-center space-x-3">
+      <span class="font-medium">Suggestions? <a href="https://t.me/dendrophil_e" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">@dendrophil_e</a></span>
+      <span class="text-slate-300 dark:text-slate-600">|</span>
       <button onclick="resetUserPreferences()" class="text-slate-500 dark:text-slate-400 hover:text-rose-600 transition flex items-center gap-1 font-medium text-[11px]" title="Reset all saved preferences to defaults">
-        <span>↺</span> Reset Preferences
+        <span>🔄</span> Reset Preferences
       </button>
-      <span class="text-slate-300 dark:text-slate-600">•</span>
+      <span class="text-slate-300 dark:text-slate-600">|</span>
       <a href="https://nampm.edupage.org" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">Official Portal ↗</a>
     </div>
   </footer>

@@ -1,0 +1,88 @@
+<section id="tab-content-api" class="tab-pane flex-1 min-h-0 h-full flex flex-col overflow-hidden space-y-2">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1 min-h-0 h-full">
+        <!-- Request Builder (Left Column) -->
+        <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex flex-col min-h-0 h-full space-y-2.5 transition-colors">
+          <div class="flex items-center justify-between shrink-0">
+            <h2 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">RPC Request Console</h2>
+            <span class="text-[10px] bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-semibold px-2 py-0.5 rounded border border-purple-200 dark:border-purple-800">POST RPC</span>
+          </div>
+
+          <div class="flex-1 min-h-0 scroll-pane space-y-2 pr-1">
+            <!-- Presets -->
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">API Presets:</label>
+              <div class="grid grid-cols-2 gap-1">
+                <button onclick="loadPreset('versions')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
+                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">1. TT Discovery</span>
+                  <code class="text-[9px] text-slate-400 dark:text-slate-500">getTTViewerData</code>
+                </button>
+                <button onclick="loadPreset('regular')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
+                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">2. Full Database</span>
+                  <code class="text-[9px] text-slate-400 dark:text-slate-500">regularttGetData</code>
+                </button>
+                <button onclick="loadPreset('current')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
+                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">3. Daily Dynamic</span>
+                  <code class="text-[9px] text-slate-400 dark:text-slate-500">curentttGetData</code>
+                </button>
+                <button onclick="loadPreset('substitution')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
+                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">4. Substitution</span>
+                  <code class="text-[9px] text-slate-400 dark:text-slate-500">getSubstViewer</code>
+                </button>
+                <button onclick="loadPreset('news')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
+                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">5. RSS News</span>
+                  <code class="text-[9px] text-slate-400 dark:text-slate-500">/rss/news</code>
+                </button>
+                <button onclick="loadPreset('info')" class="text-left p-1.5 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
+                  <span class="font-semibold text-slate-800 dark:text-slate-200 block truncate">6. School Info</span>
+                  <code class="text-[9px] text-slate-400 dark:text-slate-500">/api/info</code>
+                </button>
+              </div>
+            </div>
+
+            <!-- Endpoint URL Input -->
+            <div>
+              <label for="api-endpoint" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">Target Endpoint:</label>
+              <input type="text" id="api-endpoint" value="/timetable/server/ttviewer.js?__func=getTTViewerData" class="w-full font-mono text-xs p-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg">
+            </div>
+
+            <!-- Arguments JSON Payload -->
+            <div>
+              <label for="api-payload" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">RPC Arguments (__args):</label>
+              <textarea id="api-payload" rows="3" class="w-full font-mono text-xs p-2 bg-slate-900 dark:bg-slate-950 text-slate-100 rounded-lg border border-slate-700">[null, 2026]</textarea>
+            </div>
+
+            <!-- Action Button -->
+            <button onclick="executeApiPlayground()" id="api-send-btn" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-2xs transition flex items-center justify-center gap-1.5">
+              <span>🚀</span> Send Live RPC Request
+            </button>
+
+            <!-- Generated Code Snippets -->
+            <div class="pt-1.5 border-t border-slate-100 dark:border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Curl Snippet:</span>
+                <button onclick="copySnippet('curl')" class="text-[11px] text-blue-600 dark:text-blue-400 hover:underline">Copy</button>
+              </div>
+              <pre id="snippet-curl" class="json-code p-2 rounded-lg text-[10px] overflow-x-auto max-h-20">curl -X POST "https://nampm.edupage.org/timetable/server/ttviewer.js?__func=getTTViewerData" -H "Content-Type: application/json" -d '{"__args":[null,2026],"__gsh":"00000000"}'</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Response Viewer (Right Column) -->
+        <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex flex-col min-h-0 h-full space-y-2 transition-colors">
+          <div class="flex items-center justify-between shrink-0">
+            <div class="flex items-center space-x-2">
+              <h2 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Live API Response</h2>
+              <span id="response-status-pill" class="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-semibold px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">Ready</span>
+              <span id="response-time-pill" class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">-- ms</span>
+            </div>
+            <button onclick="copyResponseJson()" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium flex items-center gap-1">
+              📋 Copy JSON
+            </button>
+          </div>
+
+          <div class="relative flex-1 min-h-0 h-full">
+            <pre id="api-response-viewer" class="json-code p-3 rounded-xl text-xs overflow-auto absolute inset-0 font-mono">Click "Send Live RPC Request" to query nampm.edupage.org...</pre>
+          </div>
+        </div>
+      </div>
+    </section>

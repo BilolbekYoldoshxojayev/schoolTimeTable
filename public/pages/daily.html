@@ -1,0 +1,33 @@
+<section id="tab-content-daily" class="tab-pane flex-1 min-h-0 h-full flex flex-col space-y-2">
+      <div class="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex-1 min-h-0 flex flex-col space-y-2 transition-colors">
+        <div class="shrink-0">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Live Dynamic Daily Schedule</h2>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            Live EduPage RPC: <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400">curentttGetData</code> on <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-700 dark:text-slate-300">/timetable/server/currenttt.js</code>
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 shrink-0">
+          <div>
+            <label for="daily-class-select" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">Select Class:</label>
+            <select id="daily-class-select" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs rounded-lg py-1 px-2 font-medium">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+          <div>
+            <label for="daily-date-input" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-0.5">Target Date:</label>
+            <input type="date" id="daily-date-input" value="2026-09-02" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs rounded-lg py-1 px-2 font-medium">
+          </div>
+          <div class="self-end">
+            <button onclick="fetchDailySchedule()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-2xs transition flex items-center gap-1.5">
+              <span>🔄</span> Query Live API
+            </button>
+          </div>
+        </div>
+
+        <!-- Daily Results Container (Scrollable internally) -->
+        <div id="daily-results-container" class="flex-1 min-h-0 scroll-pane p-2">
+          <!-- Daily items rendered here -->
+        </div>
+      </div>
+    </section>
