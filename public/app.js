@@ -1085,15 +1085,25 @@ async function handleRouteChange() {
   const timetableSection = document.getElementById('tab-content-timetable');
   
   if (tabId === 'timetable') {
-    if (routerView) routerView.classList.add('hidden');
-    if (timetableSection) timetableSection.classList.remove('hidden');
+    if (routerView) {
+      routerView.classList.add('hidden');
+      routerView.style.display = 'none';
+    }
+    if (timetableSection) {
+      timetableSection.classList.remove('hidden');
+      timetableSection.style.display = 'flex';
+    }
     updateCurrentTimeLine();
     return;
   }
   
-  if (timetableSection) timetableSection.classList.add('hidden');
+  if (timetableSection) {
+    timetableSection.classList.add('hidden');
+    timetableSection.style.display = 'none';
+  }
   if (routerView) {
     routerView.classList.remove('hidden');
+    routerView.style.display = 'flex';
     routerView.innerHTML = '<div class="p-8 text-center text-slate-400 font-mono text-sm">Loading ' + tabId + '...</div>';
     
     try {
