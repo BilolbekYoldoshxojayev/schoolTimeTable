@@ -467,6 +467,61 @@ async function handleRequest(req, res) {
         return;
       }
 
+      if (pathname === '/api/analytics') {
+        // Only fetch on demand
+        try {
+          const VERCEL_TOKEN = process.env.VERCEL_TOKEN || process.env.VERCEL_ANALYTICS_TOKEN;
+          const PROJECT_ID = process.env.VERCEL_PROJECT_ID || 'prj_EPf3ohS4NM3ScebZ93wdQytU6hTJ';
+          
+          if (!VERCEL_TOKEN) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'VERCEL_TOKEN is not configured on the server.' }));
+            return;
+          }
+
+          const baseUrl = 'https://api.vercel.com/v1/query/web-analytics/visits';
+          
+          const params = new URLSearchParams({
+            projectId: PROJECT_ID,
+            since: '2026-09-02T00:00:00.000Z',
+            until: '2026-09-22T00:00:00.000Z'
+          });
+
+          const fetchVercel = async (endpoint, extraParams = {}) => {
+            const currentParams = new URLSearchParams(params);
+            for (const [k, v] of Object.entries(extraParams)) {
+              currentParams.set(k, v);
+            }
+            return new Promise((resolve, reject) => {
+              const reqUrl = `${baseUrl}/${endpoint}?${currentParams.toString()}`;
+              https.get(reqUrl, {
+                headers: { 'Authorization': `Bearer ${VERCEL_TOKEN}` }
+              }, (r) => {
+                let body = '';
+                r.on('data', chunk => body += chunk);
+                r.on('end', () => resolve(JSON.parse(body)));
+              }).on('error', reject);
+            });
+          };
+
+          const [overview, countries, referrers, devices, os, browsers] = await Promise.all([
+            fetchVercel('count'),
+            fetchVercel('aggregate', { by: 'country' }),
+            fetchVercel('aggregate', { by: 'referrerHostname' }),
+            fetchVercel('aggregate', { by: 'deviceType' }),
+            fetchVercel('aggregate', { by: 'osName' }),
+            fetchVercel('aggregate', { by: 'browserName' })
+          ]);
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ overview, countries, referrers, devices, os, browsers }));
+        } catch (err) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+      }
+
       if (pathname === '/api/timetables') {
         const cacheKey = 'timetables_list';
         let data = getCached(cacheKey);

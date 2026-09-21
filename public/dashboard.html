@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Dashboard - EduPage Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 1rem;
+    }
+
+    .accent-gradient {
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-image: linear-gradient(135deg, #60a5fa, #c084fc);
+    }
+    
+    .bar-bg { background-color: rgba(241, 245, 249, 0.1); }
+    .bar-fill { background: linear-gradient(90deg, #3b82f6, #8b5cf6); transition: width 1s ease-in-out; }
+    
+    .loader {
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top: 3px solid #3b82f6;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 lg:p-8">
+
+  <div class="max-w-7xl mx-auto space-y-6">
+    
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-700/50">
+      <div>
+        <a href="/" class="text-blue-400 hover:text-blue-300 text-sm font-medium mb-4 inline-flex items-center gap-1 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          Back to Portal
+        </a>
+        <div class="flex items-center gap-2 mb-3 mt-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium">
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+            Live Analytics
+          </div>
+          <span id="refresh-btn" class="cursor-pointer text-slate-400 hover:text-white transition-colors" title="Refresh Data">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          </span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight">Project Overview</h1>
+      </div>
+      <div class="text-left md:text-right">
+        <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Date Range</p>
+        <p class="text-lg font-medium text-slate-200">Live Data (Past 30 Days)</p>
+      </div>
+    </header>
+
+    <div id="loading" class="py-20 flex flex-col items-center justify-center text-slate-400">
+      <div class="loader mb-4"></div>
+      <p>Fetching live data from Vercel...</p>
+    </div>
+
+    <div id="dashboard" class="hidden space-y-6 animate-fade-in">
+      <!-- Top KPI Row -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-6 flex flex-col relative overflow-hidden">
+          <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-500/10 blur-2xl rounded-full"></div>
+          <h3 class="text-slate-400 font-medium text-sm tracking-wider uppercase mb-2">Total Pageviews</h3>
+          <span id="metric-pageviews" class="text-5xl font-bold accent-gradient">-</span>
+        </div>
+        <div class="glass-card p-6 flex flex-col relative overflow-hidden">
+          <div class="absolute -right-6 -top-6 w-32 h-32 bg-purple-500/10 blur-2xl rounded-full"></div>
+          <h3 class="text-slate-400 font-medium text-sm tracking-wider uppercase mb-2">Unique Visitors</h3>
+          <span id="metric-visitors" class="text-5xl font-bold text-white">-</span>
+        </div>
+        <div class="glass-card p-6 flex flex-col relative overflow-hidden">
+          <div class="absolute -right-6 -top-6 w-32 h-32 bg-pink-500/10 blur-2xl rounded-full"></div>
+          <h3 class="text-slate-400 font-medium text-sm tracking-wider uppercase mb-2">Views Per Visitor</h3>
+          <span id="metric-ratio" class="text-5xl font-bold text-white">-</span>
+        </div>
+      </div>
+
+      <!-- Middle Row: Geography & Traffic Sources -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Geography -->
+        <div class="glass-card p-6 lg:p-8">
+          <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Top Countries
+          </h3>
+          <div id="countries-list" class="space-y-4"></div>
+        </div>
+
+        <!-- Traffic Sources -->
+        <div class="glass-card p-6 lg:p-8">
+          <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            Top Referrers
+          </h3>
+          <div id="referrers-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Tech Stack -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Devices -->
+        <div class="glass-card p-6">
+          <h3 class="text-lg font-semibold mb-6">Devices</h3>
+          <div id="devices-list" class="space-y-4"></div>
+        </div>
+        <!-- OS -->
+        <div class="glass-card p-6">
+          <h3 class="text-lg font-semibold mb-6">Operating Systems</h3>
+          <div id="os-list" class="space-y-3"></div>
+        </div>
+        <!-- Browsers -->
+        <div class="glass-card p-6">
+          <h3 class="text-lg font-semibold mb-6">Top Browsers</h3>
+          <div id="browsers-list" class="space-y-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = '/api/analytics';
+
+    const getCountryFlag = (code) => {
+      if(!code) return '🌍';
+      return code.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397));
+    };
+
+    const formatReferrer = (host) => {
+      if (!host) return 'Direct / Bookmark';
+      return host;
+    };
+
+    async function loadData() {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+      
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        
+        if (data.error) {
+          alert('Error fetching analytics: ' + data.error);
+          return;
+        }
+
+        const visitors = data.overview.data.visitors || 0;
+        const pageviews = data.overview.data.pageviews || 0;
+        
+        document.getElementById('metric-pageviews').innerText = pageviews.toLocaleString();
+        document.getElementById('metric-visitors').innerText = visitors.toLocaleString();
+        document.getElementById('metric-ratio').innerText = visitors ? (pageviews / visitors).toFixed(1) : '0';
+
+        // Render Countries
+        const totalCountriesVisits = data.countries.data.reduce((sum, c) => sum + c.visitors, 0);
+        document.getElementById('countries-list').innerHTML = data.countries.data.slice(0, 5).map(c => `
+          <div>
+            <div class="flex justify-between text-sm mb-1.5">
+              <span class="flex items-center gap-2">${getCountryFlag(c.country)} ${c.country || 'Unknown'}</span>
+              <span class="font-bold">${c.visitors} <span class="text-slate-400 font-normal text-xs ml-1">visitors</span></span>
+            </div>
+            <div class="w-full bar-bg rounded-full h-2">
+              <div class="bar-fill h-2 rounded-full" style="width: ${(c.visitors / totalCountriesVisits * 100).toFixed(1)}%"></div>
+            </div>
+          </div>
+        `).join('');
+
+        // Render Referrers
+        document.getElementById('referrers-list').innerHTML = data.referrers.data.slice(0, 4).map(r => `
+          <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+            <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1 truncate" title="${formatReferrer(r.referrerHostname)}">${formatReferrer(r.referrerHostname)}</p>
+            <p class="text-2xl font-bold">${r.visitors}</p>
+          </div>
+        `).join('');
+
+        // Render Devices
+        const colors = ['bg-blue-500', 'bg-purple-500', 'bg-pink-500'];
+        document.getElementById('devices-list').innerHTML = data.devices.data.map((d, i) => `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 rounded-full ${colors[i % colors.length]}"></div>
+              <span class="capitalize">${d.deviceType}</span>
+            </div>
+            <span class="font-bold">${d.visitors}</span>
+          </div>
+        `).join('');
+
+        // Render OS
+        document.getElementById('os-list').innerHTML = data.os.data.slice(0, 4).map(o => `
+          <div class="flex justify-between items-center bg-slate-800/30 p-2.5 rounded-lg border border-slate-700/30">
+            <span class="font-medium text-slate-300 text-sm">${o.osName || 'Unknown'}</span>
+            <span class="font-bold text-sm">${o.visitors}</span>
+          </div>
+        `).join('');
+
+        // Render Browsers
+        const totalBrowsers = data.browsers.data.reduce((sum, b) => sum + b.visitors, 0);
+        document.getElementById('browsers-list').innerHTML = data.browsers.data.slice(0, 4).map(b => `
+          <div>
+            <div class="flex justify-between items-center text-sm mb-1">
+              <span class="text-slate-300">${b.browserName}</span>
+              <span class="font-bold">${b.visitors}</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-1">
+              <div class="bg-blue-400 h-1 rounded-full" style="width: ${(b.visitors / totalBrowsers * 100).toFixed(1)}%"></div>
+            </div>
+          </div>
+        `).join('');
+
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loading').innerHTML = `<p class="text-red-400">Failed to load data. Please make sure the server is running.</p>`;
+      }
+    }
+
+    document.getElementById('refresh-btn').addEventListener('click', loadData);
+    loadData();
+  </script>
+</body>
+</html>
