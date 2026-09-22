@@ -449,10 +449,18 @@ function getCurrentScheduleState() {
   const isBeforeSchool = totalMinutes < 510;
   const isAfterSchool = totalMinutes >= 935;
 
+  let displayDayOfWeek = dayOfWeek;
+  if (isAfterSchool && !isWeekend) {
+    displayDayOfWeek = (dayOfWeek + 1) % 7;
+  }
+  const displayIsWeekend = displayDayOfWeek === 0 || displayDayOfWeek === 6;
+  const activeDisplayDayId = displayIsWeekend ? null : String(displayDayOfWeek - 1);
+
   return {
     ...time,
     isWeekend,
     currentDayId,
+    activeDisplayDayId,
     currentPeriod: activePeriod ? activePeriod.id : null,
     activePeriod,
     periodFraction,
@@ -487,12 +495,12 @@ function updateCurrentTimeLine() {
     }
   }
 
-  // 2. Highlight Today button in Day Filter toolbar
+  // 2. Highlight Today/Tomorrow button in Day Filter toolbar
   document.querySelectorAll('.day-filter-btn').forEach(btn => {
     const d = btn.getAttribute('data-day');
-    if (d === schedState.currentDayId && !schedState.isWeekend) {
+    if (d === schedState.activeDisplayDayId) {
       btn.classList.add('ring-2', 'ring-blue-400');
-      btn.title = 'Today';
+      btn.title = (schedState.isAfterSchool && d !== schedState.currentDayId) ? 'Tomorrow' : 'Today';
     } else {
       btn.classList.remove('ring-2', 'ring-blue-400');
     }
@@ -1466,7 +1474,9 @@ function renderGrid() {
     : days.filter(d => d.id === state.activeDayFilter);
 
   daysToRender.forEach(day => {
-    const isToday = day.id === schedState.currentDayId && !schedState.isWeekend;
+    const isToday = day.id === schedState.activeDisplayDayId;
+    const isActuallyTomorrow = isToday && schedState.isAfterSchool && day.id !== schedState.currentDayId;
+    const badgeText = isActuallyTomorrow ? 'TOMORROW' : 'TODAY';
 
     const tr = document.createElement('tr');
     tr.className = `timetable-day-row ${isToday ? 'timetable-current-day-row bg-blue-50/20' : 'hover:bg-slate-50/50 dark:hover:bg-white/[0.02]'} transition border-b border-slate-200/80 dark:border-white/5`;
@@ -1478,11 +1488,11 @@ function renderGrid() {
       thDay.innerHTML = `
         <div class="text-xs font-bold leading-tight flex items-center justify-center gap-1 text-blue-950 dark:text-blue-200">
           ${day.name}
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" title="Today"></span>
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" title="${badgeText}"></span>
         </div>
         <div class="flex items-center justify-center gap-1 mt-0.5">
           <span class="text-[10px] text-blue-700 dark:text-blue-400 font-bold uppercase tracking-wider">${day.short}</span>
-          <span class="px-1 py-0.2 rounded text-[8px] font-black bg-blue-600 dark:bg-blue-500 text-white leading-none tracking-wide">TODAY</span>
+          <span class="px-1 py-0.2 rounded text-[8px] font-black bg-blue-600 dark:bg-blue-500 text-white leading-none tracking-wide">${badgeText}</span>
         </div>
       `;
     } else {
