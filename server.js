@@ -485,7 +485,7 @@ async function handleRequest(req, res) {
             projectId: PROJECT_ID,
             since: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
             until: new Date().toISOString(),
-            filter: "vercelEnvironment eq 'production'"
+            filter: "environment eq 'production'"
           });
 
           const fetchVercel = async (endpoint, extraParams = {}) => {
@@ -500,7 +500,18 @@ async function handleRequest(req, res) {
               }, (r) => {
                 let body = '';
                 r.on('data', chunk => body += chunk);
-                r.on('end', () => resolve(JSON.parse(body)));
+                r.on('end', () => {
+                  try {
+                    const parsed = JSON.parse(body);
+                    if (r.statusCode >= 400) {
+                      reject(new Error(parsed.error?.message || JSON.stringify(parsed)));
+                    } else {
+                      resolve(parsed);
+                    }
+                  } catch(e) {
+                    reject(new Error(`Failed to parse Vercel response (${r.statusCode}): ${body.substring(0, 100)}`));
+                  }
+                });
               }).on('error', reject);
             });
           };
