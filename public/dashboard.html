@@ -161,16 +161,20 @@
       return host;
     };
 
+    let isInitialLoad = true;
+
     async function loadData() {
-      document.getElementById('loading').classList.remove('hidden');
-      document.getElementById('dashboard').classList.add('hidden');
+      if (isInitialLoad) {
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('dashboard').classList.add('hidden');
+      }
       
       try {
         const res = await fetch(API_URL);
         const data = await res.json();
         
         if (data.error) {
-          alert('Error fetching analytics: ' + data.error);
+          if (isInitialLoad) alert('Error fetching analytics: ' + data.error);
           return;
         }
 
@@ -190,7 +194,7 @@
               <span class="font-bold">${c.visitors} <span class="text-slate-400 font-normal text-[10px] ml-0.5">vis</span></span>
             </div>
             <div class="w-full bar-bg rounded-full h-1.5">
-              <div class="bar-fill h-1.5 rounded-full" style="width: ${(c.visitors / totalCountriesVisits * 100).toFixed(1)}%"></div>
+              <div class="bar-fill h-1.5 rounded-full" style="width: ${(totalCountriesVisits ? (c.visitors / totalCountriesVisits * 100) : 0).toFixed(1)}%"></div>
             </div>
           </div>
         `).join('');
@@ -232,21 +236,33 @@
               <span class="font-bold">${b.visitors}</span>
             </div>
             <div class="w-full bg-slate-800 rounded-full h-1">
-              <div class="bg-blue-400 h-1 rounded-full" style="width: ${(b.visitors / totalBrowsers * 100).toFixed(1)}%"></div>
+              <div class="bg-blue-400 h-1 rounded-full" style="width: ${(totalBrowsers ? (b.visitors / totalBrowsers * 100) : 0).toFixed(1)}%"></div>
             </div>
           </div>
         `).join('');
 
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
+        if (isInitialLoad) {
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('dashboard').classList.remove('hidden');
+          isInitialLoad = false;
+        }
       } catch (err) {
         console.error(err);
-        document.getElementById('loading').innerHTML = `<p class="text-red-400 text-sm">Failed to load data. Please make sure the server is running.</p>`;
+        if (isInitialLoad) {
+          document.getElementById('loading').innerHTML = `<p class="text-red-400 text-sm">Failed to load data. Please make sure the server is running.</p>`;
+        }
       }
     }
 
-    document.getElementById('refresh-btn').addEventListener('click', loadData);
+    document.getElementById('refresh-btn').addEventListener('click', () => {
+      isInitialLoad = true;
+      loadData();
+    });
+    
     loadData();
+    
+    // Auto-refresh every 5 seconds for real-time updates
+    setInterval(loadData, 5000);
   </script>
 </body>
 </html>

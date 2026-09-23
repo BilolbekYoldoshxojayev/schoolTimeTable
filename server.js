@@ -483,8 +483,9 @@ async function handleRequest(req, res) {
           
           const params = new URLSearchParams({
             projectId: PROJECT_ID,
-            since: '2026-09-02T00:00:00.000Z',
-            until: '2026-09-22T00:00:00.000Z'
+            since: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            until: new Date().toISOString(),
+            filter: "vercelEnvironment eq 'production'"
           });
 
           const fetchVercel = async (endpoint, extraParams = {}) => {
